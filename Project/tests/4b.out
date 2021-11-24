@@ -1,0 +1,64 @@
+0.000 1 arrives
+0.000 1 serves by server 1
+0.313 1 done serving by server 1
+0.314 2 arrives
+0.314 2 serves by server 1
+0.417 2 done serving by server 1
+1.205 3 arrives
+1.205 3 serves by server 2
+1.904 3 done serving by server 2
+2.776 4 arrives
+2.776 4 serves by server 2
+2.791 4 done serving by server 2
+3.877 5 arrives
+3.877 5 serves by server 1
+3.910 6 arrives
+3.910 6 serves by server 2
+3.922 6 done serving by server 2
+4.031 5 done serving by server 1
+9.006 7 arrives
+9.006 7 serves by server 1
+9.043 8 arrives
+9.043 8 serves by server 2
+9.105 9 arrives
+9.105 9 serves by self-check 3
+9.160 10 arrives
+9.160 10 waits at server 1
+9.225 11 arrives
+9.225 11 waits at server 1
+9.402 9 done serving by self-check 3
+10.148 12 arrives
+10.148 12 serves by self-check 3
+10.200 12 done serving by self-check 3
+10.484 7 done serving by server 1
+10.484 10 serves by server 1
+11.205 13 arrives
+11.205 13 serves by self-check 3
+11.574 13 done serving by self-check 3
+11.636 8 done serving by server 2
+12.429 14 arrives
+12.429 14 serves by self-check 3
+12.589 14 done serving by self-check 3
+13.109 15 arrives
+13.109 15 serves by self-check 3
+13.974 10 done serving by server 1
+13.974 11 serves by server 1
+14.869 11 done serving by server 1
+15.264 16 arrives
+15.264 16 serves by server 1
+15.524 17 arrives
+15.524 17 serves by server 2
+15.531 17 done serving by server 2
+15.940 18 arrives
+15.940 18 waits at server 1
+15.978 15 done serving by self-check 3
+16.307 16 done serving by server 1
+16.307 18 serves by server 1
+16.883 18 done serving by server 1
+17.793 19 arrives
+17.793 19 serves by server 1
+18.535 19 done serving by server 1
+18.765 20 arrives
+18.765 20 serves by server 1
+21.773 20 done serving by server 1
+[0.322 20 0]

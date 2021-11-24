@@ -1,0 +1,15 @@
+0.000 1 arrives
+0.000 1 serves by self-check 1
+0.035 2 arrives
+0.035 2 serves by self-check 2
+0.046 3 arrives
+0.046 3 waits at self-check 1
+0.124 4 arrives
+0.124 4 leaves
+0.126 5 arrives
+0.126 5 leaves
+0.313 1 done serving by self-check 1
+0.313 3 serves by self-check 1
+2.680 2 done serving by self-check 2
+3.015 3 done serving by self-check 1
+[0.089 3 2]

@@ -1,0 +1,10 @@
+0.500 1 arrives
+0.500 1 serves by server 1
+0.600 2 arrives
+0.600 2 waits at server 1
+0.700 3 arrives
+0.700 3 leaves
+1.500 1 done serving by server 1
+1.500 2 serves by server 1
+2.500 2 done serving by server 1
+[0.450 2 1]

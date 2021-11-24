@@ -1,0 +1,71 @@
+0.000 1 arrives
+0.000 1 serves by server 1
+0.026 2(greedy) arrives
+0.026 2(greedy) serves by server 2
+0.035 3 arrives
+0.035 3 serves by self-check 3
+0.093 4(greedy) arrives
+0.093 4(greedy) serves by self-check 4
+0.094 5(greedy) arrives
+0.094 5(greedy) waits at server 1
+0.107 6(greedy) arrives
+0.107 6(greedy) waits at server 2
+0.108 7(greedy) arrives
+0.108 7(greedy) waits at self-check 3
+0.231 8 arrives
+0.231 8 waits at server 1
+0.313 1 done serving by server 1
+0.313 5(greedy) serves by server 1
+0.357 4(greedy) done serving by self-check 4
+0.357 7(greedy) serves by self-check 4
+0.447 9(greedy) arrives
+0.447 9(greedy) waits at self-check 3
+0.472 10 arrives
+0.472 10 waits at server 1
+0.476 11(greedy) arrives
+0.476 11(greedy) waits at server 2
+0.767 12(greedy) arrives
+0.767 12(greedy) waits at self-check 3
+0.772 7(greedy) done serving by self-check 4
+0.772 9(greedy) serves by self-check 4
+0.798 13(greedy) arrives
+0.798 13(greedy) waits at self-check 3
+0.811 14 arrives
+0.811 14 waits at server 1
+0.987 9(greedy) done serving by self-check 4
+0.987 12(greedy) serves by self-check 4
+1.050 15(greedy) arrives
+1.050 15(greedy) waits at self-check 3
+1.125 16(greedy) arrives
+1.125 16(greedy) waits at server 2
+1.212 17(greedy) arrives
+1.212 17(greedy) waits at self-check 3
+1.212 18(greedy) arrives
+1.212 18(greedy) leaves
+1.261 19(greedy) arrives
+1.261 19(greedy) leaves
+1.322 20(greedy) arrives
+1.322 20(greedy) leaves
+1.795 5(greedy) done serving by server 1
+1.795 8 serves by server 1
+2.004 8 done serving by server 1
+2.004 10 serves by server 1
+2.060 10 done serving by server 1
+2.060 14 serves by server 1
+2.671 2(greedy) done serving by server 2
+2.671 6(greedy) serves by server 2
+2.736 3 done serving by self-check 3
+2.736 13(greedy) serves by self-check 3
+2.737 13(greedy) done serving by self-check 3
+2.737 15(greedy) serves by self-check 3
+2.765 6(greedy) done serving by server 2
+2.765 11(greedy) serves by server 2
+2.788 11(greedy) done serving by server 2
+2.788 16(greedy) serves by server 2
+3.353 15(greedy) done serving by self-check 3
+3.353 17(greedy) serves by self-check 3
+3.939 14 done serving by server 1
+3.953 17(greedy) done serving by self-check 3
+4.499 12(greedy) done serving by self-check 4
+4.630 16(greedy) done serving by server 2
+[1.037 17 3]

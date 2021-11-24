@@ -1,0 +1,186 @@
+0.000 1 arrives
+0.000 1 serves by server 1
+0.045 2 arrives
+0.045 2 serves by server 2
+0.060 3 arrives
+0.060 3 serves by server 3
+0.159 4(greedy) arrives
+0.159 4(greedy) serves by self-check 4
+0.162 5(greedy) arrives
+0.162 5(greedy) serves by self-check 5
+0.184 6 arrives
+0.184 6 waits at server 1
+0.185 7 arrives
+0.185 7 waits at server 1
+0.313 1 done serving by server 1
+0.313 6 serves by server 1
+0.396 8 arrives
+0.396 8 waits at server 1
+0.423 4(greedy) done serving by self-check 4
+0.728 6 done serving by server 1
+0.728 7 serves by server 1
+0.767 9(greedy) arrives
+0.767 9(greedy) serves by self-check 4
+0.809 10 arrives
+0.809 10 waits at server 1
+0.817 11 arrives
+0.817 11 waits at server 1
+0.943 7 done serving by server 1
+0.943 8 serves by server 1
+1.152 8 done serving by server 1
+1.152 10 serves by server 1
+1.209 10 done serving by server 1
+1.209 11 serves by server 1
+1.315 12 arrives
+1.315 12 waits at server 1
+1.368 13(greedy) arrives
+1.368 13(greedy) waits at server 2
+1.391 14 arrives
+1.391 14 waits at server 1
+1.643 5(greedy) done serving by self-check 5
+1.801 15 arrives
+1.801 15 serves by self-check 5
+1.895 15 done serving by self-check 5
+1.929 16 arrives
+1.929 16 serves by self-check 5
+1.930 16 done serving by self-check 5
+2.078 17(greedy) arrives
+2.078 17(greedy) serves by self-check 5
+2.079 18 arrives
+2.079 18 waits at server 1
+2.161 19(greedy) arrives
+2.161 19(greedy) waits at server 3
+2.267 20 arrives
+2.267 20 waits at server 1
+2.690 2 done serving by server 2
+2.690 13(greedy) serves by server 2
+2.694 17(greedy) done serving by self-check 5
+2.697 21(greedy) arrives
+2.697 21(greedy) serves by self-check 5
+2.713 13(greedy) done serving by server 2
+2.761 3 done serving by server 3
+2.761 19(greedy) serves by server 3
+2.774 22(greedy) arrives
+2.774 22(greedy) serves by server 2
+2.797 23(greedy) arrives
+2.797 23(greedy) waits at server 2
+3.008 24(greedy) arrives
+3.008 24(greedy) waits at server 3
+3.088 11 done serving by server 1
+3.088 12 serves by server 1
+3.276 25 arrives
+3.276 25 waits at server 1
+3.281 26(greedy) arrives
+3.281 26(greedy) waits at self-check 4
+3.360 19(greedy) done serving by server 3
+3.360 24(greedy) serves by server 3
+3.489 27(greedy) arrives
+3.489 27(greedy) waits at server 3
+3.558 28(greedy) arrives
+3.558 28(greedy) waits at server 2
+3.629 29(greedy) arrives
+3.629 29(greedy) waits at server 3
+3.829 30(greedy) arrives
+3.829 30(greedy) waits at self-check 4
+3.854 31(greedy) arrives
+3.854 31(greedy) waits at server 2
+3.901 12 done serving by server 1
+3.901 14 serves by server 1
+3.907 32 arrives
+3.907 32 waits at server 1
+3.939 33(greedy) arrives
+3.939 33(greedy) waits at server 3
+4.238 34(greedy) arrives
+4.238 34(greedy) waits at self-check 4
+4.245 24(greedy) done serving by server 3
+4.245 27(greedy) serves by server 3
+4.280 9(greedy) done serving by self-check 4
+4.280 26(greedy) serves by self-check 4
+4.539 21(greedy) done serving by self-check 5
+4.539 30(greedy) serves by self-check 5
+4.556 35 arrives
+4.556 35 waits at server 1
+4.597 30(greedy) done serving by self-check 5
+4.597 34(greedy) serves by self-check 5
+4.713 34(greedy) done serving by self-check 5
+4.998 26(greedy) done serving by self-check 4
+5.045 36(greedy) arrives
+5.045 36(greedy) serves by self-check 4
+5.054 37 arrives
+5.054 37 serves by self-check 5
+5.143 22(greedy) done serving by server 2
+5.143 23(greedy) serves by server 2
+5.151 14 done serving by server 1
+5.151 18 serves by server 1
+5.243 38(greedy) arrives
+5.243 38(greedy) waits at self-check 4
+5.327 39(greedy) arrives
+5.327 39(greedy) waits at self-check 4
+5.521 18 done serving by server 1
+5.521 20 serves by server 1
+5.539 40 arrives
+5.539 40 waits at server 1
+5.560 20 done serving by server 1
+5.560 25 serves by server 1
+5.614 37 done serving by self-check 5
+5.614 38(greedy) serves by self-check 5
+5.669 36(greedy) done serving by self-check 4
+5.669 39(greedy) serves by self-check 4
+5.817 41 arrives
+5.817 41 waits at server 1
+6.021 27(greedy) done serving by server 3
+6.021 29(greedy) serves by server 3
+6.243 42 arrives
+6.243 42 waits at server 1
+6.513 23(greedy) done serving by server 2
+6.513 28(greedy) serves by server 2
+6.534 43(greedy) arrives
+6.534 43(greedy) waits at self-check 4
+6.538 39(greedy) done serving by self-check 4
+6.538 43(greedy) serves by self-check 4
+6.658 25 done serving by server 1
+6.658 32 serves by server 1
+6.804 28(greedy) done serving by server 2
+6.804 31(greedy) serves by server 2
+6.941 44 arrives
+6.941 44 waits at server 1
+6.961 38(greedy) done serving by self-check 5
+7.052 45 arrives
+7.052 45 serves by self-check 5
+7.160 46(greedy) arrives
+7.160 46(greedy) waits at server 2
+7.296 43(greedy) done serving by self-check 4
+7.356 47(greedy) arrives
+7.356 47(greedy) serves by self-check 4
+7.390 48 arrives
+7.390 48 waits at server 1
+7.427 49(greedy) arrives
+7.427 49(greedy) waits at self-check 4
+7.579 50 arrives
+7.579 50 waits at server 1
+7.599 31(greedy) done serving by server 2
+7.599 46(greedy) serves by server 2
+8.047 47(greedy) done serving by self-check 4
+8.047 49(greedy) serves by self-check 4
+8.098 29(greedy) done serving by server 3
+8.098 33(greedy) serves by server 3
+8.270 46(greedy) done serving by server 2
+8.314 45 done serving by self-check 5
+8.435 32 done serving by server 1
+8.435 35 serves by server 1
+8.744 49(greedy) done serving by self-check 4
+9.191 33(greedy) done serving by server 3
+9.575 35 done serving by server 1
+9.575 40 serves by server 1
+9.746 40 done serving by server 1
+9.746 41 serves by server 1
+12.669 41 done serving by server 1
+12.669 42 serves by server 1
+12.775 42 done serving by server 1
+12.775 44 serves by server 1
+13.086 44 done serving by server 1
+13.086 48 serves by server 1
+13.669 48 done serving by server 1
+13.669 50 serves by server 1
+15.190 50 done serving by server 1
+[1.503 50 0]
