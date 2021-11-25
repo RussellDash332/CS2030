@@ -1,0 +1,67 @@
+#!/bin/bash
+# usage: jpp <file.java>
+# Script to preprocess and compile Java files containing LazyList macros
+# A "processed" directory will be created, containing the .class file
+
+
+PROC_DIR=processed
+TMPFILE=$(mktemp /tmp/jpp.XXXX)
+TMPFILE2=$(mktemp /tmp/jppXXXX).c
+TMPFILE3=$(mktemp /tmp/javaXXXX)
+MFLAG=0
+FNAME=""
+
+if [ $# -eq 2 ] && [ $1 = "-m" ]; then
+    MFLAG=1
+    FNAME=$2
+elif [ $# -eq 1 ] && [ $1 != "-m" ]; then
+    MFLAG=0
+    FNAME=$1
+else
+   echo "Usage: jpp [-m] <file.java>"
+   exit 
+fi
+
+if [ ! -d $PROC_DIR ]; then
+   echo "Creating $PROC_DIR ..."
+   mkdir $PROC_DIR
+fi
+
+if [ -f $PROC_DIR/$FNAME ]; then
+   rm -f $PROC_DIR/$FNAME
+fi
+
+if [ ! -f $FNAME ]; then
+    echo $FNAME does not exist!
+    exit
+fi
+
+
+if [ $MFLAG -eq 0 ]; then
+    cat <<EOF > $TMPFILE
+#define freeze(x)  ( ()->(x) )
+#define LLmake(a, b) new LazyList<>((a), freeze(b))
+#define Thunk(T)  Supplier<T>
+#define BTmake(v, l, r)  new BinaryTree<>((v), freeze(l), freeze(r))
+#define Lazymake(x)  new Lazy<>(freeze(x))
+EOF
+else
+    cat <<EOF2 > $TMPFILE
+#define freeze(x)  Memo.make( ()->(x) )
+#define LLmake(a, b) new LazyList<>((a), freeze(b))
+#define Thunk(T)  Memo<T>
+#define BTmake(v, l, r)  new BinaryTree<>((v), freeze(l), freeze(r))
+#define Lazymake(x)  new Lazy<>(freeze(x))
+EOF2
+fi
+
+#cat $TMPFILE $FNAME | cpp -P - -o $PROC_DIR/$FNAME
+cat $TMPFILE $FNAME > $TMPFILE2
+gcc -E -o $TMPFILE3 $TMPFILE2
+sed 's/^#.*$//g' $TMPFILE3 > $PROC_DIR/$FNAME
+javac -classpath $PROC_DIR -d $PROC_DIR $PROC_DIR/$FNAME
+rm -f $TMPFILE $TMPFILE2 $TMPFILE3
+
+
+
+
