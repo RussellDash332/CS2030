@@ -1,0 +1,328 @@
+<h3>CS2030 Practical Assessment #2</h3>
+<a href="https://www.comp.nus.edu.sg/~e0550376/CS2030/">Back to homepage</a>
+
+<p>When teaching Java programming to beginners, static variables (or class variables) are introduced as a way for the class to keep track of aggregated data (e.g. keeping a count of the number of objects created).
+The example below illustrates the <tt>Circle</tt> class which uses a mutable <tt>numOfCircles</tt> class variable.
+
+</p><pre>class Circle {
+    private static int numOfCircles = 0;
+    private final double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+        numOfCircles = numOfCircles + 1;
+    }
+
+    double getRadius() {
+        return this.radius;
+    }
+
+    static int getNumOfCircles() {
+        return Circle.numOfCircles;
+    }
+
+    @Override
+    public String toString() {
+        return "Circle of radius " + this.radius;
+    }
+}
+
+jshell&gt; new Circle(1).getNumOfCircles()
+$.. ==&gt; 1
+
+jshell&gt; new Circle(1).getNumOfCircles() // same expression; different result
+$.. ==&gt; 2
+</pre>
+
+
+
+<p>It should be noted that the class variable is mutable, and every creation of a <tt>Circle</tt> object would have a <i>side-effect</i> in that the external state <tt>numOfCircles</tt> has to be updated.
+
+</p><h4>Task</h4>
+
+<p>We shall look at creating an "aggregation context" to wrap around an object while maintaining immutability with no side-effects.
+There are altogether four levels.  You need to complete ALL levels.
+
+</p><h4>Take Note!</h4>
+
+<ul>
+<li>Write each class/interface/enum in its own file
+</li><li>Ensure that ALL object properties and class constants are declared private final
+</li><li>You are NOT allowed to use instanceof, other than within the same class (e.g. obj instanceof A within class A).  No Java reflection is allowed
+</li><li>There is NO need to type cast with <tt>SuppressWarnings</tt>
+</li><li>You are only allowed to import <tt>java.util.Optional</tt> and specific packages from <tt>java.util.function</tt>. Do not use <tt>*</tt> wildcard imports.
+</li><li>There is NO need to use arrays, Java Collections or Java Streams
+</li><li>For ease of implementation (and also grading), do NOT include bounded/unbounded wildcards
+</li><li>Do NOT use method references (the grader cannot handle it)
+</li></ul>
+
+<p>As this exercise involves a very specific application with few classes, your code will not be checked for cyclic dependencies.
+Moreover, there are NO restrictions on the Java control flow constructs you can use :)
+
+</p><h4>Level 1</h4>
+
+<p>Define a generic <tt>Count</tt> class that wraps around an object of type <tt>T</tt>.
+
+</p><ul>
+<li>a static <tt>of</tt> method that takes in the first object of type <tt>T</tt> and sets the count to 1
+</li><li>a method <tt>map</tt> that takes in a new object of type <tt>T</tt> and updates the count 
+</li><li>a <tt>toString</tt> method that outputs the count followed by the last updated object
+</li></ul>
+
+<pre>jshell&gt; Count.&lt;Circle&gt;of(new Circle(1.0))
+$.. ==&gt; (1, Circle of radius 1.0)
+
+jshell&gt; Count.&lt;Circle&gt;of(new Circle(1.0)).
+   ...&gt; map(new Circle(2.0))
+$.. ==&gt; (2, Circle of radius 2.0)
+
+jshell&gt; Count&lt;String&gt; one = Count.&lt;String&gt;of("one")
+one ==&gt; (1, one)
+
+jshell&gt; one.map("two").map("three")
+$.. ==&gt; (3, three)
+
+jshell&gt; one
+one ==&gt; (1, one)
+</pre>
+
+<h4>Level 2</h4>
+
+<p>Counting the number of objects created is just one of the many ways aggregation can be done.
+As such, we would like the client to specify the aggregation function to be performed.
+
+</p><p>Define a class <tt>Aggregate&lt;S,T&gt;</tt> with the following methods
+
+</p><ul>
+<li>a static <tt>seed</tt> method that takes in a seed value of type <tt>S</tt> and initializes the <tt>Aggregate</tt> context with the seed value.
+You may assume that the <tt>seed</tt> will only be used to start off an <tt>Aggregate</tt> pipeline
+</li><li>a method <tt>map</tt> that takes in a new object of type <tt>T</tt> as well as the aggregation function to be performed for that object
+</li><li>a <tt>toString</tt> method that outputs the aggregated value followed by the last updated object
+</li></ul>
+
+<p>Moreover, since counting is a form of aggregation, make <tt>Count</tt> a sub-class of <tt>Aggregate</tt>.
+Note that <tt>Count</tt> should NOT have any properties now.
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,Circle&gt;seed(0)
+$.. ==&gt; (0)
+
+jshell&gt; Aggregate.&lt;Integer,Circle&gt;seed(10)
+$.. ==&gt; (10)
+
+jshell&gt; Aggregate.&lt;Integer,Circle&gt;seed(1).
+   ...&gt; map(x -&gt; x * 2, new Circle(2.0))
+$.. ==&gt; (2, Circle of radius 2.0)
+
+jshell&gt; Count&lt;String&gt; count = Count.&lt;String&gt;of("one").
+   ...&gt; map("two").map("three")
+count ==&gt; (3, three)
+
+jshell&gt; Aggregate&lt;Integer,String&gt; agg = count.map("four")
+agg ==&gt; (4, four)
+
+jshell&gt; count
+count ==&gt; (3, three)
+
+jshell&gt; Aggregate.&lt;Integer,Circle&gt;seed(0).
+   ...&gt; map(x -&gt; x + 1, new Circle(1.0)).
+   ...&gt; map(x -&gt; x + 2, new Circle(2.0))
+$.. ==&gt; (3, Circle of radius 2.0)
+
+jshell&gt; Aggregate.&lt;Double,Circle&gt;seed(0.0).
+   ...&gt; map(x -&gt; x + 1.0, new Circle(1.0)).
+   ...&gt; map(x -&gt; x + 2.0, new Circle(2.0))
+$.. ==&gt; (3.0, Circle of radius 2.0)
+</pre>
+
+<h4>Level 3</h4>
+
+<p>You will realize that the <tt>map</tt> method, such as 
+<tt>map(x -&gt; x + 2.0, new Circle(2.0))</tt>,
+performs aggregation independently from the object in the second argument.
+This would be an issue for certain updates such as "increment with the radius of the new Circle object" as it would be difficult to enforce consistency between the two arguments (unless we use an external variable).
+
+</p><pre>jshell&gt; Circle c = new Circle(2.0)
+c ==&gt; Circle of radius 2.0
+
+jshell&gt; Aggregate.&lt;Double,Circle&gt;seed(0.0).
+   ...&gt; map(x -&gt; x + 1.0, new Circle(1.0)).
+   ...&gt; map(x -&gt; x + c.getRadius(), c)
+$.. ==&gt; (3.0, Circle of radius 2.0)
+</pre>
+
+An alternative would be to pass a <tt>Function</tt> (that outputs a <tt>Pair</tt> of values) to the <tt>map</tt> method instead.
+As an example,
+
+<pre>jshell&gt; Aggregate.&lt;Double,Circle&gt;seed(0.0).
+   ...&gt; map(x -&gt; x + 1.0, new Circle(1.0)).
+   ...&gt; map(x -&gt; {
+   ...&gt;    Circle c = new Circle(2.0);  // Circle c is now within the lambda 
+   ...&gt;    return Pair.&lt;Double,Circle&gt;of(x + c.getRadius(), c); 
+   ...&gt; })
+$.. ==&gt; (3.0, Circle of radius 2.0)
+</pre>
+
+<p>Define the <tt>Pair</tt> class with a static method <tt>of</tt> that constructs a pair of values, possibly of different types.
+Include this new mapping as an overloaded <tt>map</tt> method in the <tt>Aggregate</tt> class.
+There is no need to modify the <tt>Count</tt> class to make use of this new <tt>map</tt> method.
+
+</p><pre>jshell&gt; Pair.&lt;Integer,String&gt;of(1, "one")
+$.. ==&gt; (1, one)
+
+jshell&gt; Aggregate.&lt;Double,Circle&gt;seed(0.0).
+   ...&gt; map(x -&gt; x + 1.0, new Circle(1.0)).
+   ...&gt; map(x -&gt; Pair.&lt;Double,Circle&gt;of(x + 2.0, new Circle(2.0)))
+$.. ==&gt; (3.0, Circle of radius 2.0)
+
+jshell&gt; Aggregate.&lt;Double,Circle&gt;seed(0.0).
+   ...&gt; map(x -&gt; x + 1.0, new Circle(1.0)).
+   ...&gt; map(x -&gt; {
+   ...&gt;     Circle c = new Circle(2.0); 
+   ...&gt;     return Pair.&lt;Double,Circle&gt;of(x + c.getRadius(), c); 
+   ...&gt; })
+$.. ==&gt; (3.0, Circle of radius 2.0)
+
+jshell&gt; Count&lt;String&gt; count = Count.&lt;String&gt;of("one").
+   ...&gt; map("two").map("three")
+count ==&gt; (3, three)
+
+jshell&gt; Aggregate&lt;Integer,String&gt; agg = count.map("four").
+   ...&gt; map(x -&gt; Pair.&lt;Integer,String&gt;of(x + 1, "five"))
+agg ==&gt; (5, five)
+
+jshell&gt; count
+count ==&gt; (3, three)
+</pre>
+
+<h4>Level 4</h4>
+
+<p>Up till now, each <tt>map</tt> method has performed aggregation by updating the first value of the <tt>Pair</tt>.
+The second value is merely the most recent object involved in the aggregation.
+One wonders if there is any way to aggregate the objects at the same time, such as joining strings.
+Let's do this using <tt>flatMap</tt>!!
+
+</p><p>Include the <tt>flatMap</tt> method in <tt>Aggregate</tt> that takes in a <tt>Function&lt;T,Aggregate&lt;S,T&gt;&gt;</tt> constructed via the static <tt>of</tt> method.  Below is an example:
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one"))
+$.. ==&gt; (1, one)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, t + " two")))
+$.. ==&gt; (3, one two)
+</pre>
+
+<p>Notice that we take in a function where the input is of the element type <tt>T</tt>, rather than the aggregate type.
+There is a very good reason for this as it allows us to specify the "mapping" for both the aggregation, as well as the element.
+
+</p><p><tt>Aggregate.of</tt> cannot perform the actual aggregation by itself, i.e. without being part of a <tt>flatMap</tt>.  Hence the output of the following is simply the string <tt>Aggregate</tt>.
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two"))
+$.. ==&gt; Aggregate
+</pre>
+
+<p>Chaining the <tt>of</tt> method after the <tt>seed</tt> method will result in an invalid aggregate.
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,String&gt;seed(11).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two")))
+$.. ==&gt; Invalid Aggregate
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(11).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two"))).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one"))
+$.. ==&gt; Invalid Aggregate
+</pre>
+
+<p>Additionally, chaining <tt>map</tt> or <tt>flatMap</tt> methods after the <tt>of</tt> method will also render the aggregate invalid.
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two")).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one"))
+$.. ==&gt; Invalid Aggregate
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two")).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one")).
+   ...&gt; map(s -&gt; Pair.of(s + 3, "three"))
+$.. ==&gt; Invalid Aggregate
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two")).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, t + " two")))
+$.. ==&gt; Invalid Aggregate
+</pre>
+
+<p>Study the following tests carefully and infer how <tt>Aggregate</tt> should be modified for this level.
+
+</p><pre>jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one"))
+$.. ==&gt; (1, one)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, t + " two")))
+$.. ==&gt; (3, one two)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.&lt;Integer,String&gt;of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, "two")))
+$.. ==&gt; (3, two)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(s -&gt; Pair.&lt;Integer,String&gt;of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,String&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,String&gt;of(s + 2, t + "two")))
+$.. ==&gt; (3, onetwo)
+
+jshell&gt; Function&lt;Integer, Pair&lt;Integer,String&gt;&gt; doit(String s) {
+   ...&gt;     return x -&gt; Pair.&lt;Integer,String&gt;of(x + s.length(), s);
+   ...&gt; }
+|  created method doit(String)
+
+jshell&gt; Function&lt;String, Aggregate&lt;Integer,String&gt;&gt; doit2(String s) {
+   ...&gt;     return x -&gt; Aggregate.&lt;Integer,String&gt;of(y -&gt; {
+   ...&gt;         Pair&lt;Integer,String&gt; pair = doit(s).apply(y);
+   ...&gt;         return Pair.&lt;Integer,String&gt;of(
+   ...&gt;            pair.first(), x + " " + pair.second());
+   ...&gt;     });
+   ...&gt; }
+|  created method doit2(String)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(doit("one"));
+$.. ==&gt; (3, one)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(doit("one")).
+   ...&gt; flatMap(doit2("two")).
+   ...&gt; map(doit("three"))
+$.. ==&gt; (11, three)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(0).
+   ...&gt; map(doit("one")).
+   ...&gt; flatMap(doit2("two")).
+   ...&gt; flatMap(doit2("three"))
+$.. ==&gt; (11, one two three)
+
+jshell&gt; Aggregate.&lt;Integer,String&gt;seed(10).
+   ...&gt; map(s -&gt; Pair.of(s + 1, "one")).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,Integer&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,Integer&gt;of(
+   ...&gt;       s + 2, t.length() + 5))).
+   ...&gt; flatMap(t -&gt; Aggregate.&lt;Integer,Circle&gt;of(
+   ...&gt;    s -&gt; Pair.&lt;Integer,Circle&gt;of(
+   ...&gt;       s + 3, new Circle(t))))
+$.. ==&gt; (16, Circle of radius 8.0)
+</pre>
+
+<p><i>You will need to tweak the signature of <tt>flatMap</tt> slightly to pass the last test.</i></p>
+</html>
