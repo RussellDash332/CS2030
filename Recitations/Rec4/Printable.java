@@ -1,0 +1,3 @@
+interface Printable {
+    void print();
+}

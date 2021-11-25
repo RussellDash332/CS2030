@@ -1,0 +1,3 @@
+interface One {
+    void foo();
+}
