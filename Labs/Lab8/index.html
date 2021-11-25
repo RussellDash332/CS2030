@@ -1,0 +1,463 @@
+<h1>Logging</h1>
+
+<a href="https://www.comp.nus.edu.sg/~e0550376/CS2030/">Back to homepage</a>
+
+<h3>Topic Coverage</h3>
+<ul>
+<li>Generics</li>
+<li>Function</li>
+<li>Lambda expression</li>
+<li><tt>map</tt> and <tt>flatMap</tt></li>
+</ul>
+
+<h3>Problem Description</h3>
+
+<p>In this lab, we are going to write an <i>immutable</i> <tt>Logger</tt> class to handle the context of logging changes to values while they are operated upon. 
+We do this so as to separate the code for logging from the main business logic.
+
+</p><p>A sample logging session is shown below:
+
+</p><pre>jshell&gt; Logger.&lt;Integer&gt;of(5)
+$13 ==&gt; Logger[5]
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).map(x -&gt; x + 1)
+$14 ==&gt; Logger[6]
+5 -&gt; 6
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).map(x -&gt; x + 1).map(x -&gt; x * 2)
+$15 ==&gt; Logger[12]
+5 -&gt; 6
+6 -&gt; 12
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).map(x -&gt; x + 1).map(x -&gt; x * 2).map(x -&gt; x)
+$16 ==&gt; Logger[12]
+5 -&gt; 6
+6 -&gt; 12
+12 -&gt; 12
+</pre>
+
+<p>Notice that the log of value changes are tracked and output in the form
+
+</p><pre>old_value -&gt; new_value
+</pre>
+
+<!--
+<p>Moreover, operations which do not change the value are not logged.
+-->
+
+<h3>Task</h3>
+<p>
+Your task is to write a <tt>Logger</tt> class that provides the operations
+<tt>of</tt>,<!--
+<tt>equals</tt>,
+<tt>printlog</tt>,-->
+<tt>map</tt>,
+<tt>flatMap</tt> and
+<tt>test</tt>.
+
+</p><p>You will also write several applications using the <tt>Logger</tt> as solutions to classic computation problems.  This would allow us to look at the values changes when solving each problem.
+
+</p><p>This task is divided into several levels. 
+Read through all the levels to see how the different levels are related.
+
+<!--
+<p>Remember to:
+
+<ul>
+<li>always compile your program files first before using jshell to test your program
+<li>use checkstyle and javadoc comments to enhance code readability and facilitating code review
+</ul>
+-->
+
+</p><p>
+</p><h3>Level 1</h3>
+
+<p>Start by writing a static method <tt>of</tt> within the class <tt>Logger</tt> that wraps a value within it.
+Include the <tt>toString()</tt> method to output the <tt>Logger</tt> containing the value.
+
+<!--, as well as the log of value changes.-->
+
+<!--
+, and the <tt>get</tt> method to perform the evaluation and return the value contained within the <tt>Logger</tt>.
+<p>Note that <tt>Logger</tt> is lazily evaluated.
+This can be observed when we pass in a method <tt>foo</tt> to the <tt>of</tt> method as shown in the sample run below.
+The <tt>foo</tt> method does not get evaluated until the <tt>get</tt> method is called.
+-->
+
+</p><p>To ensure that a valid <tt>Logger</tt> is created, the <tt>of</tt> method should throw an <tt>IllegalArgumentException</tt> when the argument is <tt>null</tt> or another <tt>Logger</tt>.
+
+</p><pre>jshell&gt; Logger.&lt;Integer&gt;of(5)
+$.. ==&gt; Logger[5]
+
+jshell&gt; Logger&lt;String&gt; hello = Logger.&lt;String&gt;of("Hello")
+hello ==&gt; Logger[Hello]
+
+jshell&gt; try { Logger.&lt;Object&gt;of(hello); }
+   ...&gt; catch (Exception e) { System.out.println(e); }
+java.lang.IllegalArgumentException: already a Logger
+
+jshell&gt; try { Logger.&lt;Integer&gt;of(null); } 
+   ...&gt; catch (Exception e) { System.out.println(e); }
+java.lang.IllegalArgumentException: argument cannot be null
+</pre>
+
+<!--
+<p>
+Check the format correctness of the output by running the following on the command line:
+<pre>
+$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order < test2.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>
+$ checkstyle *.java
+</pre>
+-->
+
+<h3>Level 2</h3>
+
+<!--
+<p>Each logger wraps around a value, and everytime <tt>map</tt> or <tt>flatMap</tt> is called, a new <tt>Logger</tt> object is created.
+<p>A <tt>Logger</tt> is also lazily evaluated, i.e. the <tt>of</tt> and <tt>map</tt> methods above do not evaluate until a <tt>get</tt> method is invoked.
+-->
+
+<p>Include a <tt>map</tt> method that takes in a function <tt>Function&lt;? super T, ? extends U&gt;</tt>, applies it on the value, and wraps the result in another <tt>Logger</tt>.
+Modify the <tt>toString()</tt> method to include the output of the value changes over all <tt>map</tt> operations.
+
+<!--
+The <tt>map</tt> method is lazily evaluated and does not evaluate and log the changes in value until a <tt>get</tt> method is invoked.
+-->
+
+</p><pre>jshell&gt; Logger&lt;Integer&gt; five = Logger.&lt;Integer&gt;of(5)
+five ==&gt; Logger[5]
+
+jshell&gt; five.map(x -&gt; x + 1)
+$.. ==&gt; Logger[6]
+5 -&gt; 6
+
+jshell&gt; five
+five ==&gt; Logger[5]
+
+jshell&gt; five.map(x -&gt; x + 1).map(x -&gt; x - 1)
+$.. ==&gt; Logger[5]
+5 -&gt; 6
+6 -&gt; 5
+
+jshell&gt; five.map(x -&gt; x + 1).map(x -&gt; x - 1).map(x -&gt; x)
+$.. ==&gt; Logger[5]
+5 -&gt; 6
+6 -&gt; 5
+5 -&gt; 5
+
+jshell&gt; Logger.&lt;String&gt;of("hello").map(x -&gt; x.length())
+$.. ==&gt; Logger[5]
+hello -&gt; 5
+
+jshell&gt; Logger.&lt;String&gt;of("hello").map(x -&gt; x.length()).map(x -&gt; x * 2)
+$.. ==&gt; Logger[10]
+hello -&gt; 5
+5 -&gt; 10
+
+jshell&gt; Function&lt;Object, Integer&gt; f = x -&gt; x.hashCode()
+f ==&gt; $Lambda$26/0x00000008000bbc40@754ba872
+
+jshell&gt; Logger.&lt;String&gt;of("hello").map(f)
+$.. ==&gt; Logger[99162322]
+hello -&gt; 99162322
+
+jshell&gt; Function&lt;String, Integer&gt; g = x -&gt; x.length();
+g ==&gt; $Lambda$27/0x00000008000bb040@464bee09
+
+jshell&gt; Logger&lt;Number&gt; lognum = Logger.&lt;String&gt;of("hello").map(g)
+lognum ==&gt; Logger[5]
+hello -&gt; 5
+</pre>
+
+<!--
+<p>
+Check the format correctness of the output by running the following on the command line:
+<pre>
+$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order < test3.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>
+$ checkstyle *.java
+</pre>
+-->
+
+<h3>Level 3</h3>
+
+<p>Write the <tt>flatMap</tt> method that takes a function <tt>Function&lt;? super T, ? extends Logger&lt;? extends U&gt;&gt;</tt>, applies it on the value and wraps the result in another <tt>Logger</tt>.
+In particular, note the sequence of value changes being output.
+
+</p><pre>jshell&gt; Logger&lt;Integer&gt; five = Logger.&lt;Integer&gt;of(5)
+five ==&gt; Logger[5]
+
+jshell&gt; five.flatMap(x -&gt; Logger.of(x + 1))
+$.. ==&gt; Logger[6]
+
+jshell&gt; five.map(x -&gt; x + 2).map(x -&gt; x * 10)
+$.. ==&gt; Logger[70]
+5 -&gt; 7
+7 -&gt; 70
+
+jshell&gt; five.flatMap(x -&gt; Logger.of(x).map(y -&gt; y + 2)).
+   ...&gt;     flatMap(y -&gt; Logger.of(y).map(z -&gt; z * 10))
+$.. ==&gt; Logger[70]
+5 -&gt; 7
+7 -&gt; 70
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).
+   ...&gt;     flatMap(x -&gt; Logger.of(x).
+   ...&gt;         map(y -&gt; y + 2).
+   ...&gt;         flatMap(y -&gt; Logger.of(y).map(z -&gt; z * 10)))
+$.. ==&gt; Logger[70]
+5 -&gt; 7
+7 -&gt; 70
+
+jshell&gt; Function&lt;Object, Logger&lt;Integer&gt;&gt; f = x -&gt; Logger.&lt;Object&gt;of(x).map(y -&gt; y.hashCode())
+f ==&gt; $Lambda$29/0x00000008000ca040@4cf777e8
+
+jshell&gt; Logger.of("hello").flatMap(f)
+$.. ==&gt; Logger[99162322]
+hello -&gt; 99162322
+
+jshell&gt; Function&lt;String, Logger&lt;Integer&gt;&gt; g = x -&gt; Logger.&lt;String&gt;of(x).map(y -&gt; y.length())
+g ==&gt; $Lambda$31/0x00000008000ca840@1ce92674
+
+jshell&gt; Logger&lt;Number&gt; lognum = Logger.&lt;String&gt;of("hello").flatMap(g)
+lognum ==&gt; Logger[5]
+hello -&gt; 5
+</pre>
+<!--
+<p>
+Check the format correctness of the output by running the following on the command line:
+<pre>
+$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order < test4.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>
+$ checkstyle *.java
+</pre>
+-->
+
+<h3>Level 4</h3>
+
+<p>Include an <tt>equals(Object)</tt> method that returns true if the argument <tt>Logger</tt> object is the same as this <tt>Logger</tt>, or false otherwise. 
+Two loggers are equal if and only if both the wrapped value as well as the logs are the same.
+
+</p><pre>jshell&gt; Logger&lt;Integer&gt; five = Logger.&lt;Integer&gt;of(5)
+five ==&gt; Logger[5]
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).equals(five)
+$.. ==&gt; true
+
+jshell&gt; Logger.&lt;Integer&gt;of(5).map(x -&gt; x).equals(five)
+$.. ==&gt; false
+
+jshell&gt; five.equals(five)
+$.. ==&gt; true
+
+jshell&gt; five.equals(5)
+$.. ==&gt; false
+
+jshell&gt; Function&lt;Integer,Logger&lt;Integer&gt;&gt; f = x -&gt; Logger.of(x).map(y -&gt; y + 2);
+f ==&gt; $Lambda$18/0x00000008000bec40@57baeedf
+
+jshell&gt; Function&lt;Integer,Logger&lt;Integer&gt;&gt; g = x -&gt; Logger.of(x).map(y -&gt; y * 2);
+g ==&gt; $Lambda$19/0x00000008000bd840@5442a311
+
+jshell&gt; Logger.of(5).flatMap(f).equals(f.apply(5)) // left identity
+$.. ==&gt; true
+
+jshell&gt; five.flatMap(x -&gt; Logger.of(x)).equals(five) // right identity
+$.. ==&gt; true
+
+jshell&gt; five.flatMap(f).flatMap(g).equals(
+   ...&gt;     five.flatMap(x -&gt; f.apply(x).flatMap(g)))
+$.. ==&gt; true
+
+jshell&gt; five.flatMap(f).flatMap(g).equals(
+   ...&gt;     five.flatMap(x -&gt; f.apply(x).flatMap(g))) // associativity
+$.. ==&gt; true
+</pre>
+
+<h3>Level 5</h3>
+
+<p>Let's write some applications using JShell that makes use of our <tt>Logger</tt> so as to observe how the values changes over the course computation.
+Save your methods in the file <tt>level5.jsh</tt>.
+
+</p><p>Define an <tt>add(Logger&lt;Integer&gt; a, int b)</tt> method that returns the result of <tt>a</tt> added to <tt>b</tt> wrapped in a <tt>Logger</tt> that preserves the log of all operations of <tt>a</tt>, as well as the addition to <tt>b</tt>.
+
+
+</p><pre>jshell&gt; add(Logger.&lt;Integer&gt;of(5), 6)
+$.. ==&gt; Logger[11]
+5 -&gt; 11
+
+jshell&gt; add(Logger.&lt;Integer&gt;of(5).map(x -&gt; x * 2), 6)
+$.. ==&gt; Logger[16]
+5 -&gt; 10
+10 -&gt; 16
+</pre>
+
+<p>The sum of non-negative integers from <tt>0</tt> to <tt>n</tt> (inclusive of both) can be computed <i>recursively</i> using 
+
+</p><pre>int sum(int n) {
+    if (n == 0) {
+        return 0;
+    } else {
+        return sum(n - 1) + n;
+    }
+}
+</pre>
+
+Redefine the above method such that it returns the result wrapped in a <tt>Logger<integer></integer></tt>.
+You may find the above <tt>add</tt> method useful.
+
+<pre>jshell&gt; sum(0)
+$.. ==&gt; Logger[0]
+
+jshell&gt; sum(5)
+$.. ==&gt; Logger[15]
+0 -&gt; 1
+1 -&gt; 3
+3 -&gt; 6
+6 -&gt; 10
+10 -&gt; 15
+</pre>
+
+<p>The <i>Collatz conjecture</i> (or the <tt>3n+1</tt> <i>Conjecture</i>) is a process of generating a sequence of numbers starting with a positive integer that <i>seems to always</i> end with <tt>1</tt>.
+
+</p><pre>int f(int n) {
+   if (n == 1) {
+      return 1;
+   } else if (n % 2 == 0) {
+      return f(n / 2);
+   } else {
+      return f(3 * n + 1);
+   } 
+}
+</pre>
+
+<p>Write the function <tt>f</tt> that takes in <tt>n</tt> and returns a <tt>Logger&lt;Integer&gt;</tt> that wraps around the final value, with a log of the value changes over time.
+You should include a <tt>test</tt> method in the <tt>Logger</tt> 
+
+
+</p><pre>Logger&lt;T&gt; test(Predicate&lt;? super T&gt; pred, Logger&lt;T&gt; trueLogger, Logger&lt;T&gt; falseLogger)
+</pre>
+
+that takes in a <tt>Predicate</tt> and two loggers, and returns the former or latter <tt>Logger</tt> depending on whether <tt>pred</tt> is evaluated to <tt>true</tt> or <tt>false</tt>.
+
+<pre>jshell&gt; Logger&lt;Integer&gt; five = Logger.&lt;Integer&gt;of(5)
+five ==&gt; Logger[5]
+
+jshell&gt; five.test(x -&gt; x == 5, five.map(x -&gt; x + 1), five.map(x -&gt; x - 1))
+$.. ==&gt; Logger[6]
+5 -&gt; 6
+
+jshell&gt; five.map(x -&gt; x + 1).test(x -&gt; x == 5, five.map(x -&gt; x + 1), five.map(x -&gt; x - 1))
+$.. ==&gt; Logger[4]
+5 -&gt; 4
+
+jshell&gt; five.map(x -&gt; x + 1).
+   ...&gt;     test(x -&gt; x == 5, 
+   ...&gt;         five.map(x -&gt; { System.out.println("add 1"); return x + 1; }),
+   ...&gt;         five.map(x -&gt; { System.out.println("sub 1"); return x - 1; }))
+sub 1
+$.. ==&gt; Logger[4]
+5 -&gt; 4
+
+jshell&gt; f(16)
+$.. ==&gt; Logger[1]
+16 -&gt; 8
+8 -&gt; 4
+4 -&gt; 2
+2 -&gt; 1
+
+jshell&gt; f(10)
+$.. ==&gt; Logger[1]
+10 -&gt; 5
+5 -&gt; 15
+15 -&gt; 16
+16 -&gt; 8
+8 -&gt; 4
+4 -&gt; 2
+2 -&gt; 1
+</pre>
+<!--
+<p>
+Check the format correctness of the output by running the following on the command line:
+<pre>
+$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order < test5.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>
+$ checkstyle *.java
+</pre>
+
+<p>
+<h3>Level 2</h3>
+<h3>Creating a valid logger</h3>
+
+<p>We need to prevent the <tt>.of</tt> method from being called repeatedly, e.g. <li><tt>Logger.of(() -&gt; 5).of(() -&gt; 7)</tt>.
+
+<li><tt>Logger.of(() -&gt; Logger.of(() -&gt; 5))</tt>
+
+<p>To prevent chaining, we can make the <tt>Logger</tt> an interface with the static method <tt>of</tt>, and let <tt>LoggerImpl</tt> be the concrete class that implements the functionalities of logging.
+<p>A skeleton <tt>Logger</tt> interface is given to you:
+
+<pre>
+import java.util.function.Supplier;
+
+interface Logger<T> {
+    static <T> Logger<T> of(Supplier<T> thing) {
+        return new LoggerImpl<T>(thing);
+    }
+
+    T get();
+}
+</pre>
+
+<p>Notice that the static (generic) method <tt>of</tt> that takes in a <tt>Supplier<tt> is defined within the <tt>Logger</tt> interface.
+This method will generate and return a <tt>LoggerImpl</tt> object which prevents the <tt>of</tt> method from being called again, since a static method of an interface cannot be called through it's implementation as shown below.  
+
+<pre>
+jshell&gt; interface A {
+   ...&gt; static A foo() { return new B(); } }
+|  created interface A, however, its methods cannot be invoked until class B is declared
+
+jshell&gt; class B implements A { } // A and B is now cyclic dependent
+|  created class B
+
+jshell&gt; A.foo()
+$.. ==&gt; B@53b32d7
+
+jshell&gt; new B().foo()
+|  Error:
+|  cannot find symbol
+|    symbol:   method foo()
+|  new B().foo()
+|  ^---------^
+
+jshell&gt; A.foo().foo()
+|  Error:
+|  illegal static interface method call
+|    the receiver expression should be replaced with the type qualifier 'A'
+|  A.foo().foo()
+|  ^-----------^
+</pre>
+
+Also you will notice that we restrict the chaining of the <tt>.of</tt> method calls at the expense of introducing a cyclic dependency between <tt>Logger</tt> and <tt>LoggerImpl</tt>... <i>that is, unless someone comes up with a better idea...</i>
+
+-->

@@ -1,0 +1,146 @@
+<html>
+<h3>Snatch!</h3>
+<a href="https://www.comp.nus.edu.sg/~e0550376/CS2030/">Back to homepage</a>
+<h4>Topic Coverage</h4>
+<ul>
+<li>Abstract Classes / Interfaces </li>
+<li>Inheritance vs Composition </li>
+<li>Design Principles </li>
+<li><a href="https://www.comp.nus.edu.sg/~cs2030/style/" target="_blank">CS2030 Java Style Guide</a></li>
+<!--
+<li><a href="https://www.comp.nus.edu.sg/~cs2030/javadoc/" target="_blank">CS2030 Java Documentation</a></li>
+-->
+</ul>
+<h4>Problem Description</h4>
+<p><em>Snatch</em> is yet another transport service provider trying to vie for a place in the public transport arena.</p>
+<p><em>Snatch</em> provides three types of ride services:</p>
+<ul>
+<li><tt>JustRide</tt> 
+<ul>
+<li>Fare is based on the distance <tt>@ 22</tt> cents per km </li>
+<li>Fare is the same regardless of the number of passengers (pax) </li>
+<li>There is no booking fee. </li>
+<li>A surcharge of 500 cents if a ride request is issued between the peak hour of <tt>600</tt> hrs to <tt>900</tt> hrs, both inclusive </li>
+</ul>
+</li>
+<li><tt>TakeACab</tt> 
+<ul>
+<li>Fare is based on the distance <tt>@ 33</tt> cents per km, but there is a booking fee of 200 cents </li>
+<li>Fare is the same regardless of the number of passengers (pax) </li>
+<li>No peak hour surcharge </li>
+</ul>
+</li>
+<li><tt>ShareARide</tt> 
+<ul>
+<li>Fare is based on the distance <tt>@ 50</tt> cents per km </li>
+<li>Fare is divided equally among the number of passengers </li>
+<li>There is no booking fee. </li>
+<li>Any fractional part of the fare is absorbed by your friendly driver </li>
+<li>A surcharge of 500 cents if a ride request is issued between <tt>600</tt> hrs to <tt>900</tt> hrs, both inclusive </li>
+</ul>
+</li>
+</ul>
+<p>In addition, there are two types of drivers under <em>Snatch</em>.  Each can provide a subset of the services above.</p>
+<ul>
+<li><tt>NormalCab</tt> drivers provide <tt>JustRide</tt> and <tt>TakeACab</tt> services. </li>
+<li><tt>PrivateCar</tt> drivers provide <tt>JustRide</tt> and <tt>ShareARide</tt> services. </li>
+</ul>
+<p>A customer can issue a <em>Snatch</em> ride request, specified by the distance of the ride,  the number of passengers,  and the time of the request.</p>
+<h4>Task</h4>
+<p>You shall be given a request, followed by a list of <tt>NormalCab</tt> or <tt>PrivateCar</tt> drivers together with their corresponding waiting times. A booking is a pairing of a driver with the request. The task is to find the best  <!-- a list of possible --> booking with the lowest fare by matching the available drivers based on the services they provide to the given request.  Break ties among the same lowest fares by selecting the booking with the smaller waiting time.</p>
+<p><strong>You may assume that no two bookings have the same fare and the same waiting time.</strong></p>
+<p>This task is divided into several levels. Read through all the levels  to see how the different levels are related.</p>
+<p>Remember to:</p>
+<ul>
+<li>always compile your program files first before using <tt>jshell</tt> to test your program </li>
+<li>use <tt>checkstyle</tt> and <tt>javadoc</tt> comments to enhance code readability and facilitating code review </li>
+</ul>
+<h4>Level 1</h4>
+<p>Define a <tt>Request</tt> class to handle a request comprising the distance, number of passengers, and time.</p>
+<pre>$ javac your_java_files
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test1.jsh
+jshell&gt; new Request(20, 3, 1000)
+$.. ==&gt; 20km for 3pax @ 1000hrs
+jshell&gt; new Request(10, 1, 900)
+$.. ==&gt; 10km for 1pax @ 900hrs
+jshell&gt; /exit
+</pre>
+<h4>Level 2</h4>
+<p>Now include the <tt>JustRide</tt> and <tt>TakeACab</tt> services.  Note that every service needs to implement the <tt>computeFare</tt> method that returns the fare in cents.</p>
+<pre>$ javac your_java_files
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test2.jsh
+jshell&gt; new JustRide()
+$.. ==&gt; JustRide
+jshell&gt; new JustRide().computeFare(new Request(20, 3, 1000))
+$.. ==&gt; 440
+jshell&gt; new JustRide().computeFare(new Request(10, 1, 900))
+$.. ==&gt; 720
+jshell&gt; new TakeACab()
+$.. ==&gt; TakeACab
+jshell&gt; new TakeACab().computeFare(new Request(20, 3, 1000))
+$.. ==&gt; 860
+jshell&gt; new TakeACab().computeFare(new Request(10, 1, 900))
+$.. ==&gt; 530
+jshell&gt; /exit
+</pre>
+<h4>Level 3</h4>
+<p>Now, include a <tt>NormalCab</tt> driver who is identified by its license plate number (a string) and the passenger waiting time in minutes.</p>
+<p>Then, add a <tt>Booking</tt> class that takes in a driver and a request.  From the services that a driver provides, the best service with the lowest fare is selected.</p>
+<p>Two bookings may be compared using their computed fares; if both fares are the same, prefer the one with the shorter waiting time.</p>
+<pre>$ javac your_java_files
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test3.jsh
+jshell&gt; new NormalCab("SHA1234", 5)
+$.. ==&gt; SHA1234 (5 mins away) NormalCab
+jshell&gt; new Booking(new NormalCab("SHA1234", 5), new Request(20, 3, 1000))
+$.. ==&gt; $4.40 using SHA1234 (5 mins away) NormalCab (JustRide)
+jshell&gt; new NormalCab("SHA2345", 10)
+$.. ==&gt; SHA2345 (10 mins away) NormalCab
+jshell&gt; new Booking(new NormalCab("SHA2345", 10), new Request(10, 1, 900))
+$.. ==&gt; $5.30 using SHA2345 (10 mins away) NormalCab (TakeACab)
+jshell&gt; Booking b1 = new Booking(new NormalCab("SHA2345", 10), new Request(10, 1, 900))
+jshell&gt; Booking b2 = new Booking(new NormalCab("SHA2345", 10), new Request(10, 1, 900))
+jshell&gt; b1.compareTo(b2) == 0
+$.. ==&gt; true
+jshell&gt; Booking b3 = new Booking(new NormalCab("SHA1234", 5), new Request(10, 1, 900))
+jshell&gt; Booking b4 = new Booking(new NormalCab("SHA2345", 10), new Request(10, 1, 900))
+jshell&gt; b3.compareTo(b4) &lt; 0
+$.. ==&gt; true
+jshell&gt; /exit
+</pre>
+<h4>Level 4</h4>
+<p>Now include the <tt>ShareARide</tt> service and <tt>PrivateCar</tt> driver.</p>
+<p>You should aim to make the <tt>Booking</tt> class general such that it does not need to check for any invalid pairing, say between <tt>PrivateCar</tt> driver and <tt>TakeACab</tt> service. If you have designed your program appropriately, then extending your program with additional drivers and services would not require any modification to existing classes.  <!-- Note that you can make the <tt>Booking</tt> class general and therefore need not check for the invalid pairing between  <tt>PrivateCar</tt> driver and <tt>TakeACab</tt> service , as well as between <tt>NormalCab</tt> driver and <tt>ShareARide</tt> service.  You can leave the logic of ensuring valid pairing to Level 5.    -->  <!--
+<p>The following is a sample run of the program.  User input is <u>underlined</u>.    Ensure that the last line of output is followed by a newline character. --></p>
+<pre>$ javac your_java_files
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test4.jsh
+jshell&gt; new ShareARide()
+$.. ==&gt; ShareARide
+jshell&gt; new PrivateCar("SMA7890", 5)
+$.. ==&gt; SMA7890 (5 mins away) PrivateCar
+jshell&gt; new Booking(new PrivateCar("SMA7890", 5), new Request(20, 3, 1000))
+$.. ==&gt; $3.33 using SMA7890 (5 mins away) PrivateCar (ShareARide)
+jshell&gt; new PrivateCar("SLA5678", 10)
+$.. ==&gt; SLA5678 (10 mins away) PrivateCar
+jshell&gt; new Booking(new PrivateCar("SLA5678", 10), new Request(10, 1, 900))
+$.. ==&gt; $7.20 using SLA5678 (10 mins away) PrivateCar (JustRide)
+jshell&gt; Booking b1 = new Booking(new PrivateCar("SMA7890", 5), new Request(10, 1, 900))
+jshell&gt; Booking b2 = new Booking(new PrivateCar("SLA5678", 10), new Request(10, 1, 900))
+jshell&gt; b1.compareTo(b2) &lt; 0
+$.. ==&gt; true
+jshell&gt; /exit
+</pre>
+<!-- In practice, we should make the <tt>Booking</tt> constructor private to prevent a caller from passing in an invalid pair of driver and service, but that would make it harder for us to test your code for the purpose of the assessment. -->
+<h4>Level 5</h4>
+<p>Now complete the task by defining the <tt>findBestBooking</tt> method to return the best booking given a request, and an array of drivers with their waiting times.  Save the method in the file <tt>level5.jsh</tt>.</p>
+<p><strong>Assume that no two bookings have the same fare and the same waiting time.</strong></p>
+<pre>$ javac your_java_files
+$ jshell -q your_java_files_in_bottom-up_dependency_order level5.jsh &lt; test5.jsh
+jshell&gt; findBestBooking(new Request(20, 3, 1000), 
+   ...&gt; new Driver[]{new NormalCab("SHA1234", 5), new PrivateCar("SMA7890", 10)})
+$.. ==&gt; $3.33 using SMA7890 (10 mins away) PrivateCar (ShareARide)
+jshell&gt; findBestBooking(new Request(10, 1, 900), 
+   ...&gt; new Driver[]{new NormalCab("SHA1234", 5), new PrivateCar("SMA7890", 10)})
+$.. ==&gt; $5.30 using SHA1234 (5 mins away) NormalCab (TakeACab)
+jshell&gt; /exit
+</pre>
+</html>

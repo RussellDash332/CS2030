@@ -1,0 +1,6 @@
+Main.normalizedMean(Stream.<Integer>of(1, 2, 3, 4, 5))
+Main.normalizedMean(Stream.<Integer>of(1, 1))
+Main.normalizedMean(Stream.<Integer>of(1))
+Main.normalizedMean(Stream.<Integer>of())
+Main.normalizedMean(Stream.<Integer>of(4, 4))
+Main.normalizedMean(Stream.<Integer>of(1, 1, 2))

@@ -1,0 +1,21 @@
+12
+Jack   CS2040 Lab4    B
+Jack   CS2040 Lab6    C
+Jane   CS1010 Lab1    A
+Jane   CS2030 Lab1    A+
+Janice CS2040 Lab1    A+
+Janice CS2040 Lab4    A+
+Jim    CS1010 Lab9    A+
+Jim    CS2010 Lab1    C
+Jim    CS2010 Lab2    B
+Jim    CS2010 Lab8    A+
+Joel   CS2030 Lab3    C
+Joel   CS2030 Midterm A
+Jack   CS2040 Lab4
+Jack   CS2040 Lab6
+Janice CS2040 Lab1
+Janice CS2040 Lab4
+Joel   CS2030 Midterm
+Jason  CS1010 Lab1
+Jack   CS2040 Lab5
+Joel   CS2040 Lab3

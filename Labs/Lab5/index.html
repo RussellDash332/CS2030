@@ -1,0 +1,376 @@
+<html>
+<h3>Class Roster</h3>
+<a href="https://www.comp.nus.edu.sg/~e0550376/CS2030/">Back to homepage</a>
+<h4>Topic Coverage</h4>
+<ul>
+<li>Inheritance</li>
+<li>Overriding</li>
+<li>Interface</li>
+<li>Generic class</li>
+<li>HashMap</li>
+</ul>
+<h4>Problem Description</h4>
+<h4>Task</h4>
+<p>
+Your task is to read in a roster of students, the modules they take, the assessments they have completed, and the grade for each assessment.   Then, given a query consisting of a triplet: a student, 
+a module, and an assessment, retrieve the corresponding grade.
+</p>
+<p>
+For instance, if the input is:
+</p><pre>Steve CS1010 Lab3 A
+Steve CS1231 Test A+
+Bruce CS2030 Lab1 C
+</pre>
+and the query is <tt>Steve CS1231 Test</tt>, the program should print <tt>A+</tt>.
+<p></p>
+<p>
+In our scenario, a roster has zero or more students; a student takes zero or more modules, a module has zero or more assessments, and each assessment has exactly one grade.   Each of these entities can be uniquely identified by a string.
+
+</p><p>This lab also involves using the <tt>HashMap</tt> class from Java Collections.
+<!-- and more functional interfaces from Java: <tt>Consumer</tt>, <tt>Supplier</tt>, and <tt>Runnable</tt>.-->
+
+</p><p>
+</p><h4>Preamble</h4>
+<h4><tt>Map</tt></h4>
+<p>
+<tt>Map&lt;K,V&gt;</tt> is a generic interface from the Java Collection Framework, the implementation of which is useful for storing a collection of items and retrieving an item.   It maintains a map (aka dictionary) between keys (of type <tt>K</tt>) and values (of type <tt>V</tt>).  The two core methods are (i) <tt>put</tt>, which stores a (key, value) pair into the map, and (ii) <tt>get</tt>, which returns the value associated with a given key if the key is found or returns <tt>null</tt> otherwise.
+</p>
+<p>
+The following examples show how the <tt>Map&lt;K,V&gt;</tt> interface and its implementation <tt>HashMap&lt;K,V&gt;</tt> can be used.
+
+</p><pre><b>jshell&gt; Map&lt;String,Integer&gt; map = new HashMap&lt;String,Integer&gt;();</b>
+<b>jshell&gt; map.put("one", 1);</b>
+$.. ==&gt; null
+<b>jshell&gt; map.put("two", 2);</b>
+$.. ==&gt; null
+<b>jshell&gt; map.put("three", 3);</b>
+$.. ==&gt; null
+<b>jshell&gt; map.get("one")</b>
+$.. ==&gt; 1
+<b>jshell&gt; map.get("four")</b>
+$.. ==&gt; null
+<b>jshell&gt; map.entrySet()</b>
+$.. ==&gt; [one=1, two=2, three=3]
+<b>jshell&gt; for (Map.Entry&lt;String,Integer&gt; e: map.entrySet()) {</b>
+<b>   ...&gt;  System.out.println(e.getKey() + ":" + e.getValue());</b>
+<b>   ...&gt; }</b>
+one:1
+two:2
+three:3
+</pre>
+
+<h4>Level 1</h4>
+<h4><tt>Assessment</tt> class and <tt>Keyable</tt> interface</h4>
+<p>
+We shall start by writing the <tt>Assessment</tt> class that implements the following <tt>Keyable</tt> interface.
+
+</p><pre>interface Keyable {
+    String getKey();
+}
+</pre>
+
+<p>Include a <tt>getGrade</tt> method that returns the grade of an assessment.
+
+</p><pre><b>jshell&gt; new Assessment("Lab1", "B")</b>
+$.. ==&gt; {Lab1: B}
+<b>jshell&gt; new Assessment("Lab1", "B").getGrade()</b>
+$.. ==&gt; "B"
+<b>jshell&gt; new Assessment("Lab1", "B").getKey()</b>
+$.. ==&gt; "Lab1"
+<b>jshell&gt; /exit</b>
+</pre>
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test1.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>$ checkstyle *.java
+</pre>
+
+<h4>Level 2</h4>
+<h4><tt>Module</tt> class</h4>
+
+<p>Write the <tt>Module</tt> class to store (via the <tt>put</tt> method) the assessments of a module in a map for easy retrieval as part of answering queries.
+A module can have zero or more assessments, with each assessment having a title as a key -- a unique identifier.
+
+</p><pre><b>jshell&gt; new Module("CS2040")</b>
+$.. ==&gt; CS2040: {}
+<b>jshell&gt; new Module("CS2040").getKey();</b>
+$.. ==&gt; "CS2040"
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B"))</b>
+$.. ==&gt; CS2040: {{Lab1: B}}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).put(new Assessment("Lab2","A+"))</b>
+$.. ==&gt; CS2040: {{Lab1: B}, {Lab2: A+}}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).put(new Assessment("Lab2","A+")).get("Lab1")</b>
+$.. ==&gt; {Lab1: B}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).put(new Assessment("Lab2","A+")).get("Lab2")</b>
+$.. ==&gt; {Lab2: A+}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).put(new Assessment("Lab2","A+")).get("Lab3")</b>
+$.. ==&gt; null
+<b>jshell&gt; /exit</b>
+</pre>
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test2.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>$ checkstyle *.java
+</pre>
+
+<h4>Level 3</h4>
+<h4><tt>Student</tt> class</h4>
+
+<p>Write a <tt>Student</tt> class that stores the modules he/she reads in a map via the <tt>put</tt> method.
+A student can read zero or more modules, with each module having a unique module code as its key.
+
+</p><pre><b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1")</b>
+$.. ==&gt; {Lab1: B}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").getGrade()</b>
+$.. ==&gt; "B"
+<b>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B")))</b>
+$.. ==&gt; Tony: {CS2040: {{Lab1: B}}}
+<b>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040")</b>
+$.. ==&gt; CS2040: {{Lab1: B}}
+<b>jshell&gt; Student natasha = new Student("Natasha");</b>
+<b>jshell&gt; natasha.put(new Module("CS2040").put(new Assessment("Lab1", "B")))</b>
+$.. ==&gt; Natasha: {CS2040: {{Lab1: B}}}
+<b>jshell&gt; natasha.put(new Module("CS2030").put(new Assessment("PE", "A+")).put(new Assessment("Lab2", "C")))</b>
+$.. ==&gt; Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}
+<b>jshell&gt; Student tony = new Student("Tony");</b>
+<b>jshell&gt; tony.put(new Module("CS1231").put(new Assessment("Test", "A-")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}}
+<b>jshell&gt; tony.put(new Module("CS2100").put(new Assessment("Test", "B")).put(new Assessment("Lab1", "F")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}
+<b>jshell&gt; /exit</b>
+</pre>
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test3.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>$ checkstyle *.java
+</pre>
+
+<h4>Level 4</h4>
+<h4>Generic class <tt>KeyableMap</tt></h4>
+
+<p>You will notice that the implementations of the <tt>Student</tt> and <tt>Module</tt> classes are very similar.
+Hence, by applying the <i>abstraction principle</i>, write a generic class <tt>KeyableMap</tt> to reduce the duplication.
+
+</p><p><i>Hint:</i>
+<tt>KeyableMap&lt;V&gt;</tt> is a generic class that wraps around a <tt>String</tt> key (i.e. implements <tt>Keyable</tt>) and a <tt>Map&lt;String,V&gt;</tt>.  <tt>KeyableMap</tt> models an entity that contains a map, but is also itself contained in another container (e.g. a student contains a map of modules but could be contained in a roster).  
+The parameter type <tt>V</tt> is the type of the value of items stored in the map; <tt>V</tt> must be a subtype of <tt>Keyable</tt>.
+
+</p><p>The class <tt>KeyableMap</tt> is a mutable class -- we made this decision since the <tt>Map</tt> implementation in Java Collection Framework is mutable.  <tt>KeyableMap</tt> provides two core methods:
+</p><ul>
+	<li><tt>get(String key)</tt> which returns the item with the given <tt>key</tt>;</li>
+	<li><tt>put(V item)</tt> which adds the key-value pair (<tt>item.getKey()</tt>,<tt>item</tt>) into the map.
+The <tt>put</tt> method returns a <tt>KeyableMap</tt>.  To avoid type mismatch when chaining <tt>put</tt> method calls together, each sub-class of <tt>KeyableMap</tt> should override the <tt>put</tt> method from <tt>KeyableMap</tt> and change the return type to the corresponding sub-classes.  
+E.g., <tt>Student</tt> should override <tt>put</tt> to return a <tt>Student</tt> through a type-cast (which is guaranteed to be safe).
+
+Moreover, how do we restrict the classes bound to type <tt>V</tt> to be able to invoke the <tt>getKey</tt> method?  The trick is to define the type parameter of <tt>Keyable</tt> as follows:
+
+<pre>class KeyableMap&lt;V extends Keyable&gt; implements Keyable {
+    ...
+}
+</pre>
+
+<!--
+<p>(Note: An alternative is to make <tt>put</tt> a generic method with a bounded type parameter in <tt>KeyableMap</tt> and relies on an unchecked type cast.  But we let the more advanced students explore this option on their own).</p>
+-->
+</li></ul>
+
+
+<!--
+<p>
+The return type of <tt>get</tt> should be <tt>V</tt>.  The return type of <tt>put</tt> is a bit tricky.  To allow method chaining, like we always do in CS2030, we require <tt>put</tt> to return the type of the caller.  In <tt>KeyableMap</tt> the return type is just <tt>KeyableMap&lt;..&gt;</tt> (type parameters omitted).  
+<p>
+-->
+
+<pre><b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1")</b>
+$.. ==&gt; {Lab1: B}
+<b>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").getGrade()</b>
+$.. ==&gt; "B"
+<b>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B")))</b>
+$.. ==&gt; Tony: {CS2040: {{Lab1: B}}}
+<b>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040")</b>
+$.. ==&gt; CS2040: {{Lab1: B}}
+<b>jshell&gt; Student natasha = new Student("Natasha");</b>
+<b>jshell&gt; natasha.put(new Module("CS2040").put(new Assessment("Lab1", "B")))</b>
+$.. ==&gt; Natasha: {CS2040: {{Lab1: B}}}
+<b>jshell&gt; natasha.put(new Module("CS2030").put(new Assessment("PE", "A+")).put(new Assessment("Lab2", "C")))</b>
+$.. ==&gt; Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}
+<b>jshell&gt; Student tony = new Student("Tony");</b>
+<b>jshell&gt; tony.put(new Module("CS1231").put(new Assessment("Test", "A-")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}}
+<b>jshell&gt; tony.put(new Module("CS2100").put(new Assessment("Test", "B")).put(new Assessment("Lab1", "F")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}
+<b>jshell&gt; new Module("CS1231").put(new Assessment("Test", "A-")) instanceof KeyableMap</b>
+$.. ==&gt; true
+<b>jshell&gt; new Student("Tony").put(new Module("CS1231")) instanceof KeyableMap</b>
+$.. ==&gt; true
+<b>jshell&gt; /exit</b>
+</pre>
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test4.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>$ checkstyle *.java
+</pre>
+
+<h4>Level 5</h4>
+<h4><tt>Roster</tt> class</h4>
+
+<p>Now you are ready to create a roster.
+Define a <tt>Roster</tt> class that stores the students in a map via the <tt>put</tt> method.
+A roster can have zero or more students, with each student having a unique id as its key.
+Once again, notice the similarities between <tt>Roster</tt>, <tt>Student</tt> and <tt>Module</tt>.
+
+</p><p>
+Define a method called <tt>getGrade</tt> in <tt>Roster</tt> to answer the query from the user.  The method takes in three <tt>String</tt> parameters, corresponds to the student id, the module code, and the assessment title, and returns the corresponding grade.  
+
+</p><p>In cases where there are no such student, or the student does not read the given module, or the module does not have the corresponding assessment, then output <tt>No such record</tt> followed by details of the query.
+
+<!-- Here, you might find <tt>Optional::orElse</tt> useful. -->
+
+</p><p>
+</p><pre><b>jshell&gt; Student natasha = new Student("Natasha");</b>
+<b>jshell&gt; natasha.put(new Module("CS2040").put(new Assessment("Lab1", "B")))</b>
+$.. ==&gt; Natasha: {CS2040: {{Lab1: B}}}
+<b>jshell&gt; natasha.put(new Module("CS2030").put(new Assessment("PE", "A+")).put(new Assessment("Lab2", "C")))</b>
+$.. ==&gt; Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}
+<b>jshell&gt; Student tony = new Student("Tony");</b>
+<b>jshell&gt; tony.put(new Module("CS1231").put(new Assessment("Test", "A-")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}}
+<b>jshell&gt; tony.put(new Module("CS2100").put(new Assessment("Test", "B")).put(new Assessment("Lab1", "F")))</b>
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}
+<b>jshell&gt; Roster roster = new Roster("AY1920").put(natasha).put(tony)</b>
+<b>jshell&gt; roster</b>
+roster ==&gt; AY1920: {Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}, Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}}
+<b>jshell&gt; roster.get("Tony").get("CS1231").get("Test").getGrade()</b>
+$.. ==&gt; "A-"
+<b>jshell&gt; roster.get("Natasha").get("CS2040").get("Lab1").getGrade()</b>
+$.. ==&gt; "B"
+<b>jshell&gt; roster.get("Tony").get("CS1231").get("Exam")</b>
+$.. ==&gt; null
+<b>jshell&gt; roster.get("Steve")</b>
+$.. ==&gt; null
+<b>jshell&gt; roster.getGrade("Tony","CS1231","Test")</b>
+$.. ==&gt; "A-"
+<b>jshell&gt; roster.getGrade("Natasha","CS2040","Lab1")</b>
+$.. ==&gt; "B"
+<b>jshell&gt; roster.getGrade("Tony","CS1231","Exam");</b>
+$.. ==&gt; "No such record: Tony CS1231 Exam"
+<b>jshell&gt; roster.getGrade("Steve","CS1010","Lab1");</b>
+$.. ==&gt; "No such record: Steve CS1010 Lab1"
+<b>jshell&gt; new Roster("AY1920") instanceof Keyable</b>
+$.. ==&gt; true
+<b>jshell&gt; new Roster("AY1920").put(new Student("Tony")) instanceof Keyable</b>
+$.. ==&gt; true
+<b>jshell&gt; /exit</b>
+</pre>
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test5.jsh
+</pre>
+<p>
+Check your styling by issuing the following
+</p>
+<pre>$ checkstyle *.java
+</pre>
+
+<h4>Level 6</h4>
+<h4>The <tt>Main</tt> class</h4>
+
+<p>
+Now use the classes that you have built and write a <tt>Main</tt> class to solve the following:
+</p>
+<p>
+Read the following from the standard input:
+</p><ul>
+	<li>The first token read is an integer <i>N</i>, indicating the number of records to be read.</li>
+	<li>The subsequent inputs consist of <i>N</i> records, each record consists of four words, separated by one or more spaces.  The four words correspond to the student id, the module code, the assessment title, and the grade, respectively.
+	</li><li>The subsequent inputs consist of zero or more queries.  Each query consists of three words, separated by one or more spaces.  The three words correspond to the student id, the module code, and the assessment title.
+</li></ul>
+For each query, if a match in the input is found, print the corresponding grade to the standard output.  Otherwise, print "No Such Record:" followed by the three words given in the query, separated by exactly one space.
+<p></p>
+<p>
+See sample input and output below.  Inputs are underlined.
+</p>
+
+<pre>$ java Main
+<u>12
+Jack   CS2040 Lab4    B
+Jack   CS2040 Lab6    C
+Jane   CS1010 Lab1    A
+Jane   CS2030 Lab1    A+
+Janice CS2040 Lab1    A+
+Janice CS2040 Lab4    A+
+Jim    CS1010 Lab9    A+
+Jim    CS2010 Lab1    C
+Jim    CS2010 Lab2    B
+Jim    CS2010 Lab8    A+
+Joel   CS2030 Lab3    C
+Joel   CS2030 Midterm A
+Jack   CS2040 Lab4
+Jack   CS2040 Lab6
+Janice CS2040 Lab1
+Janice CS2040 Lab4
+Joel   CS2030 Midterm
+Jason  CS1010 Lab1
+Jack   CS2040 Lab5
+Joel   CS2040 Lab3
+</u>B
+C
+A+
+A+
+A
+No such record: Jason CS1010 Lab1
+No such record: Jack CS2040 Lab5
+No such record: Joel CS2040 Lab3
+</pre>
+
+<!--
+<p>Note:
+
+<ul>
+<li>You might find <tt>Optional::ifPresentOrElse</tt> useful.
+<li>On CodeCrunch, we will check for any use of <tt>null</tt> in your code. Any occurence of the string <tt>null</tt> would fail the CodeCrunch test. Thus, avoid variable or method names that contain the substring <tt>null</tt>.
+<li>Further, we will disallow the use of methods <tt>Optional::get</tt> and <tt>Optional::isPresent</tt>, as the former could cause <tt>NullPointerException</tt>, while the latter is essentially the same as checking for <tt>null</tt>.
+</ul>
+-->
+
+<p>
+Check the format correctness of the output by running the following on the command line:
+
+</p><pre>$ javac -Xlint:rawtypes *.java
+$ java Main &lt; test6.in
+</pre>
+
+<p>
+Check your styling by issuing the following
+
+</p><pre>$ checkstyle *.java
+</pre>
+<p></p>
+</html>
