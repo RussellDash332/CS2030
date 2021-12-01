@@ -1,0 +1,86 @@
+jshell> Rand.of(2030).map(x -> x / 2).get()
+$.. ==> 1015
+
+jshell> Rand.of(2030).map(x -> x / 2).next().get()
+$.. ==> 663867150
+
+jshell> Rand.of(2030).flatMap(x -> Rand.of(x).map(y -> y / 2)).get()
+$.. ==> 1015
+
+jshell> Rand.of(2030).flatMap(x -> Rand.of(x).map(y -> y / 2)).next().get()
+$.. ==> 663867150
+
+jshell> Rand.of(2030).map(x -> x / 2).next().
+   ...> stream().limit(5).forEach(x -> System.out.println(x))
+663867150
+751888562
+796813740
+111216228
+707242905
+
+jshell> Rand.of(2030).
+   ...> flatMap(x -> Rand.of(1010).map(y -> List.of(x,y))).
+   ...> stream().limit(5).forEach(x -> System.out.println(x))
+[2030, 1010]
+[1327734301, 1010]
+[1503777125, 1010]
+[1593627480, 1010]
+[222432456, 1010]
+
+jshell> Rand.of(2030).
+   ...> flatMap(x -> Rand.of(1010).map(y -> List.of(x,y)).next()).
+   ...> stream().limit(5).forEach(x -> System.out.println(x))
+[2030, 1530112223]
+[1327734301, 1530112223]
+[1503777125, 1530112223]
+[1593627480, 1530112223]
+[222432456, 1530112223]
+
+jshell> Rand.of(2030).
+   ...> flatMap(x -> Rand.of(x).map(y -> List.<Number>of(x, (y % 10) / 2.0))).
+   ...> stream().limit(5).forEach(x -> System.out.println(x))
+[2030, 0.0]
+[1327734301, 0.5]
+[1503777125, 2.5]
+[1593627480, 0.0]
+[222432456, 3.0]
+
+jshell> Stream<Integer> ints = Rand.of(2030).
+   ...>     flatMap(x -> {
+   ...>         System.out.println("ouch!");
+   ...>         return Rand.of(x); }).
+   ...>     stream().limit(5)
+ints ==> java.util.stream.SliceOps$1@5bcab519
+
+jshell> ints.forEach(x -> {})
+ouch!
+ouch!
+ouch!
+ouch!
+ouch!
+
+jshell> ints = Rand.of(2030).
+   ...>     flatMap(x -> {
+   ...>         System.out.println("ouch!");
+   ...>         return Rand.of(x).map(y -> {
+   ...>             System.out.println("aiyo!");
+   ...>             return y + 1; }); }).
+   ...>     stream().limit(5)
+ints ==> java.util.stream.SliceOps$1@1e397ed7
+
+jshell> ints.forEach(x -> System.out.println(x))
+ouch!
+aiyo!
+2031
+ouch!
+aiyo!
+1327734302
+ouch!
+aiyo!
+1503777126
+ouch!
+aiyo!
+1593627481
+ouch!
+aiyo!
+222432457
