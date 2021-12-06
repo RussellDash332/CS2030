@@ -9,4 +9,4 @@ This repository contains all the toy programs that I've made throughout the whol
 
 ## Some Useful Links
 - [The CS2030 Wiki](https://github.com/nus-cs2030/2122-s1/wiki)
-- [Lab HTML and Past PAs website](https://www.comp.nus.edu.sg/~e0550376/CS2030/)
+- [Lab HTML and Past PAs](https://github.com/RussellDash332/CS2030/files/7661831/CS2030-HTML.zip)
