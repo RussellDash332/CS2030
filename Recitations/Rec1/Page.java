@@ -1,6 +1,3 @@
-
-
-
 class Page {
     private final String content;
 

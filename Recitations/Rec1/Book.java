@@ -1,5 +1,3 @@
-
-
 class Book {
     private final Page[] pages;
     private final int currPageNum;
