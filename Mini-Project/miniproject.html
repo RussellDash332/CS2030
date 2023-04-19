@@ -1,0 +1,607 @@
+<html>
+<h2>CS2030S Mini Project</h2>
+<h3 id="infinite-list">Infinite List</h3>
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a>
+<h4 id="topic-coverage">Topic Coverage</h4>
+<ul>
+<li>Stream concepts</li>
+<li>Lambda functions</li>
+<li>Variable capture and closures</li>
+<li>Immutability</li>
+</ul>
+<h4 id="problem-description">Problem Description</h4>
+<p>In the lectures, we have implemented an immutable list that is finite.
+<!--
+Lab 8, you have implemented a mutable version of an infinite list, which mutates the internal states (e.g., in the anonymous class returned by <code>iterate</code> method) and so the resulting list can only be used once. 
+-->
+Now, you are going to implement an infinite version, which
+is recursive and makes heavy use of the laziness of lambda expressions. 
+Here are some essential properties on how our infinite list should behave:</p>
+<ul>
+<li>An infinite list needs to be as lazy as possible and only generate the elements from the data source when necessary</li>
+<li>An infinite list pipeline needs to be immutable</li>
+<li>When an element is generated, it should not be generated again. We do this by caching a copy of the value the first time an element is generated. Subsequent probing of the same value will result in the cached copy being returned. <em>You will see the need for this once we go stateful</em>.</li>
+</ul>
+<h4 id="the-task">The Task</h4>
+<p>You are to design an implementation of an <code>InfiniteList&lt;T&gt;</code> that supports the following operations:</p>
+<h5 id="data-sources">Data sources:</h5>
+<ul>
+<li><code>public static &lt;T&gt; InfiniteList&lt;T&gt; generate(Supplier&lt;? extends T&gt; s)</code></li>
+<li><code>public static &lt;T&gt; InfiniteList&lt;T&gt; iterate(T seed, UnaryOperator&lt;T&gt; next)</code></li>
+</ul>
+<h5 id="terminal-operations">Terminal operations:</h5>
+<ul>
+<li><code>public long count();</code></li>
+<li><code>public &lt;U&gt; U reduce(U identity, BiFunction&lt;U, ? super T, U&gt; accumulator);</code></li>
+<li><code>public Object[] toArray();</code></li>
+<li><code>public void forEach(Consumer&lt;? super T&gt; action);</code></li>
+</ul>
+<h5 id="stateless-intermediate-operations">Stateless intermediate operations:</h5>
+<ul>
+<li><code>public InfiniteList&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate);</code></li>
+<li><code>public &lt;R&gt; InfiniteList&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper);</code></li>
+</ul>
+<h5 id="stateful-intermediate-operations">Stateful intermediate operations:</h5>
+<ul>
+<li><code>public InfiniteList&lt;T&gt; limit(long n);</code></li>
+<li><code>public InfiniteList&lt;T&gt; takeWhile(Predicate&lt;? super T&gt; predicate);</code></li>
+</ul>
+<p>Since <code>InfiniteList</code> is similar to Java's <code>Stream</code>, you are <b>not allowed</b> to import packages from <code>java.util.stream</code>.</p>
+<p>The <code>InfiniteList</code> <b>interface</b> has also been provided for you with most of the methods commented out. It can be downloaded <a href="https://codecrunch.comp.nus.edu.sg/taskfile.php/5103/InfiniteList.java">here</a>. You can uncomment individual methods as you proceed through the levels. Note that an uncommented version of this same interface will be used when testing in CodeCrunch.</p>
+<p>This task is divided into several levels. Read through all the levels to see how the different levels are related.</p>
+<p>Remember to:</p>
+<ul>
+<li>always compile your program files first before either using <code>jshell</code> to test your program, or using <code>java</code> to run your program</li>
+<li>run <code>checkstyle</code> on your code</li>
+</ul>
+
+<h4 id="level-1-getting-lazy">Level 1: Getting Lazy</h4>
+
+<p>We will start by developing a building block for our <code>InfiniteList</code>: an abstraction for an object of which the value is not computed until it is needed. 
+Let's build a standalone generic class <code>Lazy&lt;T&gt;</code> (an extension of the one that was discussed in lecture) that encapsulates a value of type <code>T</code>, with the following operations and properties:</p>
+<ul>
+<li><code>static &lt;T&gt; Lazy&lt;T&gt; ofNullable(T v)</code> creates a lazy object with a given value (precomputed) <code>v</code>. 
+Note that 
+<!-- unlike the similar abstraction in Recitation 8, -->
+the <code>Lazy</code> object can contain a <code>null</code> value.</li>
+<li><code>static &lt;T&gt; Lazy&lt;T&gt; of(Supplier&lt;? extends T&gt; supplier)</code> creates a lazy object with a supplier to produce a value.</li>
+<li><code>Optional&lt;T&gt; get()</code> returns an <code>Optional</code> of the contained value if it is not <code>null</code>; returns <code>Optional.empty</code> otherwise. 
+If necessary (i.e. when the value is not already cached), <code>get()</code> triggers the computation of the value encapsulated in the <code>Lazy</code> instance (invoking the chain of supplier, predicates, and functions).</li>
+<li><code>&lt;R&gt; Lazy&lt;R&gt; map(Function&lt;? super T, ? extends R&gt; mapper)</code> applies the function <code>mapper</code> lazily (i.e., only when needed) to the content of this calling <code>Lazy</code> instance and returns the new <code>Lazy</code> instance. 
+If, upon evaluation, the content is <code>null</code>, then a lazy object containing <code>null</code> is returned.</li>
+<li><code>Lazy&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate)</code> applies the given predicate lazily to test the content of the calling <code>Lazy</code> instance. If the predicate returns <code>true</code>, the content is retained, otherwise, the content becomes <code>null</code>. If the content is already <code>null</code>, then the calling object is returned.</li>
+<li><code>String toString()</code> returns "<code>Lazy[?]</code>" if the value has not been computed; the string representation of the value enclosed in <code>Lazy[..]</code> otherwise.</li>
+</ul>
+
+<p>As <tt>Lazy</tt> is the context that handles <tt>null</tt> values and caching
+
+</p><ul>
+<li>You are allowed to use the <tt>null</tt> value in the <tt>Lazy</tt> class, 
+</li><li>Object properties need not be declared <tt>final</tt>; however they should still be <tt>private</tt>.
+</li></ul>
+
+<p>Implementing <code>Lazy</code> and understanding how <code>Lazy</code> works is going to be very useful in later levels.</p>
+<pre><code><b>jshell&gt; /open Lazy.java</b>
+<b>jshell&gt; Lazy.ofNullable(4)</b>
+$.. ==&gt; Lazy[4]
+<b>jshell&gt; Lazy.ofNullable(4).get()</b>
+$.. ==&gt; Optional[4]
+<b>jshell&gt; Lazy.ofNullable(4).map(x -&gt; x + 4)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; x &gt; 2)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.ofNullable(4).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional[1]
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; true).get()</b>
+$.. ==&gt; Optional[4]
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; false).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(4).map(x -&gt; 1).filter(x -&gt; false).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; false).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; true).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional[1]
+<b>jshell&gt; Lazy.ofNullable(4).filter(x -&gt; false).filter(x -&gt; true).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; </b>
+<b>jshell&gt; Lazy.ofNullable(null)</b>
+$.. ==&gt; Lazy[null]
+<b>jshell&gt; Lazy.ofNullable(null).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(null).map(x -&gt; 1)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.ofNullable(null).filter(x -&gt; true)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.ofNullable(null).filter(x -&gt; false)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.ofNullable(null).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(null).filter(x -&gt; true).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.ofNullable(null).filter(x -&gt; false).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; </b>
+<b>jshell&gt; Lazy.of(() -&gt; 4)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; 4).get()</b>
+$.. ==&gt; Optional[4]
+<b>jshell&gt; Lazy.of(() -&gt; 4).map(x -&gt; 1)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; 4).filter(x -&gt; true)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; 4).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional[1]
+<b>jshell&gt; Lazy.of(() -&gt; 4).filter(x -&gt; true).get()</b>
+$.. ==&gt; Optional[4]
+<b>jshell&gt; Lazy.of(() -&gt; 4).filter(x -&gt; false).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy&lt;Integer&gt; lazy = Lazy.of(() -&gt; 4) </b>
+<b>jshell&gt; lazy</b>
+lazy ==&gt; Lazy[?]
+<b>jshell&gt; lazy.get()</b>
+$.. ==&gt; Optional[4]
+<b>jshell&gt; lazy</b>
+lazy ==&gt; Lazy[4]
+<b>jshell&gt; </b>
+<b>jshell&gt; Lazy.of(() -&gt; null)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; null).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.of(() -&gt; null).map(x -&gt; 1)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; null).filter(x -&gt; false)</b>
+$.. ==&gt; Lazy[?]
+<b>jshell&gt; Lazy.of(() -&gt; null).map(x -&gt; 1).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.of(() -&gt; null).filter(x -&gt; true).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy.of(() -&gt; null).filter(x -&gt; false).get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; Lazy&lt;Integer&gt; lazy = Lazy.of(() -&gt; null) </b>
+<b>jshell&gt; lazy</b>
+lazy ==&gt; Lazy[?]
+<b>jshell&gt; lazy.get()</b>
+$.. ==&gt; Optional.empty
+<b>jshell&gt; lazy</b>
+lazy ==&gt; Lazy[null]
+</code></pre>
+
+<p>Compile your program by running the following on the command line:</p>
+<pre><code>$ javac -Xlint:rawtypes *.java
+<!--
+$ jshell -q Lazy.java &lt; level1.jsh
+</code></pre>
+<p>Check your styling by issuing the following</p>
+<pre><code>$ checkstyle *.java
+-->
+</code></pre>
+
+<h4 id="level-2-to-infinity-and-beyond">Level 2: To Infinity and Beyond</h4>
+<p>Define the <code>InfiniteListImpl</code> class that implements the <code>InfiniteList</code> interface. Write the static <code>generate</code> and <code>iterate</code> methods that initiate the initial list pipeline. You are encouraged to adapt the implementation demonstrated in class using the head and tail suppliers. If you do it right, you need only have these two declared <code>private final</code> and nothing else. That said, if you feel compelled to introduce other fields to aid in your implementation, feel free to do so. But note that the implementation demonstrated in class does not support caching of computed values. To solve this lab, you will need to use the type <code>Lazy&lt;T&gt;</code> for the head to take advantage of its laziness, instead of <code>Supplier&lt;T&gt;</code>.</p>
+<p>For debugging purposes, include a method <code>InfiniteList&lt;T&gt; peek()</code> within your implementation that prints the first element of the infinite list to the standard output and returns the rest of the list as an <code>InfiniteList</code>. This enables the chaining of <code>peek()</code> methods to produce an output of a sequence of stream elements. Note that <code>peek()</code> is solely for the purpose of debugging, until a terminal operation is introduced at a later level.</p>
+<pre><code><b>jshell&gt; InfiniteList&lt;Integer&gt; list</b>
+<b>jshell&gt; InfiniteList.generate(() -&gt; 1) instanceof InfiniteListImpl</b>
+$.. ==&gt; true
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1) instanceof InfiniteListImpl</b>
+$.. ==&gt; true
+<b>jshell&gt; list = InfiniteListImpl.generate(() -&gt; 1).peek()</b>
+1
+<b>jshell&gt; list = InfiniteListImpl.iterate(1, x -&gt; x + 1).peek()</b>
+1
+<b>jshell&gt; list = InfiniteListImpl.iterate(1, x -&gt; x + 1).peek().peek()</b>
+1
+2
+<b>jshell&gt; InfiniteList&lt;Integer&gt; list2 = list.peek()</b>
+3
+<b>jshell&gt; list != list2</b>
+$.. ==&gt; true
+<b>jshell&gt; InfiniteList&lt;String&gt; list = InfiniteListImpl.iterate("A", x -&gt; x + "Z").peek().peek().peek()</b>
+A
+AZ
+AZZ
+<b>jshell&gt; </b>
+<b>jshell&gt; UnaryOperator&lt;Integer&gt; op = x -&gt; { System.out.printf("iterate: %d -&gt; %d\n", x, x + 1); return x + 1; };</b>
+<b>jshell&gt; list2 = InfiniteList.iterate(1, op).peek().peek()</b>
+1
+iterate: 1 -&gt; 2
+2
+iterate: 2 -&gt; 3
+<b>jshell&gt; </b>
+<b>jshell&gt; /exit</b>
+
+</code></pre>
+<p>Compile your program by running the following on the command line:</p>
+<pre><code>$ javac -Xlint:rawtypes *.java
+$ jshell -q Lazy.java InfiniteList.java InfiniteListImpl.java &lt; level2.jsh
+</code></pre>
+<p>Check your styling by issuing the following</p>
+<pre><code>$ checkstyle *.java
+</code></pre>
+
+<h4 id="level-3-map-and-filter">Level 3: Map and Filter</h4>
+<p>Now implement the <code>map</code> and <code>filter</code> operations. In particular, if an element from an upstream operation does not pass through <code>filter</code>, an <code>Optional.empty()</code> will be generated. <code>peek()</code> does not print anything if the element is <code>Optional.empty()</code>.</p>
+<pre><code><b>jshell&gt; InfiniteList&lt;Integer&gt; list, list2</b>
+<b>jshell&gt; list = InfiniteList.generate(() -&gt; 1).map(x -&gt; x * 2)</b>
+<b>jshell&gt; list2 = list.peek()</b>
+2
+<b>jshell&gt; list2 = list.peek()</b>
+2
+<b>jshell&gt; InfiniteList.generate(() -&gt; 1).map(x -&gt; x * 2) instanceof InfiniteListImpl</b>
+$.. ==&gt; true
+<b>jshell&gt; list = InfiniteList.generate(() -&gt; 1).map(x -&gt; x * 2).peek()</b>
+2
+<b>jshell&gt; list = InfiniteList.generate(() -&gt; 1).map(x -&gt; x * 2).peek().peek()</b>
+2
+2
+<b>jshell&gt; list = InfiniteList.iterate(1, x -&gt; x + 1).map(x -&gt; x * 2).peek().peek()</b>
+2
+4
+<b>jshell&gt; </b>
+<b>jshell&gt; Supplier&lt;Integer&gt; generator = () -&gt; { System.out.println("generate: 1"); return 1; }</b>
+<b>jshell&gt; Function&lt;Integer,Integer&gt; doubler = x -&gt; { System.out.printf("map: %d -&gt; %d\n", x, x * 2); return x * 2; };</b>
+<b>jshell&gt; Function&lt;Integer,Integer&gt; oneLess = x -&gt; { System.out.printf("map: %d -&gt; %d\n", x, x - 1); return x - 1; };</b>
+<b>jshell&gt; list = InfiniteList.generate(generator).map(doubler).peek().peek()</b>
+generate: 1
+map: 1 -&gt; 2
+2
+generate: 1
+map: 1 -&gt; 2
+2
+<b>jshell&gt; list = InfiniteList.generate(generator).map(doubler).map(oneLess).peek().peek()</b>
+generate: 1
+map: 1 -&gt; 2
+map: 2 -&gt; 1
+1
+generate: 1
+map: 1 -&gt; 2
+map: 2 -&gt; 1
+1
+<b>jshell&gt; </b>
+<b>jshell&gt; list = InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0)</b>
+<b>jshell&gt; list2 = list.peek()</b>
+<b>jshell&gt; list2 = list.peek()</b>
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0) instanceof InfiniteListImpl</b>
+$.. ==&gt; true
+<b>jshell&gt; list = InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0).peek().peek()</b>
+2
+<b>jshell&gt; list = InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0).filter(x -&gt; x &lt; 4).peek().peek().peek().peek()</b>
+2
+<b>jshell&gt; </b>
+<b>jshell&gt; Predicate&lt;Integer&gt; isEven = x -&gt; { System.out.printf("filter: %d -&gt; %b\n", x, x % 2 == 0); return x % 2 == 0; }</b>
+<b>jshell&gt; Predicate&lt;Integer&gt; lessThan10 = x -&gt; { System.out.printf("filter: %d -&gt; %b\n", x, x &lt; 10); return x &lt; 10; }</b>
+<b>jshell&gt; UnaryOperator&lt;Integer&gt; op = x -&gt; { System.out.printf("iterate: %d -&gt; %d\n", x, x + 1); return x + 1; };</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).filter(isEven).peek().peek()</b>
+filter: 1 -&gt; false
+iterate: 1 -&gt; 2
+filter: 2 -&gt; true
+2
+iterate: 2 -&gt; 3
+<b>jshell&gt; list = InfiniteList.iterate(1, op).filter(isEven).filter(lessThan10).peek().peek()</b>
+filter: 1 -&gt; false
+iterate: 1 -&gt; 2
+filter: 2 -&gt; true
+filter: 2 -&gt; true
+2
+iterate: 2 -&gt; 3
+<b>jshell&gt; </b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).map(doubler).filter(isEven).filter(lessThan10).peek().peek()</b>
+map: 1 -&gt; 2
+filter: 2 -&gt; true
+filter: 2 -&gt; true
+2
+iterate: 1 -&gt; 2
+map: 2 -&gt; 4
+filter: 4 -&gt; true
+filter: 4 -&gt; true
+4
+iterate: 2 -&gt; 3
+<b>jshell&gt; list = InfiniteList.iterate(1, op).filter(isEven).map(doubler).filter(lessThan10).peek().peek()</b>
+filter: 1 -&gt; false
+iterate: 1 -&gt; 2
+filter: 2 -&gt; true
+map: 2 -&gt; 4
+filter: 4 -&gt; true
+4
+iterate: 2 -&gt; 3
+<b>jshell&gt; list = InfiniteList.iterate(1, op).filter(isEven).filter(lessThan10).map(doubler).peek().peek()</b>
+filter: 1 -&gt; false
+iterate: 1 -&gt; 2
+filter: 2 -&gt; true
+filter: 2 -&gt; true
+map: 2 -&gt; 4
+4
+iterate: 2 -&gt; 3
+<b>jshell&gt; /exit</b>
+
+</code></pre>
+<p>Compile your program by running the following on the command line:</p>
+<pre><code>$ javac -Xlint:rawtypes *.java
+$ jshell -q &lt;your java files&gt; &lt; level3.jsh
+</code></pre>
+<p>Check your styling by issuing the following</p>
+<pre><code>$ checkstyle *.java
+</code></pre>
+
+<h4 id="level-4-emptiness-and-limitations">Level 4: Emptiness and Limitations</h4>
+<p>Now, create a subtype of <code>InfiniteList</code> that represents an empty list called <code>EmptyList</code>. The <code>EmptyList</code> should return <code>true</code> when <code>isEmpty()</code> is called and it should return itself for intermediate operations and appropriate values for terminal operations.</p>
+<p>Then, implement the <code>limit</code> method. There is now a need to differentiate between an <code>Optional.empty()</code> produced from <code>filter</code> and the end of the stream in <code>limit</code>. Make use of <code>EmptyList</code> to indicate the end of the stream. When dealing with <code>limit</code>, you will need to decide if the upstream element</p>
+<ul>
+<li>produces an empty list;</li>
+<li>produces an <code>Optional.empty</code> and ignored by <code>limit</code>; or</li>
+<li>produces a stream element and accounted for by <code>limit</code></li>
+</ul>
+<p>The other operation to truncate an infinite list is the <code>takeWhile</code> operator. The same considerations that you have given to <code>limit</code> would probably apply here.</p>
+<pre><code><b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.generate(() -&gt; 2).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.generate(() -&gt; 2).filter(x -&gt; x % 3 == 0).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).map(x -&gt; 2).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; new EmptyList&lt;&gt;().isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; new EmptyList&lt;&gt;().map(x -&gt; 2).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; new EmptyList&lt;&gt;().filter(x -&gt; true).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; new EmptyList&lt;&gt;().filter(x -&gt; false).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; </b>
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).limit(0).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).limit(1).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).limit(-1).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; </b>
+<b>jshell&gt; UnaryOperator&lt;Integer&gt; op = x -&gt; { System.out.printf("iterate: %d -&gt; %d\n", x, x + 1); return x + 1; };</b>
+<b>jshell&gt; InfiniteList.iterate(1, op).limit(0).isEmpty()</b>
+$.. ==&gt; true
+<b>jshell&gt; InfiniteList.iterate(1, op).limit(1).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.iterate(1, op).limit(2).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList&lt;Integer&gt; list;</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(0).peek()</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(1).peek()</b>
+1
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(1).peek().peek()</b>
+1
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(2).peek().peek().peek()</b>
+1
+iterate: 1 -&gt; 2
+2
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(2).limit(1).peek().peek()</b>
+1
+<b>jshell&gt; list = InfiniteList.iterate(1, op).limit(1).limit(2).peek().peek()</b>
+1
+<b>jshell&gt; </b>
+<b>jshell&gt; InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 0).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 2).isEmpty()</b>
+$.. ==&gt; false
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 0).peek()</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 2).peek().peek()</b>
+1
+iterate: 1 -&gt; 2
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 2).takeWhile(x -&gt; x &lt; 0).peek()</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 0).takeWhile(x -&gt; x &lt; 2).peek()</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(x -&gt; x &lt; 5).takeWhile(x -&gt; x &lt; 2).peek().peek()</b>
+1
+iterate: 1 -&gt; 2
+<b>jshell&gt; </b>
+<b>jshell&gt; Predicate&lt;Integer&gt; lessThan5 = x -&gt; { System.out.printf("takeWhile: %d -&gt; %b\n", x, x &lt; 5); return x &lt; 5; }</b>
+<b>jshell&gt; list = InfiniteList.iterate(1, op).takeWhile(lessThan5).peek().peek()</b>
+takeWhile: 1 -&gt; true
+1
+iterate: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+2
+iterate: 2 -&gt; 3
+<b>jshell&gt; </b>
+<b>jshell&gt; /exit</b>
+
+</code></pre>
+<p>Compile your program by running the following on the command line:</p>
+<pre><code>$ javac -Xlint:rawtypes *.java
+$ jshell -q Lazy.java InfiniteList.java InfiniteListImpl.java &lt; level4.jsh
+</code></pre>
+<p>Check your styling by issuing the following</p>
+<pre><code>$ checkstyle *.java
+</code></pre>
+
+<h4 id="level-5-terminals">Level 5: Terminals</h4>
+<p>Now, we are going to implement the terminal operations: <code>forEach</code>, <code>count</code>, <code>reduce</code>, and <code>toArray</code>.</p>
+<pre><code><b>jshell&gt; new EmptyList&lt;&gt;().toArray()</b>
+$.. ==&gt; Object[0] {  }
+<b>jshell&gt; InfiniteList.iterate(0, i -&gt; i + 1).limit(10).limit(3).toArray()</b>
+$.. ==&gt; Object[3] { 0, 1, 2 }
+<b>jshell&gt; InfiniteList.iterate(0, i -&gt; i + 1).limit(3).limit(100).toArray()</b>
+$.. ==&gt; Object[3] { 0, 1, 2 }
+<b>jshell&gt; InfiniteList.generate(() -&gt; 1).limit(0).toArray()</b>
+$.. ==&gt; Object[0] {  }
+<b>jshell&gt; InfiniteList.generate(() -&gt; 1).limit(2).toArray()</b>
+$.. ==&gt; Object[2] { 1, 1 }
+<b>jshell&gt; Random rnd = new Random(1)</b>
+<b>jshell&gt; InfiniteList.generate(() -&gt; rnd.nextInt() % 100).limit(4).toArray();</b>
+$.. ==&gt; Object[4] { -25, 76, 95, 26 }
+<b>jshell&gt; InfiniteList.generate(() -&gt; "A").map(x -&gt; x + "-").map(str -&gt; str.length()).limit(4).toArray()</b>
+$.. ==&gt; Object[4] { 2, 2, 2, 2 }
+<b>jshell&gt; InfiniteList.generate(() -&gt; "A").limit(4).map(x -&gt; x + "-").map(str -&gt; str.length()).toArray()</b>
+$.. ==&gt; Object[4] { 2, 2, 2, 2 }
+<b>jshell&gt; InfiniteList.generate(() -&gt; "A").map(x -&gt; x + "-").limit(4).map(str -&gt; str.length()).toArray()</b>
+$.. ==&gt; Object[4] { 2, 2, 2, 2 }
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).limit(4).filter(x -&gt; x % 2 == 0).toArray()</b>
+$.. ==&gt; Object[2] { 2, 4 }
+<b>jshell&gt; InfiniteList.iterate(1, x -&gt; x + 1).filter(x -&gt; x % 2 == 0).limit(4).toArray()</b>
+$.. ==&gt; Object[4] { 2, 4, 6, 8 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).filter(x -&gt; x &gt; 10).filter(x -&gt; x &lt; 20).limit(5).toArray()</b>
+$.. ==&gt; Object[5] { 11, 12, 13, 14, 15 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).filter(x -&gt; x &gt; 10).map(x -&gt; x.hashCode() % 30).filter(x -&gt; x &lt; 20).limit(5).toArray()</b>
+$.. ==&gt; Object[5] { 11, 12, 13, 14, 15 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 3).toArray()</b>
+$.. ==&gt; Object[3] { 0, 1, 2 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 0).toArray()</b>
+$.. ==&gt; Object[0] {  }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 10).takeWhile(x -&gt; x &lt; 5).toArray()</b>
+$.. ==&gt; Object[5] { 0, 1, 2, 3, 4 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).map(x -&gt; x).takeWhile(x -&gt; x &lt; 4).limit(1).toArray()</b>
+$.. ==&gt; Object[1] { 0 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(4).takeWhile(x -&gt; x &lt; 2).toArray()</b>
+$.. ==&gt; Object[2] { 0, 1 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).map(x -&gt; x * x).filter(x -&gt; x &gt; 10).limit(1).toArray()</b>
+$.. ==&gt; Object[1] { 16 }
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).filter(x -&gt; x &gt; 10).map(x -&gt; x * x).limit(1).toArray()</b>
+$.. ==&gt; Object[1] { 121 }
+<b>jshell&gt; Random rnd = new Random(1)</b>
+<b>jshell&gt; InfiniteList.generate(() -&gt; rnd.nextInt() % 100).filter(x -&gt; x &gt; 10).limit(4).toArray()</b>
+$.. ==&gt; Object[4] { 76, 95, 26, 69 }
+<b>jshell&gt; </b>
+<b>jshell&gt; new EmptyList&lt;&gt;().count()</b>
+$.. ==&gt; 0
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(0).count()</b>
+$.. ==&gt; 0
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(1).count()</b>
+$.. ==&gt; 1
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).filter(x -&gt; x % 2 == 1).limit(10).count()</b>
+$.. ==&gt; 10
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(10).filter(x -&gt; x % 2 == 1).count()</b>
+$.. ==&gt; 5
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 10).count()</b>
+$.. ==&gt; 10
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 10).filter(x -&gt; x % 2 == 0).count()</b>
+$.. ==&gt; 5
+<b>jshell&gt; Random rnd = new Random(1)</b>
+<b>jshell&gt; InfiniteList.generate(() -&gt; Math.abs(rnd.nextInt()) % 100).takeWhile(x -&gt; x &gt; 5).count()</b>
+$.. ==&gt; 9
+<b>jshell&gt; </b>
+<b>jshell&gt; new EmptyList&lt;Integer&gt;().reduce(100, (x,y) -&gt; x*y)</b>
+$.. ==&gt; 100
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(5).reduce(0, (x, y) -&gt; x + y)</b>
+$.. ==&gt; 10
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(0).reduce(0, (x, y) -&gt; x + y)</b>
+$.. ==&gt; 0
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).map(x -&gt; x * x).limit(5).reduce(1, (x, y) -&gt; x * y)</b>
+$.. ==&gt; 0
+<b>jshell&gt; Random rnd = new Random(1)</b>
+<b>jshell&gt; InfiniteList.generate(() -&gt; rnd.nextInt() % 100).filter(x -&gt; x &gt; 0).limit(10).reduce(0, (x, y) -&gt; Math.max(x, y))</b>
+$.. ==&gt; 95
+<b>jshell&gt; </b>
+<b>jshell&gt; UnaryOperator&lt;Integer&gt; op = x -&gt; { System.out.printf("iterate: %d -&gt; %d\n", x, x + 1); return x + 1; };</b>
+<b>jshell&gt; Supplier&lt;Integer&gt; generator = () -&gt; { System.out.println("generate: 1"); return 1; }</b>
+<b>jshell&gt; Function&lt;Integer,Integer&gt; doubler = x -&gt; { System.out.printf("map: %d -&gt; %d\n", x, x * 2); return x * 2; };</b>
+<b>jshell&gt; Function&lt;Integer,Integer&gt; oneLess = x -&gt; { System.out.printf("map: %d -&gt; %d\n", x, x - 1); return x - 1; };</b>
+<b>jshell&gt; Predicate&lt;Integer&gt; lessThan100 = x -&gt; { System.out.printf("takeWhile: %d -&gt; %b\n", x, x &lt; 100); return x &lt; 100; }</b>
+<b>jshell&gt; Predicate&lt;Integer&gt; moreThan10 = x -&gt; { System.out.printf("filter: %d -&gt; %b\n", x, x &gt; 10); return x &gt; 10; }</b>
+<b>jshell&gt; </b>
+<b>jshell&gt; InfiniteList.iterate(0, op).filter(lessThan100).map(doubler).takeWhile(lessThan100).map(oneLess).limit(5).toArray()</b>
+takeWhile: 0 -&gt; true
+map: 0 -&gt; 0
+takeWhile: 0 -&gt; true
+map: 0 -&gt; -1
+iterate: 0 -&gt; 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+iterate: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 4
+takeWhile: 4 -&gt; true
+map: 4 -&gt; 3
+iterate: 2 -&gt; 3
+takeWhile: 3 -&gt; true
+map: 3 -&gt; 6
+takeWhile: 6 -&gt; true
+map: 6 -&gt; 5
+iterate: 3 -&gt; 4
+takeWhile: 4 -&gt; true
+map: 4 -&gt; 8
+takeWhile: 8 -&gt; true
+map: 8 -&gt; 7
+$.. ==&gt; Object[5] { -1, 1, 3, 5, 7 }
+<b>jshell&gt; InfiniteList.generate(generator).filter(lessThan100).map(doubler).takeWhile(lessThan100).map(oneLess).limit(5).toArray()</b>
+generate: 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+generate: 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+generate: 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+generate: 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+generate: 1
+takeWhile: 1 -&gt; true
+map: 1 -&gt; 2
+takeWhile: 2 -&gt; true
+map: 2 -&gt; 1
+$.. ==&gt; Object[5] { 1, 1, 1, 1, 1 }
+<b>jshell&gt; </b>
+<b>jshell&gt; new EmptyList&lt;&gt;().forEach(System.out::println)</b>
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(0).forEach(System.out::println)</b>
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(1).forEach(System.out::println)</b>
+0
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).filter(x -&gt; x % 2 == 1).limit(10).forEach(System.out::println)</b>
+1
+3
+5
+7
+9
+11
+13
+15
+17
+19
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).limit(10).filter(x -&gt; x % 2 == 1).forEach(System.out::println)</b>
+1
+3
+5
+7
+9
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 10).forEach(System.out::println)</b>
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+<b>jshell&gt; InfiniteList.iterate(0, x -&gt; x + 1).takeWhile(x -&gt; x &lt; 10).filter(x -&gt; x % 2 == 0).forEach(System.out::println)</b>
+0
+2
+4
+6
+8
+<b>jshell&gt; /exit</b>
+
+</code></pre>
+<p>Compile your program by running the following on the command line:</p>
+<pre><code>$ javac -Xlint:rawtypes *.java
+<!--
+$ jshell -q &lt;your java files&gt; &lt; level5.jsh
+</code></pre>
+<p>Check your styling by issuing the following</p>
+<pre><code>$ checkstyle *.java
+-->
+</code></pre>
+
+<p>You should try to test your implementation as exhaustively as you can before submitting to CodeCrunch. We shall be using another client class to test your implementation.</p>
+</html>

@@ -1,0 +1,181 @@
+<html>
+<h3>Making Things Optional</h3>
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a>
+<h4>Topic Coverage</h4>
+<ul>
+<li>Optional</li>
+<li>Functional Interfaces</li>
+</ul>
+<h4>Problem Description</h4>
+<p>This lab is a continuation of the <a href="https://codecrunch.comp.nus.edu.sg/task_view.php?tid=5032">class roster</a> lab.</p>
+<p>So far we have been dealing with invalid retrievals such as</p>
+<pre>new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab2")
+</pre>
+<p>which would result in a <tt>null</tt> value.    Furthermore, chaining methods like</p>
+<pre>new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2030" ).get("Lab1")
+</pre>
+<p>would result in a <tt>NullPointerException</tt> being thrown due to calling <tt>get("Lab1")</tt> on a <tt>null</tt> value.</p>
+<p>Take a look at the <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Optional.html">Java documentation of Optional</a> to familiarize yourself with the APIs available.</p>
+<h4>Note</h4>
+<p>On CodeCrunch, we will check for any use of <tt>null</tt> in your code. Any occurence of the string <tt>null</tt> would fail the CodeCrunch test. Thus, avoid variable or method names that contain the substring <tt>null</tt>.</p>
+<p>Further, we will disallow the use of methods <tt>Optional::get</tt>, <tt>Optional::isPresent</tt> and <tt>Optional::isEmpty</tt>, as the former could cause <tt>NullPointerException</tt>, while the latter is essentially the same as checking for <tt>null</tt>.</p>
+<!--
+<p>Let's deal with the generation of <tt>null</tt> values first, and worry about chaining <tt>get</tt> methods in the next level. -->
+<h4>Level 4+</h4>
+<h4>Avoiding <tt>null</tt> with <tt>Optional</tt></h4>
+<p>Modify the <tt>KeyableMap</tt> generic class such that each call to <tt>get</tt> returns an <tt>Optional</tt> where <tt>V</tt> is a subtype of <tt>Keyable</tt>.</p>
+<pre>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1")
+$.. ==&gt; Optional[{Lab1: B}]
+jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B")))
+$.. ==&gt; Tony: {CS2040: {{Lab1: B}}}
+jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040")
+$.. ==&gt; Optional[CS2040: {{Lab1: B}}]
+jshell&gt; Student natasha = new Student("Natasha");
+jshell&gt; natasha.put(new Module("CS2040").put(new Assessment("Lab1", "B")))
+$.. ==&gt; Natasha: {CS2040: {{Lab1: B}}}
+jshell&gt; natasha.put(new Module("CS2030").put(new Assessment("PE", "A+")).put(new Assessment("Lab2", "C")))
+$.. ==&gt; Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}
+jshell&gt; Student tony = new Student("Tony");
+jshell&gt; tony.put(new Module("CS1231").put(new Assessment("Test", "A-")))
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}}
+jshell&gt; tony.put(new Module("CS2100").put(new Assessment("Test", "B")).put(new Assessment("Lab1", "F")))
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}
+jshell&gt; /exit
+</pre>
+<p>As you can see, the only difference is that each value returned from an invocation of the <tt>get</tt> method is wrapped in an <tt>Optional</tt>.</p>
+<p>Check the format correctness of the output by running the following on the command line:</p>
+<pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test4.jsh
+</pre>
+<p>Check your styling by issuing the following</p>
+<pre>$ checkstyle *.java
+</pre>
+<h4>Level 5+</h4>
+<h4>"Chaining" <tt>Optionals</tt></h4>
+<p>Chaining <tt>Optional</tt>s together as such</p>
+<pre>new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040" ).get("Lab1")
+</pre>
+<p>will now result in a compilation error instead. This is because the <tt>Optional</tt> class does not have a <tt>get(String)</tt> method defined (<em>although it does define a <tt>get()</tt> method which, other than for debugging purposes, should typically be avoided</em>).</p>
+<p>Rather than chaining in the usual way, we do it through a <tt>map</tt> or <tt>flatMap</tt>.  Let's start with <tt>map</tt>.</p>
+<pre>jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1")
+$.. ==&gt; Optional[{Lab1: B}]
+
+jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").getGrade()
+|  Error:
+|  cannot find symbol
+|    symbol:   method getGrade()
+|  new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").getGrade()
+|  ^------------------------------------------------------------------------^
+
+jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").map(x -&gt; x.getGrade())
+$.. ==&gt; Optional[B]
+
+jshell&gt; new Module("CS2040").put(new Assessment("Lab1", "B")).get("Lab1").map(Assessment::getGrade)
+$.. ==&gt; Optional[B]
+</pre>
+<p>As expected, invoking <tt>getGrade()</tt> on an <tt>Optional</tt> results in a compilation error. However, we can perform a similar chaining effect by passing in the functionality of <tt>getGrade</tt> (either in the form of a lambda or method reference) to <tt>Optional</tt>'s <tt>map</tt> method. Notice the return value is actually wrapped in another <tt>Optional</tt>. When using <tt>map</tt>, you can think of the operation as "taking the value out of the <tt>Optional</tt> box, transforming it via the function passed to map, and wrap the transformed value back in another <tt>Optional</tt>".</p>
+<p>Now this is where things start to get interesting! Look at the following:</p>
+<pre>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040" ).map(x -&gt; x.get("Lab1"))
+$.. ==&gt; Optional[Optional[{Lab1: B}]]
+</pre>
+<p>Observe that the return value is an <tt>Optional</tt> wrapped around another <tt>Optional</tt> that wraps around the desired value! Why is this so? The difference lies in the return type of <tt>Assessment::getGrade</tt> (read <tt>getGrade</tt> method of the <tt>Assessment</tt> class) and <tt>Module::get</tt>.   The former returns a <tt>String</tt>, while the latter returns an <tt>Optional</tt>.</p>
+<p>In <tt>x -&gt; x.getGrade()</tt> (or <tt>Assessment::getGrade</tt>), the transformed value is simply the grade, and this is wrapped in an Optional. However, passing <tt>x -&gt; x.get("Lab1")</tt> in the above code snippet results in a transformed value of <tt>Optional</tt>.   And this transformed value is wrapped around another <tt>Optional</tt> via the <tt>map</tt> operation!</p>
+<p>As such, we use the <tt>flatMap</tt> method instead. You may think of <tt>flatMap</tt> as flattening the <tt>Optional</tt>s into a single one.</p>
+<pre>jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040" ).flatMap(x -&gt; x.get("Lab1"))
+$.. ==&gt; Optional[{Lab1: B}]
+
+jshell&gt; new Student("Tony").put(new Module("CS2040").put(new Assessment("Lab1", "B"))).get("CS2040" ).flatMap(x -&gt; x.get("Lab1")).map(Assessment::getGrade)
+$.. ==&gt; Optional[B]
+</pre>
+<p>Now you are ready to create a roster. Define a <tt>Roster</tt> class that stores the students in a map via the <tt>put</tt> method. A roster can have zero or more students, with each student having a unique id as its key. Once again, notice the similarities between <tt>Roster</tt>, <tt>Student</tt> and <tt>Module</tt>.</p>
+<p>Define a method called <tt>getGrade</tt> in <tt>Roster</tt> to answer the query from the user.  The method takes in three <tt>String</tt> parameters, corresponds to the student id, the module code, and the assessment title, and returns the corresponding grade.</p>
+<p>In cases where there are no such student, or the student does not read the given module, or the module does not have the corresponding assessment, then output <tt>No such record</tt> followed by details of the query. Here, you might find <tt>Optional::orElse</tt> useful.</p>
+<pre>jshell&gt; Student natasha = new Student("Natasha");
+jshell&gt; natasha.put(new Module("CS2040").put(new Assessment("Lab1", "B")))
+$.. ==&gt; Natasha: {CS2040: {{Lab1: B}}}
+jshell&gt; natasha.put(new Module("CS2030").put(new Assessment("PE", "A+")).put(new Assessment("Lab2", "C")))
+$.. ==&gt; Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}
+jshell&gt; Student tony = new Student("Tony");
+jshell&gt; tony.put(new Module("CS1231").put(new Assessment("Test", "A-")))
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}}
+jshell&gt; tony.put(new Module("CS2100").put(new Assessment("Test", "B")).put(new Assessment("Lab1", "F")))
+$.. ==&gt; Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}
+jshell&gt; Roster roster = new Roster("AY1920").put(natasha).put(tony)
+jshell&gt; roster
+roster ==&gt; AY1920: {Natasha: {CS2030: {{Lab2: C}, {PE: A+}}, CS2040: {{Lab1: B}}}, Tony: {CS1231: {{Test: A-}}, CS2100: {{Lab1: F}, {Test: B}}}}
+jshell&gt; roster.get("Tony").flatMap(x -&gt; x.get("CS1231")).flatMap(x -&gt; x.get("Test")).map(Assessment::getGrade)
+$.. ==&gt; Optional[A-]
+jshell&gt; roster.get("Natasha").flatMap(x -&gt; x.get("CS2040")).flatMap(x -&gt; x.get("Lab1")).map(Assessment::getGrade)
+$.. ==&gt; Optional[B]
+jshell&gt; roster.get("Tony").flatMap(x -&gt; x.get("CS1231")).flatMap(x -&gt; x.get("Exam")).map(Assessment::getGrade)
+$.. ==&gt; Optional.empty
+jshell&gt; roster.get("Steve").flatMap(x -&gt; x.get("CS1010")).flatMap(x -&gt; x.get("Lab1")).map(Assessment::getGrade)
+$.. ==&gt; Optional.empty
+jshell&gt; roster.getGrade("Tony","CS1231","Test")
+$.. ==&gt; "A-"
+jshell&gt; roster.getGrade("Natasha","CS2040","Lab1")
+$.. ==&gt; "B"
+jshell&gt; roster.getGrade("Tony","CS1231","Exam");
+$.. ==&gt; "No such record: Tony CS1231 Exam"
+jshell&gt; roster.getGrade("Steve","CS1010","Lab1");
+$.. ==&gt; "No such record: Steve CS1010 Lab1"
+jshell&gt; /exit
+</pre>
+<p>Check the format correctness of the output by running the following on the command line:</p>
+<pre>$ javac -Xlint:rawtypes *.java
+$ jshell -q your_java_files_in_bottom-up_dependency_order &lt; test5.jsh
+</pre>
+<p>Check your styling by issuing the following</p>
+<pre>$ checkstyle *.java
+</pre>
+<h4>Level 6+</h4>
+<h4>The <tt>Main</tt> class</h4>
+<p>Now use the classes that you have built and write a <tt>Main</tt> class to solve the following:</p>
+<p>Read the following from the standard input:</p>
+<ul>
+<li>The first token read is an integer <em>N</em>, indicating the number of records to be read.</li>
+<li>The subsequent inputs consist of <em>N</em> records, each record consists of four words, separated by one or more spaces.  The four words correspond to the student id, the module code, the assessment title, and the grade, respectively. </li>
+<li>The subsequent inputs consist of zero or more queries.  Each query consists of three words, separated by one or more spaces.  The three words correspond to the student id, the module code, and the assessment title. </li>
+</ul>
+<p>For each query, if a match in the input is found, print the corresponding grade to the standard output.  Otherwise, print "No Such Record:" followed by the three words given in the query, separated by exactly one space.</p>
+<p>See sample input and output below.  Inputs are underlined.</p>
+<pre>$ java Main
+<span style="text-decoration: underline;">12
+Jack   CS2040 Lab4    B
+Jack   CS2040 Lab6    C
+Jane   CS1010 Lab1    A
+Jane   CS2030 Lab1    A+
+Janice CS2040 Lab1    A+
+Janice CS2040 Lab4    A+
+Jim    CS1010 Lab9    A+
+Jim    CS2010 Lab1    C
+Jim    CS2010 Lab2    B
+Jim    CS2010 Lab8    A+
+Joel   CS2030 Lab3    C
+Joel   CS2030 Midterm A
+Jack   CS2040 Lab4
+Jack   CS2040 Lab6
+Janice CS2040 Lab1
+Janice CS2040 Lab4
+Joel   CS2030 Midterm
+Jason  CS1010 Lab1
+Jack   CS2040 Lab5
+Joel   CS2040 Lab3
+</span>B
+C
+A+
+A+
+A
+No such record: Jason CS1010 Lab1
+No such record: Jack CS2040 Lab5
+No such record: Joel CS2040 Lab3
+</pre>
+<p>Note:</p>
+<ul>
+<li>You might find <tt>Optional::ifPresentOrElse</tt> useful. </li>
+</ul>
+<p>Compile and check your styling by issuing the following</p>
+<pre>$ javac -Xlint:rawtypes *.java
+$ checkstyle *.java
+</pre>
+</html>

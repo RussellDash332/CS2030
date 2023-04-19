@@ -1,0 +1,309 @@
+<h2>CS2030 Practical Assessment #1: Handshake</h2>
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a>
+
+<h2>Problem Description</h2>
+
+<p>A three-way handshake protocol between a terminal (or endpoint)
+device and a host comprises a series of three handshake exchanges:
+
+</p><ul>
+<li>communication initiates with <tt>snd</tt> from terminal to host;
+</li><li>followed by <tt>rcv</tt> response from host to terminal;
+</li><li>and finally, <tt>ack</tt> from terminal to host acknowledges a successful connection
+</li></ul>
+
+<img src="data:image/png;base64,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" width="20%">
+
+<p>Many terminals can be connected to a single host.
+The host can then proceed to broadcast to all connected terminals.
+
+</p><p>As an example, a food (or guest) paging system comprises of a
+transmitter (host) and a number of pagers (terminals).
+Each pager begins by initiating the handshake with the transmitter.
+Once a connection is established, the pager can be handed to a patron so that he or she can be notified when his/her food order is ready.
+A broadcast can also be done to beep all pagers, e.g. to find misplaced pagers.
+
+</p><h2>Task</h2>
+
+<p>Your task is to establish the three-way handshake between a terminal (e.g. pager) and a host (e.g. transmitter) via the three corresponding methods <tt>snd</tt>, <tt>rcv</tt> and <tt>ack</tt> as shown below:
+
+</p><pre style="position: relative;">jshell&gt; new Pager("pager1").snd(new Transmitter("transmit1"))
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1
+
+jshell&gt; new Pager("pager1").snd(new Transmitter("transmit1")).rcv()
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager1
+
+jshell&gt; new Pager("pager1").snd(new Transmitter("transmit1")).rcv().ack()
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager1 &gt;--ack--&gt; transmit1
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Having established a connection between a host and a terminal, the host can proceed to broadcast a beep.
+
+</p><pre style="position: relative;">jshell&gt; new Pager("pager1").snd(new Transmitter("transmit1")).rcv().ack().broadcast()
+pager1:beep
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Take note!</h2>
+
+<p>There are altogether five levels. You are required to complete ALL levels.
+
+</p><p>You should keep to the constructs and programming discipline instilled throughout the module.
+
+</p><ul>
+<li>Write each class/interface in its own file.
+</li><li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>.
+</li><li>Ensure that that your classes are NOT cyclic dependent.
+</li><li>The <tt>ImList</tt> class was provided to you.
+</li><li>You are NOT allowed to use java libraries, other than those from <tt>java.lang</tt> and
+<tt>java.util.List</tt><!-- and <tt>java.util.Comparator</tt>. -->
+</li><li>You are NOT allowed to use java keywords/literals: <tt>null</tt>, <tt>instanceof</tt> (except within the typical <tt>equals</tt> method)
+</li><li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</li><li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<!-- You are NOT allowed to define anonymous inner classes, or lambdas.-->
+</li><li>You are NOT allowed to define array constructs, e.g. <tt>String[]</tt> or using ellipsis, e.g. <tt>String...</tt>
+</li></ul>
+
+<!--
+<p>You may assume that all tests provide valid arguments to methods; hence there is no need to validate method arguments.
+-->
+
+<p>The following levels demonstrate the handshake between a pager and a transmitter.
+In general, <i>any terminal is allowed to connect to any host</i>.
+
+</p><h2>Level 1</h2>
+
+<p>Write a <tt>Pager</tt> class with a constructor that takes in a unique string identifier so as to create a pager as a terminal (<tt>Term</tt>).
+
+</p><pre style="position: relative;">$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Pager p1 = new Pager("pager1")
+p1 ==&gt; pager1
+
+jshell&gt; Term t1 = p1
+t1 ==&gt; pager1
+
+jshell&gt; new Term()
+|  Error:
+|  Term is abstract; cannot be instantiated
+|  new Term()
+|  ^--------^
+
+jshell&gt; p1 instanceof Pager
+$.. ==&gt; true
+
+jshell&gt; p1 instanceof Term
+$.. ==&gt; true
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>In addition, define an overriding <tt>equals</tt> method that returns <tt>true</tt> if any two terminals (not necessarily only pagers; can even be a mix of different types of terminals) have the same identifier, or <tt>false</tt> otherwise.
+
+</p><pre style="position: relative;">jshell&gt; t1.equals(p1)
+$.. ==&gt; true
+
+jshell&gt; p1.equals(t1)
+$.. ==&gt; true
+
+jshell&gt; p1.equals(new Pager("pager1"))
+$.. ==&gt; true
+
+jshell&gt; t1.equals(new Pager("pager1"))
+$.. ==&gt; true
+
+jshell&gt; p1.equals("pager1")
+$.. ==&gt; false
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Level 2</h2>
+
+<p>A transmitter is the host that food pagers communicate with.
+Write a class <tt>Transmitter</tt> with a constructor that takes in a unique string identifier and creates the transmitter as a host (<tt>Host</tt>).
+
+</p><p>Next, include a <tt>snd</tt> method to enable a terminal (e.g. a pager) to initiate the handshake with a host (e.g. a transmitter).
+
+</p><pre style="position: relative;">new Pager("pager1").snd(new Transmitter("transmit1"))
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Note that the above returns a host.
+
+</p><p>Lastly, define an overriding <tt>equals</tt> method that returns <tt>true</tt> if two hosts (not necessarily only transmitters; can even be a mix of different types of hosts) have the same identifier, or <tt>false</tt> otherwise.
+
+</p><pre style="position: relative;">$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Pager p1 = new Pager("pager1")
+p1 ==&gt; pager1
+
+jshell&gt; Transmitter r1 = new Transmitter("transmit1")
+r1 ==&gt; transmit1
+
+jshell&gt; p1.snd(r1)
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1
+
+jshell&gt; p1.snd(r1).equals(r1)
+$.. ==&gt; true
+
+jshell&gt; Host h1 = r1
+h1 ==&gt; transmit1
+
+jshell&gt; new Host()
+|  Error:
+|  Host is abstract; cannot be instantiated
+|  new Host()
+|  ^--------^
+
+jshell&gt; p1.snd(r1).equals(h1)
+$.. ==&gt; true
+
+jshell&gt; r1.equals(h1)
+$.. ==&gt; true
+
+jshell&gt; h1.equals(p1)
+$.. ==&gt; false
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Reminder: ensure that your classes are NOT cyclic dependent throughout all levels.
+
+</p><h2>Level 3</h2>
+
+<p>Let us continue with the next phase of the handshake.
+After a host obtains <tt>snd</tt> from a terminal, it can proceed to send <tt>rcv</tt> back to the terminal.
+
+</p><pre style="position: relative;">new Pager("pager1").snd(new Transmitter("transmit1")).rcv()
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Note that the above will return a terminal.
+
+</p><pre style="position: relative;">$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Pager p1 = new Pager("pager1")
+p1 ==&gt; pager1
+
+jshell&gt; Transmitter r1 = new Transmitter("transmit1")
+r1 ==&gt; transmit1
+
+jshell&gt; p1.snd(r1).rcv()
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager1
+
+jshell&gt; p1.snd(r1).rcv().equals(p1)
+$.. ==&gt; true
+
+jshell&gt; p1.snd(r1).equals(r1)
+$.. ==&gt; true
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>From the last test case above, the host transmitter that is returned from <tt>p1.snd(r1)</tt> is the same as <tt>r1</tt> (as deemed by the <tt>equals</tt> method).  
+However, the <tt>rcv</tt> method cannot be invoked from <tt>r1</tt> straightaway since it does not follow from <tt>snd</tt>.
+
+</p><pre style="position: relative;">jshell&gt; r1.rcv()
+|  Error:
+|  cannot find symbol
+|    symbol:   method rcv()
+|  r1.rcv()
+|  ^----^
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Level 4</h2>
+
+<p>We are now ready to complete the handshake by including the <tt>ack</tt> method.
+
+</p><pre style="position: relative;">new Pager("pager1").snd(new Transmitter("transmit1")).rcv().ack()
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Note that the above will return a host with a connection established to a terminal.
+
+</p><pre style="position: relative;">$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Pager p1 = new Pager("pager1")
+p1 ==&gt; pager1
+
+jshell&gt; Transmitter r1 = new Transmitter("transmit1")
+r1 ==&gt; transmit1
+
+jshell&gt; p1.snd(r1).rcv().ack()
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager1 &gt;--ack--&gt; transmit1
+
+jshell&gt; p1.snd(r1).rcv().equals(p1)
+$.. ==&gt; true
+
+jshell&gt; p1.ack()
+|  Error:
+|  cannot find symbol
+|    symbol:   method ack()
+|  p1.ack()
+|  ^----^
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>From the above, we observe that the pager terminal is the same throughout the handshake (as deemed by the <tt>equals</tt> method).
+However, the <tt>ack</tt> method cannot be invoked from <tt>p1</tt> before handshaking commences.
+
+</p><p>The following shows that the host transmitter also remains the same throughout the handshake.
+
+</p><pre style="position: relative;">jshell&gt; p1.snd(r1).rcv().ack().equals(r1)
+$.. ==&gt; true
+
+jshell&gt; p1.snd(r1).rcv().ack().equals(p1.snd(r1))
+$.. ==&gt; true
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Level 5</h2>
+
+<p>We now add more terminals to the same host.
+Suppose a transmitter <tt>r1</tt> has established a connection to pager <tt>p1</tt>.
+The following demonstrates how another pager <tt>p2</tt> can be included.
+You may assume that a terminal that has already established communication with a host will not establish the connection again.
+
+</p><pre style="position: relative;">jshell&gt; Pager p1 = new Pager("pager1")
+p1 ==&gt; pager1
+
+jshell&gt; Transmitter r1 = new Transmitter("transmit1")
+r1 ==&gt; transmit1
+
+jshell&gt; p1.snd(r1)
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1
+
+jshell&gt; p1.snd(r1).rcv().ack()
+$.. ==&gt; pager1 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager1 &gt;--ack--&gt; transmit1
+
+jshell&gt; Pager p2 = new Pager("pager2")
+p2 ==&gt; pager2
+
+jshell&gt; Host h1 = p2.snd(p1.snd(r1).rcv().ack()).rcv().ack()
+h1 ==&gt; pager2 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager2 &gt;--ack--&gt; transmit1
+
+jshell&gt; Host h2 = p2.snd(r1).rcv().ack()
+h2 ==&gt; pager2 &gt;--snd--&gt; transmit1 &gt;--rcv--&gt; pager2 &gt;--ack--&gt; transmit1
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Although the last two test cases "look" similar, <tt>h1</tt> establishes connections to <tt>p1</tt> and then <tt>p2</tt>, while <tt>h2</tt> establishes connection to only <tt>p2</tt>.
+To see this, define a <tt>broadcast</tt> method in the host that broadcasts a beep to the connected terminals in the order they are added.
+Note that output arises from the respective terminals (not the host).
+
+</p><pre style="position: relative;">jshell&gt; h1.broadcast()
+pager1:beep
+pager2:beep
+
+jshell&gt; h2.broadcast()
+pager2:beep
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>The following shows how <tt>broadcast</tt> behaves at different parts of the handshake sequence.
+
+</p><pre style="position: relative;">jshell&gt; p1.snd(r1).broadcast() // p1 has yet to establish connection
+
+jshell&gt; p1.snd(r1).rcv().ack().broadcast() // p1 has established connection
+pager1:beep
+
+jshell&gt; p2.snd(p1.snd(r1).rcv().ack()).broadcast() // p2 has yet to establish connection after p1
+pager1:beep
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Lastly, to ensure that handshakes from different terminals do not interfere with one another, incomplete handshakes cannot be passed to <tt>snd</tt>.
+The following will give a compilation error.
+
+</p><pre style="position: relative;">jshell&gt; p2.snd(p1.snd(r1)).rcv().ack()
+|  Error:
+|  incompatible types: ...
+|  p2.snd(p1.snd(r1)).rcv().ack()
+|         ^--------^
+</pre>
+
+</html>

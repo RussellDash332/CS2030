@@ -1,0 +1,224 @@
+<html>
+<h3>Java Streams</h3>
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a>
+<h4>Topic Coverage</h4>
+<ul>
+<li>Application of Java Streams</li>
+</ul>
+<h4>Requirements</h4>
+<ul>
+<li>Java Streams are to be used for the method implementations as specified in this assignment <!--
+<li>Program style: adherance to <a href="https://www.comp.nus.edu.sg/~cs2030/style/" mce_href="https://www.comp.nus.edu.sg/~cs2030/style/" target="_blank">CS2030 Java Style Guide</a></li>
+--> </li>
+</ul>
+<!--
+<h4>Problem Description</h4>
+<p>To get you familiar with a different  -->
+<h4>The Tasks</h4>
+<p>There are several tasks in this assignment.   <!-- You need to complete ALL the tasks. The tasks pre-supposes familiarity with the primitive type <tt>IntStream</tt> and hence some method signatures take primitive arrays as arguments. However, if you are familiar with object <tt>Streams</tt>, you are allowed to change the method parameter type from primitive array to <tt>List</tt> instead.   --> <!-- This task is divided into several levels. Read through all the levels  (from first to last, then from last to first) to see how the different levels are related. You may start from any level.</p>
+--></p>
+<p>For each task, you are to define the appropriate method(s) within the <tt>Main</tt> class in <tt>Main.java</tt>.
+You may also submit other utility classes if necessary.</p>
+
+<!--
+<li>define a separate class with the <tt>main</tt> method to handle input and output; </li>
+<li>check for output format correctness using the <tt>diff</tt> utility (see specific level for usage details).  Note that only one test case is provided for this; </li>
+<li>check for styling errors by invoking <tt>checkstyle</tt>. For example, to check styling for all java files
+<pre>$ checkstyle *.java
+</pre>
+</li>
+<li>archive and save a copy of all source files into the appropriate level directory (see specific level for usage details). </li>
+--> 
+
+
+<h4>Task 1 -- Count Twin Primes</h4>
+
+<p>A prime number is a natural number greater than <tt>1</tt> that is only divisible by <tt>1</tt> and itself.  A twin prime is one of a pair of prime numbers with a difference of <tt>2</tt>.  For example, <tt>41</tt> and <tt>43</tt> are twin primes.</p>
+<p>Define the method <tt>countTwinPrimes</tt> in class <tt>Main</tt> which takes in an integer n and counts the number of distinct twin primes from 0 until n inclusive.</p>
+<pre>static long countTwinPrimes(int n)</pre>
+
+<p>Save your <tt>Main</tt> class in the file <tt>Main.java</tt>.
+
+</p><pre>jshell&gt; Main.countTwinPrimes(100)
+$.. ==&gt; 15
+
+jshell&gt; Main.countTwinPrimes(2)
+$.. ==&gt; 0
+
+jshell&gt; Main.countTwinPrimes(3)
+$.. ==&gt; 1
+</pre>
+
+<!--
+<p>Click <a href="task_view.php?tid=4862" target="_blank">here</a> to submit to CodeCrunch.</p>
+<p>Check the format correctness of the output by typing the following Unix command</p>
+<pre>$ java Main < test1.in | diff - test1.out
+</pre>
+-->
+
+<!--
+<h4>Task 2 &mdash; Greatest Common Divisor</h4>
+
+<p>Define the method <tt>gcd</tt> in class <tt>Main</tt> that takes in two positive integers <tt>m</tt> and <tt>n</tt> and returns the greatest common divisor using the <a href="https://en.wikipedia.org/wiki/Euclidean_algorithm" target="_blank">Euclidean Algorithm</a>.</p>
+
+<pre>static int gcd(int m, int n)
+</pre>
+
+<p>Save your <tt>Main</tt> class in the file <tt>Main.java</tt>.
+
+<pre>
+jshell&gt; Main.gcd(539, 84)
+$.. ==&gt; 7
+
+jshell&gt; Main.gcd(84, 539)
+$.. ==&gt; 7
+
+jshell&gt; Main.gcd(1,1)
+$.. ==&gt; 1
+</pre>
+
+<p>Click <a href="task_view.php?tid=4863" target="_blank">here</a> to submit to CodeCrunch.</p>
+
+<table>
+<tbody>
+<tr>
+<td>
+<h4>Task 2</h4>
+<p>Square Numbers</p>
+<p>Define the method <tt>isSquare</tt> that takes in an integer <tt>n</tt> and determines if <tt>n</tt> is a square number.</p>
+<p>A perfect square is the square of an integer. Examples are <tt>9 (= 3&times;3)</tt>, <tt>4 (= 2&times;2)</tt>, and <tt>1 (= 1&times;1)</tt>.</p>
+<pre>static boolean isSquare(int n)
+</pre>
+<p>The following is a sample run of the program.  User input is <span style="text-decoration: underline;" mce_style="text-decoration: underline;">underlined</span>.                                               
+<table border="1">
+<tbody>
+</tbody>
+</table>
+<table style="width: 800px;" border="1" cellpadding="10">
+<tbody>
+<tr>
+<td>
+-->
+
+<h4>Task 2 -- Reverse String</h4>
+<p>Define the method <tt>reverse</tt> in class <tt>Main</tt> that takes in a <tt>String str</tt> and returns the reverse of <tt>str</tt>.</p>
+<pre>static String reverse(String str)
+</pre>
+
+<p>Save your <tt>Main</tt> class in the file <tt>Main.java</tt>.
+<!--
+</pre>
+<p>The following is a sample run of the program.  User input is <span style="text-decoration: underline;" mce_style="text-decoration: underline;">underlined</span>.   Ensure that the last line of output is followed by a newline character.</p>
+-->
+</p><pre>jshell&gt; Main.reverse("orange")
+$.. ==&gt; "egnaro"
+
+jshell&gt; Main.reverse("one two three")
+$.. ==&gt; "eerht owt eno"
+
+jshell&gt; Main.reverse("")
+$.. ==&gt; ""
+
+jshell&gt; Main.reverse("the quick brown fox jumps over the lazy dog.")
+$.. ==&gt; ".god yzal eht revo spmuj xof nworb kciuq eht"
+</pre>
+
+<!--
+<p>Click <a href="task_view.php?tid=5096" target="_blank">here</a> to submit to CodeCrunch.</p>
+-->
+
+<h4>Task 3 -- Counting Repeats</h4>
+<p>Define the method <tt>countRepeats</tt> in class <tt>Main</tt> that takes in an integer array&nbsp;of digits <tt>0</tt> to <tt>9</tt> and returns the number of occurrences of adjacent repeated digits.&nbsp; You may assume that there are at least three elements in the array.</p>
+
+<pre>static long countRepeats(int... array)
+</pre>
+
+<p>For example,</p>
+<ul>
+<li> the array <tt>{0, 1, <span style="text-decoration: underline;">2, 2</span>, 1, <span style="text-decoration: underline;">2, 2</span>, 1, <span style="text-decoration: underline;">3, 3</span>, 1}</tt> has three occurrences of repeated digits </li>
+<li> the array <tt>{0, <span style="text-decoration: underline;">1, 1, 1, 1</span>, 2}</tt> has one occurrence </li>
+</ul>
+
+<p>Save your <tt>Main</tt> class in the file <tt>Main.java</tt>.
+
+</p><pre>jshell&gt; Main.countRepeats(0,1,2,2,1,2,2,1,3,3,1)
+$.. ==&gt; 3
+</pre>
+
+<!--
+<p>Click <a href="task_view.php?tid=4211" target="_blank">here</a> to submit to CodeCrunch.</p>
+-->
+
+<h4>Task 4 -- Normalized Mean</h4>
+
+<p>Given a list <tt>T</tt> of <tt>n</tt> integers <tt>t<sub>i</sub></tt>, the normalized value of each <tt>t<sub>i</sub></tt> is defined as</p>
+<img src="./gif.latex" border="0" alt="">
+<p>where <tt>min<sub>T</sub></tt> and <tt>max<sub>T</sub></tt> represent the minimum and maximum values among all <tt>n</tt> values in <tt>T</tt>.</p>
+
+<p>For example, the list of values <tt>{1,2,3,4,5}</tt> upon normalizing will become <tt>{0,0.25,0.5,0.75,1}</tt> since <tt>min<sub>T</sub> = 1</tt> and <tt>max<sub>T</sub>=5</tt>.With the set of normalized values generated, the normalized mean can be easily computed to be <tt>0.5</tt>.</p>
+<p>Notice from the above that finding the normalized mean requires values in the list to be accessed twice: once for finding the maximum/minimum, and a second time to compute each normalized value and finding the mean.</p>
+<p>Alternatively, we can re-expressed the normalized mean as</p>
+<p><img src="./gif2.latex" border="0" alt=""></p>
+<p>This way we need to only access each element in the list exactly once.</p>
+<p>Define the method <tt>normalizedMean</tt> in class <tt>Main</tt> that takes in a Stream of Integer elements and returns the normalized mean</p>
+<pre>static double normalizedMean(Stream&lt;Integer&gt; stream)
+</pre>
+<p>Save your <tt>Main</tt> class in the file <tt>Main.java</tt>.
+
+</p><pre>jshell&gt; Main.normalizedMean(Stream.&lt;Integer&gt;of(1, 2, 3, 4, 5))
+$.. ==&gt; 0.5
+
+jshell&gt; Main.normalizedMean(Stream.&lt;Integer&gt;of(1, 1))
+$.. ==&gt; 0.0
+
+jshell&gt; Main.normalizedMean(Stream.&lt;Integer&gt;of(1))
+$.. ==&gt; 0.0
+
+jshell&gt; Main.normalizedMean(Stream.&lt;Integer&gt;of())
+$.. ==&gt; 0.0
+<!--
+<p>Click <a href="task_view.php?tid=4864" target="_blank">here</a> to submit to CodeCrunch.</p>
+                                         
+<h4>Task 5 &mdas; Prime Factors</h4>
+
+<p>Write a method <tt>factors</tt> with that takes in an integer <tt>x</tt> and returns a <tt>IntStream</tt> consisting of the factors of <tt>x</tt>.</p>
+<pre>static IntStream factors(int x)
+</pre>
+<p>As an example, <tt>factors(6)</tt> should return the stream of integers <tt>1, 2, 3, 6</tt>.</p>
+<p>Thereafter, write a method <tt>primeFactors</tt> that takes in an integer <tt>x (> 1)</tt> and returns a <tt>IntStream</tt> consisting of the prime factors of&nbsp;<tt>x</tt>.</p>
+<p>A prime factor is a factor that is a prime number, excluding <tt>1</tt>. For instance, prime factors of <tt>6</tt> are <tt>2</tt> and <tt>3</tt>.</p>
+<pre>static IntStream primeFactors(int x)
+</pre>
+<p>The following is a sample run of the program.  User input is <span style="text-decoration: underline;" mce_style="text-decoration: underline;">underlined</span>.</p>
+<table border="1">
+<tbody>
+<tr>
+<td><tt> <span style="text-decoration: underline;" mce_style="text-decoration: underline;">6</span><br /> Prime factors of 6 are: 2 3<br /> </tt></td>
+</tr>
+<tr>
+<td><tt> <span style="text-decoration: underline;" mce_style="text-decoration: underline;">12</span><br /> Prime factors of 12 are: 2 3<br /> </tt></td>
+</tr>
+<tr>
+<td><tt> <span style="text-decoration: underline;" mce_style="text-decoration: underline;">731</span><br /> Prime factors of 731 are: 17 43<br /> </tt></td>
+</tr>
+</tbody>
+</table>
+<p>Click <a href="task_view.php?tid=4213" mce_href="task_view.php?tid=4213" target="_blank">here</a> to submit to CodeCrunch.</p>
+<p>Check the format correctness of the output by typing the following Unix command</p>
+<pre>$ java Main < test5.in | diff - test5.out
+</pre>
+<p>Make a copy of your Java programs to the level directory by typing the Unix commands</p>
+<pre>$ jar cvf stream5.jar *.java
+$ mkdir stream5
+$ cp *.java stream5
+$ cp stream5.jar stream5
+</pre>
+<p>Verify your jar archive using</p>
+<pre>$ jar tvf ~/stream5/stream5.jar
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+-->
+</html>

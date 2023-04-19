@@ -1,0 +1,300 @@
+<h2>CS2030 Practical Assessment #2</h2>
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a>
+
+<p>In programming, an expression allows us to combine values and
+operators together so as to create a new value.
+The following is an example of an arithmetic expression comprising of
+the addition <tt>+</tt> operator (more specifically, binary
+operator acting on two operands).
+
+</p><pre style="position: relative;">2 + 3 + 4
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>To evaluate an expression, the operator specifies the
+associativity that dictates the order of operation.
+Since the addition operator is left-to-right associative, the above
+expression is evaluated as
+
+</p><pre style="position: relative;">2 + 3 + 4 =
+5 + 4 =
+9
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Here is another example involving the addition <tt>+</tt> and
+multiplication <tt>*</tt> (binary) operators.
+
+</p><pre style="position: relative;">2 + 3 * 4 + 5
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Operators are ordered based on their precedence value such that the lower the precedence value, the higher the precedence.
+For illustration purposes, suppose the addition operator has
+precedence value <tt>4</tt> and multiplication has precedence value
+<tt>3</tt>, i.e. multiplication has a higher precedence.
+The expression is now evaluated as
+
+</p><pre style="position: relative;">2 + 3 * 4 + 5 =
+2 + 12 + 5 =
+14 + 5 =
+19
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Task</h2>
+
+<p>In this task, you are to write a generic expression evaluator that
+makes use of generic operators.
+While the sample test cases below makes use of integer arithmetic
+expressions exclusively, you should bear in mind that the expression
+evaluation can be performed on expressions of any type.
+You may also assume that all operators are binary and evaluated with left-to-right associativity.
+
+</p><h2>Take Note!</h2>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>, unless otherwise specified.</li>
+<li>Ensure that that your classes are NOT cyclic dependent.</li>
+<li>Do NOT use enumerations, <tt>enum</tt>.
+</li><li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>Comparable</tt>, <tt>Integer</tt>, <tt>Object</tt> and <tt>String</tt> from <tt>java.lang</tt>
+</li><li>primitive or generic stream implementations from <tt>java.util.stream</tt>
+</li><li>functional interfaces from <tt>java.util.function</tt>
+</li><li><tt>java.util.Optional</tt>
+</li></ul>
+</li><li>Use <tt>&amp;&amp;</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+</li><li>You are NOT allowed to use java keywords/literals: <tt>null</tt>, <tt>instanceof</tt> (except checking for an instance of its own class)
+</li><li>You are NOT allowed to use the <tt>Optional</tt> methods: <tt>isPresent()</tt>, <tt>isEmpty()</tt>, and <tt>get()</tt> 
+</li><li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>Class</tt>
+</li><li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+</li><li>You DO NOT need to consider bounded wildcards.
+</li><li>You are NOT allowed to define anonymous inner classes; define lambdas instead.
+</li><li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+</li></ul>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<h2>Level 1</h2>
+
+<p>We shall begin by defining the <tt>Operator&lt;T&gt;</tt> class
+comprising of the following:
+
+</p><ul>
+<li>an <tt>of</tt> method that takes in a <tt>BinaryOperator&lt;T&gt;</tt> and a non-zero integer precedence value;
+</li><li>a <tt>toString</tt> method that returns the precedence value of the operator as a string;
+</li><li>an <tt>apply</tt> method that takes in two arguments of type <tt>T</tt> and returns the resulting value (of type <tt>T</tt>) after application of the operator.
+</li><li>a <tt>compareTo</tt> method that follows the specifications of the <tt>Comparable</tt> interface.
+</li></ul>
+   
+<pre style="position: relative;">jshell&gt; Operator&lt;Integer&gt; add = Operator.&lt;Integer&gt;of((x, y) -&gt; x + y, 4)
+add ==&gt; Operator of precedence 4
+
+jshell&gt; add.apply(5, 6)
+$.. ==&gt; 11
+
+jshell&gt; Operator&lt;Integer&gt; mul = Operator.&lt;Integer&gt;of((x, y) -&gt; x * y, 3)
+mul ==&gt; Operator of precedence 3
+
+jshell&gt; mul.apply(5, 6)
+$.. ==&gt; 30
+
+jshell&gt; add instanceof Comparable
+$.. ==&gt; true
+
+jshell&gt; List.of(add, mul).stream().
+   ...&gt; sorted().
+   ...&gt; map(op -&gt; op.apply(5, 6)).
+   ...&gt; toList()
+$.. ==&gt; [30, 11]
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Level 2</h2>
+
+<p>Write the <tt>Expr&lt;T&gt;</tt> class to perform left-to-right expression evaluation with the following methods:
+
+</p><ul>
+<li>a method <tt>of</tt> that takes in a value of type <tt>T</tt> and initializes the expression with the value;
+</li><li>a method <tt>op</tt> that takes in an operator followed by another value, and returns the result of the evaluation after applying the operator;
+</li><li>a <tt>toString</tt> method that returns the result of the evaluation as a string enclosed in round brackets.
+</li></ul>
+
+<p>In this level, you may assume that an expression comprises only one type of operator.
+
+</p><pre style="position: relative;">jshell&gt; Expr&lt;Integer&gt; expr = Expr.&lt;Integer&gt;of(2)
+expr ==&gt; (2)
+
+jshell&gt; Operator&lt;Integer&gt; add = Operator.&lt;Integer&gt;of((x, y) -&gt; x + y, 4)
+add ==&gt; Operator of precedence 4
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(add, -3)
+$.. ==&gt; (-1)
+
+jshell&gt; expr
+expr ==&gt; (2)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(add, -3).op(add, 4).op(add, -5)
+$.. ==&gt; (-2)
+
+jshell&gt; Operator&lt;Integer&gt; mul = Operator.&lt;Integer&gt;of((x, y) -&gt; x * y, 3)
+mul ==&gt; Operator of precedence 3
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, -3).op(mul, 4).op(mul, -5)
+$.. ==&gt; (120)
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<h2>Level 3</h2>
+
+<p>Modify the <tt>Expr</tt> class such that expression evaluation now involves a mix of operators of different precedence.
+
+</p><pre style="position: relative;">jshell&gt; Operator&lt;Integer&gt; add = Operator.&lt;Integer&gt;of((x, y) -&gt; x + y, 4)
+add ==&gt; Operator of precedence 4
+
+jshell&gt; Operator&lt;Integer&gt; mul = Operator.&lt;Integer&gt;of((x, y) -&gt; x * y, 3)
+mul ==&gt; Operator of precedence 3
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, 3).op(add, 4) // 2 * 3 + 4
+$.. ==&gt; (10)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(add, 3).op(mul, 4) // 2 + 3 * 4
+$.. ==&gt; (14)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(add, 3).op(mul, 4).op(mul, 5) // 2 + 3 * 4 * 5
+$.. ==&gt; (62)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(add, 3).op(mul, 4).op(add, 5) // 2 + 3 * 4 + 5
+$.. ==&gt; (19)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, 3).op(add, 4).op(mul, 5) // 2 * 3 + 4 * 5
+$.. ==&gt; (26)
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Here's a hint...
+suppose the current expression is <tt>2 + 3</tt>.
+If the next operator is an addition, say <tt>2 + 3 + 4</tt>, then it
+could be first evaluated to <tt>5 + 4</tt>.
+However, if the next operator is a multiplication, 
+say <tt>2 + 3 * 4</tt>, then we cannot evaluate <tt>2 + 3</tt> first; we need to evaluate the expression starting with <tt>3 * 4</tt> (and possibly anything after) to a value, and then perform the addition.
+
+</p><h2>Level 4</h2>
+
+<p>Thus far, creating the method pipeline for expression evaluation is rather cumbersome.
+We would like to simplify the process, but specifically for integer expression evaluation.
+
+</p><p>You are given the following <tt>AbstractIntExpr</tt> class:
+
+</p><pre style="position: relative;">abstract class AbstractIntExpr extends Expr&lt;Integer&gt; {
+    protected static final Operator&lt;Integer&gt; addition = 
+        Operator.&lt;Integer&gt;of((x, y) -&gt; x + y, 4);
+    protected static final Operator&lt;Integer&gt; multiplication = 
+        Operator.&lt;Integer&gt;of((x, y) -&gt; x * y, 3);
+
+    protected AbstractIntExpr(Expr&lt;Integer&gt; expr) {
+        super(expr);
+    }
+}
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Write an <tt>IntExpr</tt> class as a subclass of <tt>AbstractIntExpr</tt> with the following methods:
+
+</p><ul>
+<li>a <tt>of</tt> method that takes in an integer value and creates an integer expression of the value;
+</li><li>a <tt>add</tt> method that takes in an integer value and returns the result after performing integer expression evaluation by adding the value
+</li><li>a <tt>mul</tt> method that takes in an integer value and returns the result after performing integer expression evaluation by multiplying the value
+</li></ul>
+
+<pre style="position: relative;">jshell&gt; IntExpr.of(2).mul(3).add(4)
+$.. ==&gt; (10)
+
+jshell&gt; IntExpr.of(2).add(3).mul(4)
+$.. ==&gt; (14)
+
+jshell&gt; IntExpr.of(2).add(3).mul(4).mul(5)
+$.. ==&gt; (62)
+
+jshell&gt; IntExpr.of(2).add(3).mul(4).add(5)
+$.. ==&gt; (19)
+
+jshell&gt; IntExpr.of(2).mul(3).add(4).mul(5)
+$.. ==&gt; (26)
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>In addition, include appropriate operators and methods to support the following operators:
+
+</p><dl>
+<dt><tt>sub</tt>
+</dt><dd>subtraction, e.g. <tt>3 - 2 = 1</tt> of precedence value <tt>4</tt>; 
+</dd><dt><tt>div</tt>
+</dt><dd>integer division, e.g. <tt>3 / 2 = 1</tt> of precedence value <tt>3</tt>;
+</dd><dt><tt>exp</tt>
+</dt><dd>exponentiation (raise to the power of), e.g. <tt>3^2 = 9</tt> of precedence value <tt>2</tt>
+</dd></dl>
+
+<pre style="position: relative;">jshell&gt; IntExpr.of(36).div(6).mul(3).add(2).exp(2).sub(8)
+$.. ==&gt; (14)
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>You should craft other test cases to test out expression evaluation.
+
+</p><h2>Level 5</h2>
+
+<p>Lastly, we would like to check that expression evaluation is performed lazily, i.e. only when the result is needed.
+The following sample run includes a debugging output in the definition of the <tt>add</tt> and <tt>mul</tt> operators.
+Each time an operator is used, a symbol (in this case <tt>#</tt>) is output.
+Clearly, the symbols should be output before the value.
+
+</p><pre style="position: relative;">jshell&gt; Operator&lt;Integer&gt; add = Operator.&lt;Integer&gt;of((x, y) -&gt; {
+   ...&gt;     System.out.println("#");
+   ...&gt;     return x + y;
+   ...&gt; }, 4)
+add ==&gt; Operator of precedence 4
+
+jshell&gt; Operator&lt;Integer&gt; mul = Operator.&lt;Integer&gt;of((x, y) -&gt; {
+   ...&gt;     System.out.println("#");
+   ...&gt;     return x * y;
+   ...&gt; }, 3)
+mul ==&gt; Operator of precedence 3
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, 3).op(add, 4).op(mul, 5)
+#
+#
+#
+$.. ==&gt; (26)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, 3).op(add, 4).op(mul, 5).hashCode() != 0
+$.. ==&gt; true
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Notice in the last test case that the expression is not evaluated as the result is not necessary; 
+we only require the hash code by calling the <tt>hashCode()</tt> method of the expression.
+Hence no symbols are output, i.e. no operation is actually done.
+This behaviour should also hold when using <tt>IntExpr</tt>.
+
+</p><p>In addition, we now allow the following:
+
+</p><pre style="position: relative;">jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, Expr.of(3).op(add, 4)).op(mul, 5)
+#
+#
+#
+$.. ==&gt; (70)
+
+jshell&gt; Expr.&lt;Integer&gt;of(2).op(mul, Expr.of(3).op(add, 4)).op(mul, 5).hashCode() != 0
+$.. ==&gt; true
+<div class="open_grepper_editor" title="Edit &amp; Save To Grepper"></div></pre>
+
+<p>Include the overloaded <tt>op</tt> method in the <tt>Expr</tt> class that takes in an operator, followed by an expression.
+This is representative of using brackets to prioritize the evaluation over all other operators.
+As observed from the sample output, no expression is evaluated until the value is needed.
+</p>
+
+<p>There is no need to further include additional operation methods in the <tt>IntExpr</tt> class to take in expressions, as this is a relatively trivial exercise.
+</p></div></div>                          
+</div>
+</div>
+</html>

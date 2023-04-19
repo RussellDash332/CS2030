@@ -1,0 +1,6 @@
+Fraction.of(1, 2).add(Fraction.of(1, 4)).reduce()
+Fraction.of(-1, 2).add(Fraction.of(1, 4)).reduce()
+Fraction.of(1, 2).sub(Fraction.of(1, 4)).reduce()
+Fraction.of(1, 4).sub(Fraction.of(1, 2)).reduce()
+Fraction.of(1, 2).mul(Fraction.of(2, 1)).reduce()
+Fraction.of(1, 2).mul(Fraction.of(2, 0)).reduce()

@@ -1,0 +1,1481 @@
+<html>
+<h3>CS2030 Project - Discrete Event Simulator</h3>
+
+<a href="https://russelldash332.github.io/CS2030/">Back to homepage</a><br>
+<a href="#more">More test cases</a>
+
+<p>A discrete event simulator is a software that simulates the changes in the state of a system across time, with each transition from one state of the system to another triggered via an event.
+Such a system can be used to study many complex real-world systems such as queuing to order food at a fast-food restaurant.</p>
+
+<p>An event occurs at a particular time, and each event alters the state of the system and may generate more events.  States remain unchanged between two events (hence the term <strong>discrete</strong>), and this allows the simulator to jump from the time of one event to another. 
+Some simulation statistics are also typically tracked to measure the performance of the system.</p>
+
+<p>The following illustrates a queuing system comprising a single service point <b>S</b> with one customer queue.</p>
+
+<div><img src="data:image/png;base64,%0A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" alt="Embedded Image"></div>
+
+<p>In this exercise, we consider a multi-server system comprising the following:</p>
+<ul>
+<li>There are a number of <strong>server</strong>s; each server can serve one customer at a time.</li>
+<li>Each customer has a <strong>service time</strong> (time taken to serve the customer). </li>
+<li>When a <strong>customer</strong> arrives (<tt><strong>ARRIVE</strong></tt> event):
+<ul>
+<li>if the server is idle (not serving any customer), then the server starts serving the customer immediately (<tt><strong>SERVE</strong></tt> event).</li>
+<li>if the server is serving another customer, then the customer that just arrived waits in the queue (<tt><strong>WAIT</strong></tt> event). </li>
+<li>if the server is serving one customer with a second customer waiting in the queue, and a third customer arrives, then this latter customer leaves (<tt><strong>LEAVE</strong></tt> event).
+In other words, there is at most one customer waiting in the queue.</li>
+<li>When the server is done serving a customer (<tt><strong>DONE</strong></tt> event), the server can start serving the customer waiting at the front of the queue (if any).</li>
+</ul>
+</li><li>If there is no waiting customer, then the server becomes idle again.</li>
+</ul>
+
+<p>Notice from the above description that there are five events in the system, namely: <tt><b>ARRIVE</b></tt>,  <tt><b>SERVE</b></tt>, <tt><b>WAIT</b></tt>, <tt><b>LEAVE</b></tt> and <tt><b>DONE</b></tt>. 
+For each customer, these are the only possible event transitions:</p>
+<ul>
+<li> <tt>ARRIVE</tt> -> <tt>SERVE</tt> -> <tt>DONE</tt> </li>
+<li> <tt>ARRIVE</tt> -> <tt>WAIT</tt> -> <tt>SERVE</tt> -> <tt>DONE</tt> </li>
+<li> <tt>ARRIVE</tt> -> <tt>LEAVE</tt> </li>
+</ul>
+
+<p>In essence, an event is tied to one customer.  
+Depending on the current state of the system, triggering an event will result in the next state of the system, and possibly the next event.
+Events are also processed via a queue.
+At the start of the simulation, the queue only contains the customer arrival events.
+With every simultation time step, an event is retrieved from the queue to be processed, and any resulting event added to the queue.
+This process is repeated until there are no events left in the queue.
+
+</p><h4>Priority Queuing</h4>
+
+<p>The <tt>PriorityQueue</tt> (a mutable class) can be used to keep a collection of elements, where each element is given a certain priority.</p>
+<ul>
+<li>Elements may be added to the queue with the <tt>add(E e)</tt> method.  The queue is modified;</li>
+<li>The <tt>poll()</tt> method may be used to retrieve and remove the element with the highest priority from the queue. 
+It returns an object of type <tt>E</tt>, or <tt>null</tt> if the queue is empty. The queue is modified.</li>
+</ul>
+<!--
+<p>To enable <tt>PriorityQueue</tt> to order events, instantiate a <tt>PriorityQueue</tt> object using the constructor that takes in a <em>Comparator</em> object. <em>For more details, refer to the Java API Specifications.</em> 
+-->
+<!--  If you design is right, you should only change the code in four places: (i) initialize list of events, (ii) schedule an event, (iii) get the next event, (iv) checking if there is still an event.  (Hint: You should be able to implement a Comparator without getter getTime()) --><p></p>
+
+<h4>Take Note</h4>
+
+<p>The requirements of this project will be released in stages.
+For each level <tt>N</tt>, you will need to create a driver class <tt>MainN</tt> in the file <tt>MainN.java</tt>.
+<!-- As new levels are introduced, feel free to modify the driver classes of any previous levels so as to maintain the desired correctness in all levels. -->
+
+</p><p>All classes related to the simulation are to be packaged in <tt>cs2030.simulator</tt>, with <tt>Simulator</tt> as the only <tt>public</tt> facing class.
+The only outside-package clients allowed are the <tt>MainN</tt> driver classes.  
+Define a <tt>main</tt> method in each driver class that reads input and passes the input to the <tt>Simulator::simulate(..)</tt> method.  This method should be overloaded due to the different level requirements.
+
+</p><h4>Level 0</h4>
+
+<p>The objective of this level is to provide guidance in setting up some of the classes, as well as the priority queue for the actual simulation.  
+As this level is not tested, feel free to skip the level entirely and proceed to the next level.
+
+</p><p>Define a driver class <tt>Main</tt> that reads a series of distinct arrival times (not necessarily in chronological order) for each customer, creates events out of them and adds them to a priority queue.
+The priority queue is then polled so that the earlier arrival event is removed from the queue and output.
+
+</p><p>A skeleton class is given below:
+
+</p><pre>import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        List&lt;Double&gt; arrivalTimes = new ArrayList&lt;Double&gt;();
+
+        while (sc.hasNextDouble()) {
+            arrivalTimes.add(sc.nextDouble());
+        }
+        Simulator s = new Simulator(arrivalTimes);
+        s.simulate();
+    }
+}
+</pre>
+
+<p>The sequence of input arrival times are associated with each <tt>Customer</tt> having an identifier <tt>1</tt>, <tt>2</tt>, <tt>3</tt>, ... respectively.
+For each of the arrival events, create an <tt>Event</tt> that associates to the customer.
+Note that since we only consider arrival events here, it suffices to have one <tt>Event</tt> class.  However, you would soon realize there are more types of events to be considered.
+
+</p><p>Create a <tt>PriorityQueue<event></event></tt> with an appropriate <tt>Comparator</tt> that implements <tt>Comparator<event></event></tt>.  
+In your <tt>Comparator</tt> class, define the <tt>compare</tt> method that takes in two events, and returns an appropriate integer value depending on whichever is the earlier arrival event.
+
+</p><p>The following code fragment demonstrates how the priority queue <tt>pq</tt> is polled.  Events are polled and removed from <tt>pq</tt> until it becomes empty.
+
+</p><pre>while (!pq.isEmpty()) {
+    Event event = pq.poll();
+    System.out.println(event);
+}
+</pre>
+
+<p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>.
+Input is terminated with a <tt>^D</tt> (CTRL-d).
+
+</p><p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">0.500</span><br> 
+<span style="text-decoration: underline;">0.600</span><br> 
+<span style="text-decoration: underline;">0.700</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.500 1 arrives<br>
+0.600 2 arrives<br>
+0.700 3 arrives<br>
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">1.500</span><br> 
+<span style="text-decoration: underline;">0.600</span><br> 
+<span style="text-decoration: underline;">0.700</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.600 2 arrives<br>
+0.700 3 arrives<br>
+1.500 1 arrives<br>
+</tt>
+</td></tr>
+</tbody></table>
+
+<p>As you proceed through the levels, you would realize that some events would create other events which need to be added to the priority queue.
+
+</p><h4>Level 1</h4>
+
+<p>Given the number of servers and a set of customer arrival times in chronological order, output the discrete events. Also output the statistics at the end of the simulation.</p>
+
+<p>Define a driver class <tt>Main1</tt> (stored in <tt>Main1.java</tt>) that reads a series of arrival times, creates the arrival events, and starts the simulation.
+</p><p>Take note of the following assumptions:</p>
+<ul>
+<!--
+<li>The maximum number of events is 100 <strong>at any one time</strong>; </li>
+-->
+<li>The format of the input is always correct; </li>
+<li>Output of a <tt>double</tt> value, say <tt>d</tt>, is to be formatted with <tt>String.format("%.3f", d)</tt>; <!--
+<li>Inconsistencies between sample output and actual output involving <tt>-0.000</tt> and <tt>0.000</tt> can be ignored. --> </li>
+</ul>
+
+<p>As an example, given the arrival times (represented as a floating point value for simplicity) of three customers and one server, and assuming a constant service time of <tt>1.0</tt>,</p>
+
+<pre>0.500
+0.600
+0.700
+</pre>
+
+<p>The simulation starts with three arrival events</p>
+
+<pre>&lt;0.500 1 arrives&gt;
+&lt;0.600 2 arrives&gt;
+&lt;0.700 3 arrives&gt;
+</pre>
+
+<p>The next event to pick is <tt>&lt;0.500 1 arrives&gt;</tt>.  This schedules a <tt>SERVE</tt> event.
+
+</p><pre>&lt;0.500 1 serves by server 1&gt;
+&lt;0.600 2 arrives&gt;
+&lt;0.700 3 arrives&gt;
+</pre>
+
+The next event to pick is <tt>&lt;0.500 1 served&gt;</tt>.  This schedules a <tt>DONE</tt> event.
+<pre>&lt;0.600 2 arrives&gt;
+&lt;0.700 3 arrives&gt;
+&lt;1.500 1 done serving by server 1&gt;
+</pre>
+
+The next event to pick is <tt>&lt;0.600 2 arrives&gt;</tt>...
+
+<p>This process is repeated until there are no more events.</p>
+Using our example, the entire similation run results in the following output, each of the form <tt>&lt;time_event_occurred, customer_id, event_details&gt;</tt><p></p>
+<pre>0.500 1 arrives
+0.500 1 serves by server 1
+0.600 2 arrives
+0.600 2 waits at server 1
+0.700 3 arrives
+0.700 3 leaves
+1.500 1 done serving by server 1
+1.500 2 serves by server 1
+2.500 2 done serving by server 1
+</pre>
+
+<p>Finally, statistics of the system that we need to keep track of are:</p>
+<ol>
+<li>the average waiting time for customers who have been served;</li>
+<li>the number of customers served;</li>
+<li>the number of customers who left without being served.</li>
+</ol>
+
+<p>In our example, the end-of-simulation statistics are respectively, <tt>[0.450 2 1]</tt>.</p>
+
+<p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>, and starts with an integer value representing the number of servers, followed by the arrival times of the customers. Input is terminated with a <tt>^D</tt> (CTRL-d).
+
+</p><p>You will also need to compute the statistics (see problem description above) at the end of the simulation.</p>
+
+<p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">1</span><br>
+<span style="text-decoration: underline;">0.500</span><br> 
+<span style="text-decoration: underline;">0.600</span><br> 
+<span style="text-decoration: underline;">0.700</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.500 1 arrives<br>
+0.500 1 serves by server 1<br>
+0.600 2 arrives<br>
+0.600 2 waits at server 1<br>
+0.700 3 arrives<br>
+0.700 3 leaves<br>
+1.500 1 done serving by server 1<br>
+1.500 2 serves by server 1<br>
+2.500 2 done serving by server 1<br>
+[0.450 2 1]<br>
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">1</span><br>
+<span style="text-decoration: underline;">0.500</span><br> 
+<span style="text-decoration: underline;">0.600</span><br> 
+<span style="text-decoration: underline;">0.700</span><br> 
+<span style="text-decoration: underline;">1.500</span><br> 
+<span style="text-decoration: underline;">1.600</span><br> 
+<span style="text-decoration: underline;">1.700</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.500 1 arrives<br>
+0.500 1 serves by server 1<br>
+0.600 2 arrives<br>
+0.600 2 waits at server 1<br>
+0.700 3 arrives<br>
+0.700 3 leaves<br>
+1.500 1 done serving by server 1<br>
+1.500 2 serves by server 1<br>
+1.500 4 arrives<br>
+1.500 4 waits at server 1<br>
+1.600 5 arrives<br>
+1.600 5 leaves<br>
+1.700 6 arrives<br>
+1.700 6 leaves<br>
+2.500 2 done serving by server 1<br>
+2.500 4 serves by server 1<br>
+3.500 4 done serving by server 1<br>
+[0.633 3 3]
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">2</span><br>
+<span style="text-decoration: underline;">0.500</span><br> 
+<span style="text-decoration: underline;">0.600</span><br> 
+<span style="text-decoration: underline;">0.700</span><br> 
+<span style="text-decoration: underline;">1.500</span><br> 
+<span style="text-decoration: underline;">1.600</span><br> 
+<span style="text-decoration: underline;">1.700</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.500 1 arrives<br>
+0.500 1 serves by server 1<br>
+0.600 2 arrives<br>
+0.600 2 serves by server 2<br>
+0.700 3 arrives<br>
+0.700 3 waits at server 1<br>
+1.500 1 done serving by server 1<br>
+1.500 3 serves by server 1<br>
+1.500 4 arrives<br>
+1.500 4 waits at server 1<br>
+1.600 2 done serving by server 2<br>
+1.600 5 arrives<br>
+1.600 5 serves by server 2<br>
+1.700 6 arrives<br>
+1.700 6 waits at server 2<br>
+2.500 3 done serving by server 1<br>
+2.500 4 serves by server 1<br>
+2.600 5 done serving by server 2<br>
+2.600 6 serves by server 2<br>
+3.500 4 done serving by server 1<br>
+3.600 6 done serving by server 2<br>
+[0.450 6 0]
+</tt>
+</td></tr>
+</tbody>
+</table>
+
+<h4>Level 2</h4>
+<!-- <h4>Customer Queues</h4> -->
+
+<p>Rather than a constant service time, each customer now has its own service time.
+In addition, each server now has a queue of customers to allow multiple customers to queue up.  
+A customer that chooses to join a queue joins at the tail.   
+When a server is done serving a customer, it serves the next waiting customer at the head of the queue.   
+Hence, the queue should be a first-in-first-out (FIFO) structure.
+
+</p><p>Define a driver class <tt>Main2.java</tt> (stored in <tt>Main2.java</tt>)that reads the number of servers, the maximum queue length, as well as arrival and service times of each customer.
+The simulation is then performed and statistics output at the end.
+
+</p><p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>.
+The first line comprises an integer value representing the number of servers followed by an integer value for the maximum queue length.
+This is followed by the arrival and service of the customers. 
+Input is terminated with a <tt>^D</tt> (CTRL-d).
+
+
+</p><p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<span style="text-decoration: underline;">2 1</span><br>
+<span style="text-decoration: underline;">0.500 1.000</span><br> 
+<span style="text-decoration: underline;">0.600 1.000</span><br> 
+<span style="text-decoration: underline;">0.700 1.000</span><br> 
+<span style="text-decoration: underline;">1.500 1.000</span><br> 
+<span style="text-decoration: underline;">1.600 1.000</span><br> 
+<span style="text-decoration: underline;">1.700 1.000</span><br>
+<span style="text-decoration: underline;">^D</span><br>
+0.500 1 arrives<br>
+0.500 1 serves by server 1<br>
+0.600 2 arrives<br>
+0.600 2 serves by server 2<br>
+0.700 3 arrives<br>
+0.700 3 waits at server 1<br>
+1.500 1 done serving by server 1<br>
+1.500 3 serves by server 1<br>
+1.500 4 arrives<br>
+1.500 4 waits at server 1<br>
+1.600 2 done serving by server 2<br>
+1.600 5 arrives<br>
+1.600 5 serves by server 2<br>
+1.700 6 arrives<br>
+1.700 6 waits at server 2<br>
+2.500 3 done serving by server 1<br>
+2.500 4 serves by server 1<br>
+2.600 5 done serving by server 2<br>
+2.600 6 serves by server 2<br>
+3.500 4 done serving by server 1<br>
+3.600 6 done serving by server 2<br>
+[0.450 6 0]
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<u>1 1</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+4.031 5 done serving by server 1<br>
+[0.000 5 0]<br>
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<u>2 1</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.006390 1.477717</u><br>
+<u>9.043360 2.593020</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 0.051732</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 2<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+11.636 10 serves by server 2<br>
+11.688 10 done serving by server 2<br>
+[0.386 10 0]<br>
+</tt>
+</td></tr>
+
+<tr>
+<td><tt> 
+<u>2 2</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.006390 1.477717</u><br>
+<u>9.043360 2.593020</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 0.051732</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+10.781 10 serves by server 1<br>
+10.833 10 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+[0.300 10 0]<br>
+</tt>
+</td></tr>
+
+</tbody>
+</table>
+
+<h4>Level 3</h4>
+<h4>Implementing Server Rest</h4>
+
+<p>The servers are now allowed to take occasional breaks.  
+When a server finishes serving a customer, there is a chance that the server takes a rest for a certain amount of time.
+During the break, the server does not serve the next waiting customer.
+Upon returning from the break, the server serves the next customer in the queue (if any) immediately.</p>
+
+<p>Define a driver class <tt>Main3.java</tt> (stored in <tt>Main3.java</tt>) that first reads the number of servers, the maximum queue length and the number of customers <i>N</i>.
+This is followed by <i>N</i> lines, each representing the arrival time and service times of each customer.
+The next <i>N</i> lines depict a chronological sequence of resting times a server takes upon completion of each service (a value of <tt>0</tt> denotes no rest).
+Note that we do not pre-determine which rest time is accorded to which server at the beginning; it can only be decided during the actual simulation.
+That is to say, whenever a server rests, it will then know how much time it has to rest.
+
+</p><p>As usual, perform the simulation and output the statistics at the end.
+
+</p><p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>.
+The first line comprises an integer value representing the number of servers followed by an integer value for the maximum queue length.
+This is followed by the arrival and service of the customers. 
+Input is terminated with a <tt>^D</tt> (CTRL-d).
+
+</p><p>Hint: To implement this behavior, you might want to consider additional event(s).
+</p>
+
+<p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<u>2 2 10</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.006390 1.477717</u><br>
+<u>9.043360 2.593020</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 0.051732</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+10.781 10 serves by server 1<br>
+10.833 10 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+[0.300 10 0]<br>
+</tt></td></tr>
+<tr><td><tt>
+<u>2 2 10</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.006390 1.477717</u><br>
+<u>9.043360 2.593020</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 0.051732</u><br>
+<u>0</u><br>
+<u>3.138762</u><br>
+<u>0.847804</u><br>
+<u>0</u><br>
+<u>0.848968</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>3.863139</u><br>
+<u>0</u><br>
+<u>0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 2<br>
+1.904 3 done serving by server 2<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 2<br>
+2.791 4 done serving by server 2<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+14.644 10 serves by server 1<br>
+14.696 10 done serving by server 1<br>
+[0.686 10 0]<br>
+</tt></td></tr>
+</tbody></table>
+<!--
+<strong>The self-checkout counters, however, have only a single shared queue.</strong></p> -->
+
+<h4>Level 4</h4>
+<h4>Implementing Self-CheckOut Counters</h4>
+
+<p>There are now <tt>N<sub>self</sub></tt> self-checkout counters set up.
+In particular, if there are <tt>k</tt> human servers, then the self-checkout counters are identified from <tt>k + 1</tt> onwards. 
+
+</p><p>Take note of the following:
+
+</p><ul>
+<li>All self-checkout counters share the same queue. 
+</li><li>Unlike human servers, self-checkout counters do not rest.
+</li><li>When we print out the wait event, we always say that the customer is waiting for the self-checkout counter <tt>k + 1</tt>, even though this customer may eventually be served by another self-checkout counter.
+</li></ul>
+
+<p>Define a driver class <tt>Main4.java</tt> (stored in <tt>Main4.java</tt>) that first reads the number of servers, the number of self-checkout counters, the maximum queue length and the number of customers <i>N</i>.
+This is followed by <i>N</i> lines, each representing the arrival time and service times of each customer.
+The next <i>N</i> lines depict a chronological sequence of resting times a server takes upon completion of each service (a value of <tt>0</tt> denotes no rest).
+Note that we do not pre-determine which rest time is accorded to which server at the beginning; it can only be decided during the actual simulation.
+That is to say, whenever a server rests, it will then know how much time it has to rest.
+
+</p><p>As usual, perform the simulation and output the statistics at the end.
+
+</p><p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>.
+<!-- The first line comprises an integer value representing the number of servers followed by an integer value for the maximum queue length.
+This is followed by the arrival and service of the customers. 
+-->
+Input is terminated with a <tt>^D</tt> (CTRL-d).
+
+</p><p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<u>2 0 2 20</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.00639 1.477717</u><br>
+<u>9.04336 2.59302</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 0.368667</u><br>
+<u>9.224613 0.051732</u><br>
+<u>10.147993 3.489595</u><br>
+<u>11.204932 0.006333</u><br>
+<u>12.428914 0.160532</u><br>
+<u>13.109177 2.86915</u><br>
+<u>15.263626 0.576351</u><br>
+<u>15.524295 0.89579</u><br>
+<u>15.939973 1.04302</u><br>
+<u>17.793096 3.007573</u><br>
+<u>18.765423 0.74237</u><br>
+<u>0</u><br>
+<u>3.138762</u><br>
+<u>0.847804</u><br>
+<u>0</u><br>
+<u>0.848968</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>3.863139</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>25.460873</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>36.96365</u><br>
+<u>0</u><br>
+<u>3.577445</u><br>
+<u>2.169913</u><br>
+<u>0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 2<br>
+1.904 3 done serving by server 2<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 2<br>
+2.791 4 done serving by server 2<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11 arrives<br>
+9.225 11 waits at server 2<br>
+10.148 12 arrives<br>
+10.148 12 waits at server 2<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+11.205 13 arrives<br>
+11.205 13 waits at server 1<br>
+11.636 8 done serving by server 2<br>
+11.636 11 serves by server 2<br>
+11.688 11 done serving by server 2<br>
+11.688 12 serves by server 2<br>
+12.429 14 arrives<br>
+12.429 14 waits at server 2<br>
+13.109 15 arrives<br>
+13.109 15 waits at server 2<br>
+14.644 10 serves by server 1<br>
+15.013 10 done serving by server 1<br>
+15.178 12 done serving by server 2<br>
+15.178 14 serves by server 2<br>
+15.264 16 arrives<br>
+15.264 16 waits at server 1<br>
+15.338 14 done serving by server 2<br>
+15.338 15 serves by server 2<br>
+15.524 17 arrives<br>
+15.524 17 waits at server 2<br>
+15.940 18 arrives<br>
+15.940 18 waits at server 2<br>
+17.793 19 arrives<br>
+17.793 19 leaves<br>
+18.207 15 done serving by server 2<br>
+18.207 17 serves by server 2<br>
+18.765 20 arrives<br>
+18.765 20 waits at server 2<br>
+19.103 17 done serving by server 2<br>
+19.103 18 serves by server 2<br>
+20.146 18 done serving by server 2<br>
+40.474 13 serves by server 1<br>
+40.480 13 done serving by server 1<br>
+40.480 16 serves by server 1<br>
+41.056 16 done serving by server 1<br>
+57.110 20 serves by server 2<br>
+57.852 20 done serving by server 2<br>
+[6.025 19 1]<br>
+</tt></td></tr>
+<tr><td><tt>
+<u>2 1 2 20</u><br>
+<u>0 0.313141</u><br>
+<u>0.313508 0.103753</u><br>
+<u>1.204909 0.699522</u><br>
+<u>2.776498 0.014224</u><br>
+<u>3.876961 0.154173</u><br>
+<u>3.909736 0.012659</u><br>
+<u>9.00639 1.477717</u><br>
+<u>9.04336 2.59302</u><br>
+<u>9.105379 0.296847</u><br>
+<u>9.159629 3.489595</u><br>
+<u>9.224613 0.89579</u><br>
+<u>10.147993 0.051732</u><br>
+<u>11.204932 0.368667</u><br>
+<u>12.428914 0.160532</u><br>
+<u>13.109177 2.86915</u><br>
+<u>15.263626 1.04302</u><br>
+<u>15.524295 0.006333</u><br>
+<u>15.939973 0.576351</u><br>
+<u>17.793096 0.74237</u><br>
+<u>18.765423 3.007573</u><br>
+<u>0</u><br>
+<u>3.138762</u><br>
+<u>0.847804</u><br>
+<u>0</u><br>
+<u>0.848968</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>3.863139</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>25.460873</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>36.96365</u><br>
+<u>0</u><br>
+<u>3.577445</u><br>
+<u>2.169913</u><br>
+<u>0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 2<br>
+1.904 3 done serving by server 2<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 2<br>
+2.791 4 done serving by server 2<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 serves by self-check 3<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11 arrives<br>
+9.225 11 waits at server 1<br>
+9.402 9 done serving by self-check 3<br>
+10.148 12 arrives<br>
+10.148 12 serves by self-check 3<br>
+10.200 12 done serving by self-check 3<br>
+10.484 7 done serving by server 1<br>
+10.484 10 serves by server 1<br>
+11.205 13 arrives<br>
+11.205 13 serves by self-check 3<br>
+11.574 13 done serving by self-check 3<br>
+11.636 8 done serving by server 2<br>
+12.429 14 arrives<br>
+12.429 14 serves by self-check 3<br>
+12.589 14 done serving by self-check 3<br>
+13.109 15 arrives<br>
+13.109 15 serves by self-check 3<br>
+13.974 10 done serving by server 1<br>
+13.974 11 serves by server 1<br>
+14.869 11 done serving by server 1<br>
+15.264 16 arrives<br>
+15.264 16 serves by server 1<br>
+15.524 17 arrives<br>
+15.524 17 serves by server 2<br>
+15.531 17 done serving by server 2<br>
+15.940 18 arrives<br>
+15.940 18 waits at server 1<br>
+15.978 15 done serving by self-check 3<br>
+16.307 16 done serving by server 1<br>
+16.307 18 serves by server 1<br>
+16.883 18 done serving by server 1<br>
+17.793 19 arrives<br>
+17.793 19 serves by server 1<br>
+18.535 19 done serving by server 1<br>
+18.765 20 arrives<br>
+18.765 20 serves by server 1<br>
+21.773 20 done serving by server 1<br>
+[0.322 20 0]<br>
+</tt></td></tr>
+<tr><td><tt>
+<u>1 2 2 20</u><br>
+<u>0 3.131408</u><br>
+<u>0.313508 1.037533</u><br>
+<u>1.204909 6.995223</u><br>
+<u>2.776498 0.142237</u><br>
+<u>3.876961 1.541726</u><br>
+<u>3.909736 0.126590</u><br>
+<u>9.00639 14.777172</u><br>
+<u>9.04336 25.930199</u><br>
+<u>9.105379 2.968470</u><br>
+<u>9.159629 3.686675</u><br>
+<u>9.224613 1.605316</u><br>
+<u>10.147993 0.517321</u><br>
+<u>11.204932 34.895950</u><br>
+<u>12.428914 28.691500</u><br>
+<u>13.109177 8.957896</u><br>
+<u>15.263626 1.043020</u><br>
+<u>15.524295 0.006333</u><br>
+<u>15.939973 0.576351</u><br>
+<u>17.793096 0.742370</u><br>
+<u>18.765423 3.007573</u><br>
+<u>0</u><br>
+<u>3.138762</u><br>
+<u>0.847804</u><br>
+<u>0</u><br>
+<u>0.848968</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>3.863139</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>25.460873</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>0</u><br>
+<u>36.96365</u><br>
+<u>0</u><br>
+<u>3.577445</u><br>
+<u>2.169913</u><br>
+<u>0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by self-check 2<br>
+1.205 3 arrives<br>
+1.205 3 serves by self-check 3<br>
+1.351 2 done serving by self-check 2<br>
+2.776 4 arrives<br>
+2.776 4 serves by self-check 2<br>
+2.919 4 done serving by self-check 2<br>
+3.131 1 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by self-check 2<br>
+4.036 6 done serving by self-check 2<br>
+5.419 5 done serving by server 1<br>
+8.200 3 done serving by self-check 3<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by self-check 2<br>
+9.105 9 arrives<br>
+9.105 9 serves by self-check 3<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11 arrives<br>
+9.225 11 waits at server 1<br>
+10.148 12 arrives<br>
+10.148 12 waits at self-check 2<br>
+11.205 13 arrives<br>
+11.205 13 waits at self-check 2<br>
+12.074 9 done serving by self-check 3<br>
+12.074 12 serves by self-check 3<br>
+12.429 14 arrives<br>
+12.429 14 waits at self-check 2<br>
+12.591 12 done serving by self-check 3<br>
+12.591 13 serves by self-check 3<br>
+13.109 15 arrives<br>
+13.109 15 waits at self-check 2<br>
+15.264 16 arrives<br>
+15.264 16 leaves<br>
+15.524 17 arrives<br>
+15.524 17 leaves<br>
+15.940 18 arrives<br>
+15.940 18 leaves<br>
+17.793 19 arrives<br>
+17.793 19 leaves<br>
+18.765 20 arrives<br>
+18.765 20 leaves<br>
+23.784 7 done serving by server 1<br>
+24.631 10 serves by server 1<br>
+28.318 10 done serving by server 1<br>
+28.318 11 serves by server 1<br>
+29.923 11 done serving by server 1<br>
+34.974 8 done serving by self-check 2<br>
+34.974 14 serves by self-check 2<br>
+47.487 13 done serving by self-check 3<br>
+47.487 15 serves by self-check 3<br>
+56.445 15 done serving by self-check 3<br>
+63.665 14 done serving by self-check 2<br>
+[6.320 15 5]<br>
+</tt></td></tr>
+</tbody></table>
+
+<h4>Level 5</h4>
+<h4>Randomizing Arrival, Service and Resting Times</h4>
+
+<p>Rather than reading arrival, service and resting times from input, we will generate them as random times instead.
+A random number generator is an entity that generates one random number after another.  
+Since it is not possible to generate a truly random number algorithmically, pseudo random number generation is adopted instead. 
+A pseudo-random number generator can be initialized with a seed, such that the same seed always produces the same sequence of (seemingly random) numbers.</p>
+
+<p>Although, Java provides a class <tt>java.util.Random</tt>, an alternative <tt>RandomGenerator</tt> class that is more suitable for discrete event simulation is provided for you that encapsulates different random number generators for use in our simulator.  
+Each random number generator generates a different stream of random numbers. The constructor for <tt>RandomGenerator</tt> takes in the following parameters:</p>
+<ul>
+<li><tt>int seed</tt> is the base seed. Each random number generator uses its own seed that is derived from this base seed; </li>
+<li><tt>double lambda</tt> is the arrival rate, &lambda;; </li>
+<li><tt>double mu</tt> is the service rate, &mu;; </li>
+<li><tt>double rho</tt> is the server resting rate, &rho;. </li>
+</ul>
+<p>The inter-arrival time is usually modeled as an exponential random variable, characterized by a single parameter <tt>&lambda;</tt> denoting the arrival rate.  <!-- Mathematically, the inter-arrival time can be generated with &minus;ln(U)/&lambda;, where U is a random variable between 0 and 1. --> The <tt>genInterArrivalTime()</tt> method of the class <tt>RandomGenerator</tt> is used for this purpose. Specifically,</p>
+<ul>
+<li>start the simulation by generating the first customer arrival event with timestamp <tt>0</tt></li>
+<!--
+<li>generate all other arrival events and schedule it; </li>
+-->
+<li>if there are still more customers to simulate, generate the next arrival event with a timestamp of <tt>T + now</tt>, where <tt>T</tt> is generated with the method <tt>genInterArrivalTime()</tt>; </li>
+</ul>
+<p>The service time is modeled as an exponential random variable, characterized by a single parameter, service rate &mu;. The method <tt>genServiceTime()</tt> from the class <tt>RandomGenerator</tt> can be used to generate the service time. Specifically,</p>
+<ul>
+<li>each time a customer is being served, a <tt>DONE</tt> event is generated and scheduled; </li>
+<li>the <tt>DONE</tt> event generated will have a timestamp of <tt>T  + now</tt>, where <tt>T</tt> is generated with the method <tt>genServiceTime()</tt>. </li>
+</ul>
+
+<p>To decide if the server should rest, a random number uniformly drawn from <tt>[0, 1]</tt> is generated using the <tt>RandomGenerator</tt> method <tt>genRandomRest()</tt>.  
+If the value returned is less than the probability of resting (<tt>P<sub>r</sub></tt>) then the server rests.
+Otherwise, the server does not rest but continues serving the next customer.
+
+</p><p>As soon as the server rests, a random rest period <tt>T<sub>r</sub></tt> is generated using the <tt>RandomGenerator</tt> method <tt>genRestPeriod()</tt>.  This variable is an exponential random variable, governed by the resting rate, &rho;. 
+<!-- A <tt>SERVER_BACK</tt> event will be scheduled at <tt>T<sub>r</sub> + now</tt>.</p> -->
+
+</p><p>In addition, an arriving customer is a greedy customer with probability <tt>P<sub>g</sub></tt>. 
+A <em>greedy</em> customer always joins the queue with the fewest customers; in the case of a tie, he/she breaks the tie by choosing the first one while scanning from servers <tt>1</tt> to <tt>k</tt>.
+
+</p><p>To decide whether a typical or greedy customer is created, a random number uniformly drawn from <tt>[0, 1]</tt> is generated with the <tt>RandomGenerator</tt> method <tt>genCustomerType()</tt>.  If the value returned is less than <tt>P<sub>g</sub></tt>, a greedy customer is generated, otherwise, a typical customer is generated.
+
+</p><p>You may refer to the API of the <tt>RandomGenerator</tt> class  <a href="http://www.comp.nus.edu.sg/~cs2030/RandomGenerator">here</a>.  The class file can be downloaded from <a href="https://www.comp.nus.edu.sg/~cs2030/RandomGenerator/RandomGenerator.zip">here</a>. <!-- that encapsulates a pseudo-random number generator. We can create a random number generator with a seed:
+<pre>
+Random rng = new Random(1);
+</pre>
+We can then call rng.nextDouble() repeatedly to generate random numbers between 0 and 1. --></p>
+Note that <tt>RandomGenerator</tt> class resides in the <tt>cs2030.simulator</tt> package.  So, <tt>RandomGenerator.class</tt> should be saved in the <tt>cs2030/simulator</tt> directory.
+
+<p>Define a driver class <tt>Main5.java</tt> (stored in <tt>Main5.java</tt>) that reads the following as input (in order of presentation):</p>
+<ul>
+<li>an <tt>int</tt> value denoting the base seed for the <tt>RandomGenerator</tt> object; </li>
+<li>an <tt>int</tt> value representing the number of servers </li>
+<li>am <tt>int</tt> value representing the number of self-checkout counters, <tt>N<sub>self</sub></tt> </li>
+<li>an <tt>int</tt> value for the maximum queue length, <tt>Q<sub>max</sub></tt> </li>
+<li>an <tt>int</tt> representing the number of customers (or the number of arrival events) to simulate </li>
+<li>a positive <tt>double</tt> parameter for the arrival rate, &lambda; </li>
+<li>a positive <tt>double</tt> parameter for the service rate, &mu; </li>
+<li>a positive <tt>double</tt> parameter for the resting rate, &rho; </li>
+<li>a <tt>double</tt> parameter for the probability of resting, <tt>P<sub>r</sub></tt> </li>
+<li>a <tt>double</tt> parameter for the probability of a greedy customer occurring, <tt>P<sub>g</sub></tt> </li>
+</ul>
+
+<p>Remember to start the simulation by generating the first customer arrival event with timestamp <tt>0</tt>, and then 
+generate the next arrival event of the next customer by adding the time generated using the method <tt>genInterArrivalTime()</tt> from the class <tt>RandomGenerator</tt>.
+
+</p><p>It is also worth noting that the service time <b>cannot</b> be generated together with the arrival time as each customer is created before the simulation starts, since the
+<tt>n<sup>th</sup></tt> 
+customer to arrive might not be the 
+<tt>n<sup>th</sup></tt> customer to be served!
+Although this might entail passing the <tt>RandomGenerator</tt> along with the Customer. This need not be so!
+<i>Hint: Think Lazy...</i>
+
+</p><p>Sample runs of the program is given below.  
+User input is <span style="text-decoration: underline;">underlined</span>.
+
+</p><p>
+</p><table border="1">
+<tbody>
+<tr>
+<td><tt> 
+<u>1 2 0 1 10 1.0 1.0 0.0 0.0 0.0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 2<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+11.636 10 serves by server 2<br>
+11.688 10 done serving by server 2<br>
+[0.386 10 0]<br>
+</tt></td></tr>
+
+<tr><td><tt>
+<u>1 2 0 2 10 1.0 1.0 0.0 0.0 0.0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 1<br>
+1.904 3 done serving by server 1<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 1<br>
+2.791 4 done serving by server 1<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+10.781 10 serves by server 1<br>
+10.833 10 done serving by server 1<br>
+11.636 8 done serving by server 2<br>
+[0.300 10 0]<br>
+</tt></td></tr>
+
+<tr><td><tt>
+<u>1 2 0 3 20 1.0 1.0 0.1 0.5 0.0</u><br>
+0.000 1 arrives<br>
+0.000 1 serves by server 1<br>
+0.313 1 done serving by server 1<br>
+0.314 2 arrives<br>
+0.314 2 serves by server 1<br>
+0.417 2 done serving by server 1<br>
+1.205 3 arrives<br>
+1.205 3 serves by server 2<br>
+1.904 3 done serving by server 2<br>
+2.776 4 arrives<br>
+2.776 4 serves by server 2<br>
+2.791 4 done serving by server 2<br>
+3.877 5 arrives<br>
+3.877 5 serves by server 1<br>
+3.910 6 arrives<br>
+3.910 6 serves by server 2<br>
+3.922 6 done serving by server 2<br>
+4.031 5 done serving by server 1<br>
+9.006 7 arrives<br>
+9.006 7 serves by server 1<br>
+9.043 8 arrives<br>
+9.043 8 serves by server 2<br>
+9.105 9 arrives<br>
+9.105 9 waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11 arrives<br>
+9.225 11 waits at server 1<br>
+10.148 12 arrives<br>
+10.148 12 waits at server 2<br>
+10.484 7 done serving by server 1<br>
+10.484 9 serves by server 1<br>
+10.781 9 done serving by server 1<br>
+11.205 13 arrives<br>
+11.205 13 waits at server 1<br>
+11.636 8 done serving by server 2<br>
+11.636 12 serves by server 2<br>
+11.688 12 done serving by server 2<br>
+12.429 14 arrives<br>
+12.429 14 serves by server 2<br>
+13.109 15 arrives<br>
+13.109 15 waits at server 2<br>
+14.644 10 serves by server 1<br>
+15.013 10 done serving by server 1<br>
+15.264 16 arrives<br>
+15.264 16 waits at server 1<br>
+15.524 17 arrives<br>
+15.524 17 waits at server 2<br>
+15.919 14 done serving by server 2<br>
+15.919 15 serves by server 2<br>
+15.940 18 arrives<br>
+15.940 18 waits at server 2<br>
+16.079 15 done serving by server 2<br>
+16.079 17 serves by server 2<br>
+17.793 19 arrives<br>
+17.793 19 waits at server 2<br>
+18.765 20 arrives<br>
+18.765 20 waits at server 2<br>
+18.948 17 done serving by server 2<br>
+18.948 18 serves by server 2<br>
+19.844 18 done serving by server 2<br>
+19.844 19 serves by server 2<br>
+20.887 19 done serving by server 2<br>
+40.474 11 serves by server 1<br>
+40.480 11 done serving by server 1<br>
+40.480 13 serves by server 1<br>
+41.056 13 done serving by server 1<br>
+44.634 16 serves by server 1<br>
+45.376 16 done serving by server 1<br>
+57.851 20 serves by server 2<br>
+60.858 20 done serving by server 2<br>
+[7.288 20 0]<br>
+</tt></td></tr>
+
+<tr><td><tt>
+<u>1 2 0 3 20 1.0 1.0 0.1 0.5 0.9</u><br>
+0.000 1(greedy) arrives<br>
+0.000 1(greedy) serves by server 1<br>
+0.313 1(greedy) done serving by server 1<br>
+0.314 2(greedy) arrives<br>
+0.314 2(greedy) serves by server 1<br>
+0.417 2(greedy) done serving by server 1<br>
+1.205 3(greedy) arrives<br>
+1.205 3(greedy) serves by server 2<br>
+1.904 3(greedy) done serving by server 2<br>
+2.776 4(greedy) arrives<br>
+2.776 4(greedy) serves by server 2<br>
+2.791 4(greedy) done serving by server 2<br>
+3.877 5(greedy) arrives<br>
+3.877 5(greedy) serves by server 1<br>
+3.910 6(greedy) arrives<br>
+3.910 6(greedy) serves by server 2<br>
+3.922 6(greedy) done serving by server 2<br>
+4.031 5(greedy) done serving by server 1<br>
+9.006 7(greedy) arrives<br>
+9.006 7(greedy) serves by server 1<br>
+9.043 8(greedy) arrives<br>
+9.043 8(greedy) serves by server 2<br>
+9.105 9(greedy) arrives<br>
+9.105 9(greedy) waits at server 1<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11(greedy) arrives<br>
+9.225 11(greedy) waits at server 2<br>
+10.148 12(greedy) arrives<br>
+10.148 12(greedy) waits at server 2<br>
+10.484 7(greedy) done serving by server 1<br>
+10.484 9(greedy) serves by server 1<br>
+10.781 9(greedy) done serving by server 1<br>
+11.205 13(greedy) arrives<br>
+11.205 13(greedy) waits at server 1<br>
+11.636 8(greedy) done serving by server 2<br>
+11.636 11(greedy) serves by server 2<br>
+11.688 11(greedy) done serving by server 2<br>
+11.688 12(greedy) serves by server 2<br>
+12.429 14(greedy) arrives<br>
+12.429 14(greedy) waits at server 2<br>
+13.109 15(greedy) arrives<br>
+13.109 15(greedy) waits at server 2<br>
+14.644 10 serves by server 1<br>
+15.013 10 done serving by server 1<br>
+15.178 12(greedy) done serving by server 2<br>
+15.178 14(greedy) serves by server 2<br>
+15.264 16 arrives<br>
+15.264 16 waits at server 1<br>
+15.338 14(greedy) done serving by server 2<br>
+15.338 15(greedy) serves by server 2<br>
+15.524 17(greedy) arrives<br>
+15.524 17(greedy) waits at server 2<br>
+15.940 18(greedy) arrives<br>
+15.940 18(greedy) waits at server 2<br>
+17.793 19(greedy) arrives<br>
+17.793 19(greedy) waits at server 1<br>
+18.207 15(greedy) done serving by server 2<br>
+18.207 17(greedy) serves by server 2<br>
+18.765 20(greedy) arrives<br>
+18.765 20(greedy) waits at server 2<br>
+19.103 17(greedy) done serving by server 2<br>
+19.103 18(greedy) serves by server 2<br>
+20.146 18(greedy) done serving by server 2<br>
+40.474 13(greedy) serves by server 1<br>
+40.480 13(greedy) done serving by server 1<br>
+40.480 16 serves by server 1<br>
+41.056 16 done serving by server 1<br>
+44.634 19(greedy) serves by server 1<br>
+45.376 19(greedy) done serving by server 1<br>
+57.110 20(greedy) serves by server 2<br>
+60.117 20(greedy) done serving by server 2<br>
+[7.065 20 0]<br>
+</tt></td></tr>
+
+<tr><td><tt>
+<u>1 2 1 2 20 1.0 1.0 0.1 0.5 0.9</u><br>
+0.000 1(greedy) arrives<br>
+0.000 1(greedy) serves by server 1<br>
+0.313 1(greedy) done serving by server 1<br>
+0.314 2(greedy) arrives<br>
+0.314 2(greedy) serves by server 1<br>
+0.417 2(greedy) done serving by server 1<br>
+1.205 3(greedy) arrives<br>
+1.205 3(greedy) serves by server 2<br>
+1.904 3(greedy) done serving by server 2<br>
+2.776 4(greedy) arrives<br>
+2.776 4(greedy) serves by server 2<br>
+2.791 4(greedy) done serving by server 2<br>
+3.877 5(greedy) arrives<br>
+3.877 5(greedy) serves by server 1<br>
+3.910 6(greedy) arrives<br>
+3.910 6(greedy) serves by server 2<br>
+3.922 6(greedy) done serving by server 2<br>
+4.031 5(greedy) done serving by server 1<br>
+9.006 7(greedy) arrives<br>
+9.006 7(greedy) serves by server 1<br>
+9.043 8(greedy) arrives<br>
+9.043 8(greedy) serves by server 2<br>
+9.105 9(greedy) arrives<br>
+9.105 9(greedy) serves by self-check 3<br>
+9.160 10 arrives<br>
+9.160 10 waits at server 1<br>
+9.225 11(greedy) arrives<br>
+9.225 11(greedy) waits at server 2<br>
+9.402 9(greedy) done serving by self-check 3<br>
+10.148 12(greedy) arrives<br>
+10.148 12(greedy) serves by self-check 3<br>
+10.200 12(greedy) done serving by self-check 3<br>
+10.484 7(greedy) done serving by server 1<br>
+10.484 10 serves by server 1<br>
+11.205 13(greedy) arrives<br>
+11.205 13(greedy) serves by self-check 3<br>
+11.574 13(greedy) done serving by self-check 3<br>
+11.636 8(greedy) done serving by server 2<br>
+12.429 14(greedy) arrives<br>
+12.429 14(greedy) serves by self-check 3<br>
+12.589 14(greedy) done serving by self-check 3<br>
+13.109 15(greedy) arrives<br>
+13.109 15(greedy) serves by self-check 3<br>
+13.974 10 done serving by server 1<br>
+15.264 16 arrives<br>
+15.264 16 serves by server 1<br>
+15.500 11(greedy) serves by server 2<br>
+15.524 17(greedy) arrives<br>
+15.524 17(greedy) waits at server 1<br>
+15.940 18(greedy) arrives<br>
+15.940 18(greedy) waits at server 2<br>
+15.978 15(greedy) done serving by self-check 3<br>
+16.159 16 done serving by server 1<br>
+16.159 17(greedy) serves by server 1<br>
+16.166 17(greedy) done serving by server 1<br>
+16.543 11(greedy) done serving by server 2<br>
+16.543 18(greedy) serves by server 2<br>
+17.119 18(greedy) done serving by server 2<br>
+17.793 19(greedy) arrives<br>
+17.793 19(greedy) serves by server 2<br>
+18.535 19(greedy) done serving by server 2<br>
+18.765 20(greedy) arrives<br>
+18.765 20(greedy) serves by server 2<br>
+21.773 20(greedy) done serving by server 2<br>
+[0.442 20 0]<br>
+</tt></td></tr>
+</tbody></table>
+
+<h3 id="more">Update: More CodeCrunch test cases found by me</h3>
+<a href="https://russelldash332.github.io/CS2030/Project">Back to top</a>
+<table border="1">
+<tbody>
+<tr><td><tt>
+<u>2 0 2 1 5 9.0 1.0 1.0 0.0 0.0</u><br>
+0.000 1 arrives
+<br>0.000 1 serves by self-check 1
+<br>0.035 2 arrives
+<br>0.035 2 serves by self-check 2
+<br>0.046 3 arrives
+<br>0.046 3 waits at self-check 1
+<br>0.124 4 arrives
+<br>0.124 4 leaves
+<br>0.126 5 arrives
+<br>0.126 5 leaves
+<br>0.313 1 done serving by self-check 1
+<br>0.313 3 serves by self-check 1
+<br>2.680 2 done serving by self-check 2
+<br>3.015 3 done serving by self-check 1
+<br>[0.089 3 2]
+</tt></td></tr>
+<tr><td><tt>
+<u>2 2 2 3 20 12.0 1.0 1.0 0.0 0.7</u><br>
+0.000 1 arrives
+<br>0.000 1 serves by server 1
+<br>0.026 2(greedy) arrives
+<br>0.026 2(greedy) serves by server 2
+<br>0.035 3 arrives
+<br>0.035 3 serves by self-check 3
+<br>0.093 4(greedy) arrives
+<br>0.093 4(greedy) serves by self-check 4
+<br>0.094 5(greedy) arrives
+<br>0.094 5(greedy) waits at server 1
+<br>0.107 6(greedy) arrives
+<br>0.107 6(greedy) waits at server 2
+<br>0.108 7(greedy) arrives
+<br>0.108 7(greedy) waits at self-check 3
+<br>0.231 8 arrives
+<br>0.231 8 waits at server 1
+<br>0.313 1 done serving by server 1
+<br>0.313 5(greedy) serves by server 1
+<br>0.357 4(greedy) done serving by self-check 4
+<br>0.357 7(greedy) serves by self-check 4
+<br>0.447 9(greedy) arrives
+<br>0.447 9(greedy) waits at self-check 3
+<br>0.472 10 arrives
+<br>0.472 10 waits at server 1
+<br>0.476 11(greedy) arrives
+<br>0.476 11(greedy) waits at server 2
+<br>0.767 12(greedy) arrives
+<br>0.767 12(greedy) waits at self-check 3
+<br>0.772 7(greedy) done serving by self-check 4
+<br>0.772 9(greedy) serves by self-check 4
+<br>0.798 13(greedy) arrives
+<br>0.798 13(greedy) waits at self-check 3
+<br>0.811 14 arrives
+<br>0.811 14 waits at server 1
+<br>0.987 9(greedy) done serving by self-check 4
+<br>0.987 12(greedy) serves by self-check 4
+<br>1.050 15(greedy) arrives
+<br>1.050 15(greedy) waits at self-check 3
+<br>1.125 16(greedy) arrives
+<br>1.125 16(greedy) waits at server 2
+<br>1.212 17(greedy) arrives
+<br>1.212 17(greedy) waits at self-check 3
+<br>1.212 18(greedy) arrives
+<br>1.212 18(greedy) leaves
+<br>1.261 19(greedy) arrives
+<br>1.261 19(greedy) leaves
+<br>1.322 20(greedy) arrives
+<br>1.322 20(greedy) leaves
+<br>1.795 5(greedy) done serving by server 1
+<br>1.795 8 serves by server 1
+<br>2.004 8 done serving by server 1
+<br>2.004 10 serves by server 1
+<br>2.060 10 done serving by server 1
+<br>2.060 14 serves by server 1
+<br>2.671 2(greedy) done serving by server 2
+<br>2.671 6(greedy) serves by server 2
+<br>2.736 3 done serving by self-check 3
+<br>2.736 13(greedy) serves by self-check 3
+<br>2.737 13(greedy) done serving by self-check 3
+<br>2.737 15(greedy) serves by self-check 3
+<br>2.765 6(greedy) done serving by server 2
+<br>2.765 11(greedy) serves by server 2
+<br>2.788 11(greedy) done serving by server 2
+<br>2.788 16(greedy) serves by server 2
+<br>3.353 15(greedy) done serving by self-check 3
+<br>3.353 17(greedy) serves by self-check 3
+<br>3.939 14 done serving by server 1
+<br>3.953 17(greedy) done serving by self-check 3
+<br>4.499 12(greedy) done serving by self-check 4
+<br>4.630 16(greedy) done serving by server 2
+<br>[1.037 17 3]
+</tt></td></tr>
+<tr><td><tt>
+<u>2 5 0 10 1000 7.0 1.0 1.0 0.0 0.5</u><br>
+<a href="https://russelldash332.github.io/CS2030/Project/5A.html">Go here</a>
+</tt></td></tr>
+<tr><td><tt>
+<u>2 3 2 10 1000 7.0 1.0 1.0 0.0 0.5</u><br>
+<a href="https://russelldash332.github.io/CS2030/Project/5B.html">Go here</a>
+</tt></td></tr>
+</html>
