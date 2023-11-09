@@ -1,0 +1,364 @@
+<h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+<p>Divide-and-Conquer is an algorithmic paradigm that solves a computation problem which can be broken down into smaller sub-problems of the same type, and the solutions of these sub-problems should make up part of the solution of the original problem.</p>
+<p>As an example, given a pair of integers <code>a</code> and <code>b</code> (<code>a &lt;= b</code>), the sum of squares of each number, <code>sumSq(a,b)</code>, between <code>a</code> and <code>b</code> (both inclusive) can be defined with a solution that makes use of the divide and conquer algorithmic paradigm.
+A recursive solution of the above problem is given below:</p>
+<pre><code>jshell&gt; <span class="hljs-keyword">int</span> sumS<span class="hljs-string">q(int a, int b)</span> {
+   ...&gt;     <span class="hljs-keyword">if</span> (a == b) {
+   ...&gt;         <span class="hljs-keyword">return</span> a * a;
+   ...&gt;     } <span class="hljs-keyword">else</span> {
+   ...&gt;         <span class="hljs-keyword">int</span> mid = (a + b) / <span class="hljs-number">2</span>;
+   ...&gt;         <span class="hljs-keyword">return</span> sumS<span class="hljs-string">q(a, mid)</span> + sumS<span class="hljs-string">q(mid + 1, b)</span>;
+   ...&gt;     }
+   ...&gt; }
+| created method sumS<span class="hljs-string">q(int,int)</span>
+jshell&gt; sumS<span class="hljs-string">q(5, 7)</span>
+$.. ==&gt; <span class="hljs-number">110</span>
+jshell&gt; sumS<span class="hljs-string">q(5, 15)</span>
+$.. ==&gt; <span class="hljs-number">1210</span>
+</code></pre><p>Suppose we are given the pair of values <code>(5, 7)</code>. Following the recursive solution above, the sum of squares can be
+worked out to be</p>
+<pre><code>sumS<span class="hljs-string">q(5, 7)</span> = sumS<span class="hljs-string">q(5, 6)</span> + sumS<span class="hljs-string">q(7, 7)</span>
+ = (sumS<span class="hljs-string">q(5, 5)</span> + sumS<span class="hljs-string">q(6, 6)</span>) + sumS<span class="hljs-string">q(7, 7)</span>
+ = (<span class="hljs-number">25</span> + <span class="hljs-number">36</span>) + <span class="hljs-number">49</span>
+ = <span class="hljs-number">110</span>
+</code></pre><p>A <em>general solution</em> that makes use of the divide and conquer algorithm paradigm is given below:</p>
+<ul>
+<li>Decide if the given problem can be further divided into smaller sub-problems.</li>
+<li>If the problem is atomic, i.e. cannot be subdivided further, then return the trivial solution to this problem.</li>
+<li>Otherwise, <em>divide</em> the problem into a pair of sub-problems, and recursively solve (<em>conquer</em>) the sub-problems.</li>
+<li>Combine the solutions of the sub-problems appropriately.</li>
+</ul>
+<p>There are many other algorithms that makes use of the divide and conquer algorithmic paradigm. Each divide-and-conquer algorithm aims to solve a problem (represented as type <code>T</code>) that results in a solution (of type <code>R</code>). For example,</p>
+<ul>
+<li>Sum of squares — problem represented as a pair of integers, with the result as an integer;</li>
+<li>Summing the integer elements in a non-empty list — problem represented as a list, with the result as an integer;</li>
+<li>Merge sort — problem represented as a non-empty list, with the result as a list;</li>
+<li>...</li>
+</ul>
+<h2 id="task">Task</h2>
+<p>In this task, you are to write a generic solver for solving problems using the divide and conquer algorithmic paradigm. A client that makes use of the solver need only provide the respective parts of the general solution, while disregarding the intricacies of recursion.</p>
+<h3 id="take-note-">Take Note!</h3>
+<p>This task comprises a number of levels. You are required to complete ALL levels.</p>
+<p>The following are the constraints imposed on this task. In general, you should keep to the constructs and programming discipline instilled throughout the module.</p>
+<ul>
+<li>Write each class or interface in its own file. Do not use single letter names for classes or interfaces.</li>
+<li>Ensure that ALL object properties and class constants are declared <code>private final</code>, unless otherwise specified.</li>
+<li>Ensure that that your classes are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:<ul>
+<li><code>java.util.List</code></li>
+<li><code>java.util.Optional</code></li>
+<li>functional interfaces from <code>java.util.function</code></li>
+</ul>
+</li>
+<li>The following are NOT allowed:<ul>
+<li><code>null</code></li>
+<li><code>instanceof</code></li>
+<li><code>if..else</code>, <code>switch..case</code>, ?: conditional expression</li>
+<li><code>for</code>, <code>while</code></li>
+<li><code>enum</code></li>
+<li><code>Optional</code> methods: <code>isPresent()</code>, <code>isEmpty()</code>, <code>get()</code> and <code>equals(Object)</code></li>
+<li>methods of the <code>String</code> class</li>
+</ul>
+</li>
+<li>There is no need to use bounded wildcards.</li>
+<li>You are NOT allowed to define anonymous inner classes; define lambdas instead.</li>
+<li>Other usual restrictions:<ul>
+<li>Use only &amp;&amp;, || and ! in logical expressions.</li>
+<li>You are NOT allowed to use * wildcard imports.</li>
+<li>You are NOT allowed to use method references ::</li>
+<li>You are NOT allowed to define array constructs, e.g. <code>String[]</code> or using ellipsis, e.g.<code>String...</code></li>
+<li>You are NOT allowed to use Java reflection, i.e. <code>Object::getClasses</code> and other methods from <code>Class</code></li>
+</ul>
+</li>
+</ul>
+<p>The <a href="Pair.java"><code>Pair</code></a> class with an additional of method to simplify the creation of Pair objects is provided for you.</p>
+<h3 id="level-1">Level 1</h3>
+<p>Let us start by creating a generic <code>DnC&lt;T,R&gt;</code> (for divide and conquer) class to handle problems of type <code>T</code> with a solution of type <code>R</code>.</p>
+<ul>
+<li>Write a static of method that creates the <code>DnC</code>. The method takes in the following arguments in order:<ul>
+<li>a problem of type <code>T</code>,</li>
+<li>a <code>Predicate&lt;T&gt;</code> that checks whether the problem is atomic, and</li>
+<li>a <code>Function&lt;T,R&gt;</code> representing the trivial solution that transforms the problem of type <code>T</code> to a value of type <code>R</code>.</li>
+</ul>
+</li>
+<li>Write a void <code>peek(Consumer&lt;T&gt; action)</code> method that performs the action on the problem of type <code>T</code>. We use this to output the problem encapsulated within the <code>DnC</code>. As such, you do not need to write any <code>toString()</code> method in the <code>DnC</code> class.</li>
+</ul>
+<p>To illustrate, the sum of squares problem described above can be represented as a <code>Pair&lt;Integer,Integer&gt;</code> with <code>a</code> and <code>b</code> encapsulated in a <code>Pair</code>.</p>
+<pre><code>jshell&gt; <span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt; p = <span class="hljs-built_in">Pair</span>.of(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>) <span class="hljs-comment">// (a, b)</span>
+p ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+
+jshell&gt; Predicate&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;&gt; pred =
+   <span class="hljs-params">...</span>&gt; <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() == <span class="hljs-built_in">pair</span>.second() <span class="hljs-comment">// atomic if a == b</span>
+pred ==&gt; $Lambda$<span class="hljs-number">15</span>/<span class="hljs-number">0x00000008000b0040</span>@<span class="hljs-number">4</span>b9e13df
+
+jshell&gt; Function&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; f =
+   <span class="hljs-params">...</span>&gt; <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() * <span class="hljs-built_in">pair</span>.first() <span class="hljs-comment">// trivial solution a*a</span>
+f ==&gt; $Lambda$<span class="hljs-number">16</span>/<span class="hljs-number">0x00000008000b0440</span>@<span class="hljs-number">1</span>d057a39
+
+jshell&gt; DnC&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; dnc = DnC.of(p, pred, f)
+dnc ==&gt; DnC@<span class="hljs-number">4</span>c70fda8
+
+jshell&gt; dnc.peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+
+jshell&gt; p = <span class="hljs-built_in">Pair</span>.of(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+p ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc = DnC.of(p, pred, f)
+dnc ==&gt; DnC@<span class="hljs-number">28</span>d25987
+
+jshell&gt; dnc.peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+</code></pre><p>Here is another example that sums up integer elements in a non-empty list. Note that the problem is of type <code>List&lt;Integer&gt;</code> with a solution type of <code>Integer</code>.</p>
+<pre><code>jshell&gt; DnC.of(List.of(<span class="hljs-number">1</span>), <span class="hljs-type">list</span> -&gt; <span class="hljs-type">list</span>.size() == <span class="hljs-number">1</span>, <span class="hljs-type">list</span> -&gt; <span class="hljs-type">list</span>.get(<span class="hljs-number">0</span>)).
+   ...&gt; peek(x -&gt; System.out.println(x))
+[<span class="hljs-number">1</span>]
+
+jshell&gt; DnC.of(List.of(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-type">list</span> -&gt; <span class="hljs-type">list</span>.size() == <span class="hljs-number">1</span>, <span class="hljs-type">list</span> -&gt; <span class="hljs-type">list</span>.get(<span class="hljs-number">0</span>)).
+   ...&gt; peek(x -&gt; System.out.println(x))
+[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+</code></pre><h3 id="level-2">Level 2</h3>
+<p>We now handle atomic problems of type <code>T</code> with a trivial solution of type <code>R</code>.</p>
+<ul>
+<li>Write a <code>solve()</code> method that takes no arguments, and returns the solution wrapped within an <code>Optional</code> if the problem is atomic, or <code>Optional.empty</code> otherwise.</li>
+</ul>
+<p>The sum of squares problem <code>(5, 5)</code> is atomic. Hence, there is a trivial solution of <code>25</code>.</p>
+<pre><code>jshell&gt; <span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt; p = <span class="hljs-built_in">Pair</span>.of(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+p ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+
+jshell&gt; Predicate&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;&gt; pred = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() == <span class="hljs-built_in">pair</span>.second()
+pred ==&gt; $Lambda$<span class="hljs-number">15</span>/<span class="hljs-number">0x00000008000b1040</span>@<span class="hljs-number">26</span>be92ad
+
+jshell&gt; Function&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; f = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() * <span class="hljs-built_in">pair</span>.first()
+f ==&gt; $Lambda$<span class="hljs-number">16</span>/<span class="hljs-number">0x00000008000b1440</span>@<span class="hljs-number">14</span>acaea5
+
+jshell&gt; DnC&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; dnc = DnC.of(p, pred, f)
+dnc ==&gt; DnC@<span class="hljs-number">59</span>fa1d9b
+
+jshell&gt; dnc.solve()
+$.. ==&gt; Optional<span class="hljs-meta">[</span><span class="hljs-number">25</span><span class="hljs-meta">]</span>
+</code></pre><p>However, the sum of squares problem <code>(5, 7)</code> is non-atomic with no trivial solution.</p>
+<pre><code>jshell&gt; <span class="hljs-selector-tag">p</span> = Pair.of(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+<span class="hljs-selector-tag">p</span> ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc = DnC.of(<span class="hljs-selector-tag">p</span>, pred, f)
+dnc ==&gt; DnC@<span class="hljs-number">5</span>b275dab
+
+jshell&gt; dnc.solve()
+$.. ==&gt; Optional.empty
+</code></pre><p>For the problem of summing integer elements in a non-empty list, the trivial solution arises when the list has exactly one element. A list with more than one element does not have a trivial solution.</p>
+<pre><code>jshell&gt; <span class="hljs-type">DnC</span>.<span class="hljs-keyword">of</span>(<span class="hljs-type">List</span>.<span class="hljs-keyword">of</span>(<span class="hljs-number">1</span>), <span class="hljs-built_in">list</span> -&gt; <span class="hljs-built_in">list</span>.size<span class="hljs-literal">()</span> == <span class="hljs-number">1</span>, <span class="hljs-built_in">list</span> -&gt; <span class="hljs-built_in">list</span>.get(<span class="hljs-number">0</span>)).solve<span class="hljs-literal">()</span>
+$.. ==&gt; <span class="hljs-type">Optional</span>[<span class="hljs-number">1</span>]
+
+jshell&gt; <span class="hljs-type">DnC</span>.<span class="hljs-keyword">of</span>(<span class="hljs-type">List</span>.<span class="hljs-keyword">of</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>), <span class="hljs-built_in">list</span> -&gt; <span class="hljs-built_in">list</span>.size<span class="hljs-literal">()</span> == <span class="hljs-number">1</span>, <span class="hljs-built_in">list</span> -&gt; <span class="hljs-built_in">list</span>.get(<span class="hljs-number">0</span>)).solve<span class="hljs-literal">()</span>
+$.. ==&gt; <span class="hljs-type">Optional</span>.empty
+</code></pre><h3 id="level-3">Level 3</h3>
+<p>Now consider the case when the problem is non-atomic. We need to extend the generic class DnC to include the <em>pair</em> of sub-problems.</p>
+<ul>
+<li>Write an overloaded of method that takes in an additional argument of type <code>Function&lt;T,Pair&lt;T,T&gt;&gt;</code> that transforms the current problem of type <code>T</code> to a pair of sub-problems <code>Pair&lt;T,T&gt;</code>.</li>
+<li>Write a <code>left()</code> method that returns the left sub-problem of the current problem as a <code>DnC</code>.</li>
+<li>Write a <code>right()</code> method that returns the right sub-problem of the current problem as a <code>DnC</code>.</li>
+</ul>
+<p>As an example, if the current sum of squares problem is represented by the pair <code>(5, 7)</code>, then this problem can be broken down into a pair of sub-problems. Invoking <code>left()</code> returns the left sub-problem <code>(5, 6)</code>; invoking <code>right()</code> returns the right sub-problem <code>(7, 7)</code>. Note that if the current problem is atomic, <code>left()</code> and <code>right()</code> will return the same problem.</p>
+<pre><code>jshell&gt; Pair&lt;Integer,Integer&gt; p = Pair.of(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+p ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; Predicate&lt;Pair&lt;Integer, Integer&gt;&gt; pred = pair -&gt; pair.<span class="hljs-built_in">first</span>() == pair.second()
+pred ==&gt; $Lambda$<span class="hljs-number">15</span>/<span class="hljs-number">0x00000008000b0040</span>@<span class="hljs-number">4</span>b9e13df
+
+jshell&gt; <span class="hljs-keyword">Function</span>&lt;Pair&lt;Integer, Integer&gt;, Integer&gt; f = pair -&gt; pair.<span class="hljs-built_in">first</span>() * pair.<span class="hljs-built_in">first</span>()
+f ==&gt; $Lambda$<span class="hljs-number">16</span>/<span class="hljs-number">0x00000008000b0440</span>@<span class="hljs-number">1</span>d057a39
+
+jshell&gt; DnC&lt;Pair&lt;Integer,Integer&gt;, Integer&gt; dnc = DnC.of(p, pred, f, 
+   ...&gt;     pair -&gt; {
+   ...&gt;         int a = pair.<span class="hljs-built_in">first</span>();
+   ...&gt;         int b = pair.second();
+   ...&gt;         int mid = (a + b) / <span class="hljs-number">2</span>;
+   ...&gt;         <span class="hljs-keyword">return</span> Pair.of(Pair.of(a, mid), Pair.of(mid + <span class="hljs-number">1</span>, b));
+   ...&gt;     })
+dnc ==&gt; DnC@<span class="hljs-number">224</span>edc67
+
+jshell&gt; dnc.peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>().peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>().<span class="hljs-built_in">left</span>().peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>().<span class="hljs-built_in">left</span>().<span class="hljs-built_in">left</span>().peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>)
+
+jshell&gt; dnc.peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">right</span>().peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">right</span>().<span class="hljs-built_in">right</span>().peek(x -&gt; System.out.println(x))
+(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>() instanceof DnC
+$.. ==&gt; true
+
+jshell&gt; dnc.<span class="hljs-built_in">right</span>() instanceof DnC
+$.. ==&gt; true
+
+jshell&gt; dnc.<span class="hljs-built_in">solve</span>()
+$.. ==&gt; Optional.empty
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>().<span class="hljs-built_in">solve</span>()
+$.. ==&gt; Optional.empty
+
+jshell&gt; dnc.<span class="hljs-built_in">left</span>().<span class="hljs-built_in">left</span>().<span class="hljs-built_in">solve</span>()
+$.. ==&gt; Optional[<span class="hljs-number">25</span>]
+
+jshell&gt; dnc.<span class="hljs-built_in">right</span>().<span class="hljs-built_in">solve</span>()
+$.. ==&gt; Optional[<span class="hljs-number">49</span>]
+
+jshell&gt; dnc.<span class="hljs-built_in">right</span>().<span class="hljs-built_in">right</span>().<span class="hljs-built_in">solve</span>()
+$.. ==&gt; Optional[<span class="hljs-number">49</span>]
+</code></pre><p>Notice from the above that only an atomic problem will give the solution when <code>solve()</code> is invoked.</p>
+<h3 id="level-4">Level 4</h3>
+<p>We are now ready to solve the sum of squares problem.</p>
+<ul>
+<li>Write an overloaded <code>solve</code> method that takes in a <code>BinaryOperator&lt;R&gt;</code> that combines the solutions.</li>
+</ul>
+<pre><code>jshell&gt; <span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt; p = <span class="hljs-built_in">Pair</span>.of(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+p ==&gt; (<span class="hljs-number">5</span>, <span class="hljs-number">7</span>)
+
+jshell&gt; Predicate&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;&gt; pred = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() == <span class="hljs-built_in">pair</span>.second()
+pred ==&gt; $Lambda$<span class="hljs-number">15</span>/<span class="hljs-number">0x00000008000b0040</span>@<span class="hljs-number">4</span>b9e13df
+
+jshell&gt; Function&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; f = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() * <span class="hljs-built_in">pair</span>.first()
+f ==&gt; $Lambda$<span class="hljs-number">16</span>/<span class="hljs-number">0x00000008000b0440</span>@<span class="hljs-number">1</span>d057a39
+
+jshell&gt; DnC&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; dnc = DnC.of(p, pred, f, 
+   <span class="hljs-params">...</span>&gt;     <span class="hljs-built_in">pair</span> -&gt; {
+   <span class="hljs-params">...</span>&gt;         int a = <span class="hljs-built_in">pair</span>.first();
+   <span class="hljs-params">...</span>&gt;         int b = <span class="hljs-built_in">pair</span>.second();
+   <span class="hljs-params">...</span>&gt;         int mid = (a + b) / <span class="hljs-number">2</span>;
+   <span class="hljs-params">...</span>&gt;         <span class="hljs-keyword">return</span> <span class="hljs-built_in">Pair</span>.of(<span class="hljs-built_in">Pair</span>.of(a, mid), <span class="hljs-built_in">Pair</span>.of(mid + <span class="hljs-number">1</span>, b));
+   <span class="hljs-params">...</span>&gt;     })
+dnc ==&gt; DnC@<span class="hljs-number">224</span>edc67
+
+jshell&gt; BinaryOperator&lt;<span class="hljs-built_in">Integer</span>&gt; bop = (x,y) -&gt; x + y
+bop ==&gt; $Lambda$<span class="hljs-number">18</span>/<span class="hljs-number">0x00000008000b1440</span>@<span class="hljs-number">59</span>fa1d9b
+
+jshell&gt; dnc.solve()
+$.. ==&gt; Optional.empty
+
+jshell&gt; dnc.solve(bop)
+$.. ==&gt; Optional<span class="hljs-meta">[</span><span class="hljs-number">110</span><span class="hljs-meta">]</span>
+
+jshell&gt; dnc.left().solve(bop) // 5*5 + 6*6
+$.. ==&gt; Optional<span class="hljs-meta">[</span><span class="hljs-number">61</span><span class="hljs-meta">]</span>
+
+jshell&gt; dnc.left().left().solve(bop) // the trivial solution 5*5
+$.. ==&gt; Optional<span class="hljs-meta">[</span><span class="hljs-number">25</span><span class="hljs-meta">]</span>
+</code></pre><p>Note that the last test case produces an atomic problem, so the trivial solution is returned.</p>
+<h3 id="level-5">Level 5</h3>
+<p>Now suppose you are given the following <code>pairOf</code> method which returns a pair of integers:</p>
+<pre><code>jshell&gt; <span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt; pairOf(int a, int b) {
+   <span class="hljs-params">...</span>&gt;     <span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt; <span class="hljs-built_in">pair</span> = <span class="hljs-built_in">Pair</span>.of(a, b);
+   <span class="hljs-params">...</span>&gt;     System.out.println(<span class="hljs-built_in">pair</span> + <span class="hljs-string">" evaluated"</span>);
+   <span class="hljs-params">...</span>&gt;     <span class="hljs-keyword">return</span> <span class="hljs-built_in">pair</span>;
+   <span class="hljs-params">...</span>&gt; }
+| created method pairOf(int,int)
+
+jshell&gt; Predicate&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;&gt; pred = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() == <span class="hljs-built_in">pair</span>.second()
+pred ==&gt; $Lambda$<span class="hljs-number">15</span>/<span class="hljs-number">0x00000008000a9440</span>@<span class="hljs-number">4</span>f933fd1
+
+jshell&gt; Function&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>, <span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; f = <span class="hljs-built_in">pair</span> -&gt; <span class="hljs-built_in">pair</span>.first() * <span class="hljs-built_in">pair</span>.first()
+f ==&gt; $Lambda$<span class="hljs-number">16</span>/<span class="hljs-number">0x00000008000ab040</span>@<span class="hljs-number">7</span>c16905e
+
+jshell&gt; DnC&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt;, <span class="hljs-built_in">Integer</span>&gt; dnc = DnC.of(pairOf(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>), pred, f, 
+   <span class="hljs-params">...</span>&gt;     <span class="hljs-built_in">pair</span> -&gt; {
+   <span class="hljs-params">...</span>&gt;         int a = <span class="hljs-built_in">pair</span>.first();
+   <span class="hljs-params">...</span>&gt;         int b = <span class="hljs-built_in">pair</span>.second();
+   <span class="hljs-params">...</span>&gt;         int mid = (a + b) / <span class="hljs-number">2</span>;
+   <span class="hljs-params">...</span>&gt;         <span class="hljs-keyword">return</span> <span class="hljs-built_in">Pair</span>.of(pairOf(a, mid), pairOf(mid + <span class="hljs-number">1</span>, b));
+   <span class="hljs-params">...</span>&gt; })
+(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>) evaluated
+dnc ==&gt; DnC@<span class="hljs-number">59</span>fa1d9b
+</code></pre><p>Notice that creating the <code>DnC</code> without solving it will result in <code>pairOf(5, 7)</code> to be evaluated once. Moreover, solving the problem might give repeated evaluations of the same problem/sub-problem. The ordering below might be different from yours; what is important is the occurrence of repeated evaluations.</p>
+<pre><code>jshell&gt; BinaryOperator&lt;Integer&gt; bop = (x,y) -&gt; x + y
+bop ==&gt; $Lambda$<span class="hljs-number">21</span>/<span class="hljs-number">0x00000008000b2440</span>@<span class="hljs-number">5</span>b275dab
+
+jshell&gt; dnc.solve(bop)
+(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>) evaluated
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>) evaluated
+(<span class="hljs-number">6</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>) evaluated
+(<span class="hljs-number">6</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>) evaluated
+$.. ==&gt; Optional[<span class="hljs-number">110</span>]
+</code></pre><p>To ensure that each problem or sub-problem is evaluated only once, we wrap the problem of type <code>T</code> around a <code>Supplier</code>.</p>
+<ul>
+<li>For the four-argument of method defined earlier, include another overloaded four-argument of method where the first argument (i.e. the problem of type <code>T</code>) is wrapped in a <code>Supplier&lt;T&gt;</code> instead.</li>
+</ul>
+<p>You will also need to make some additional modifications to the existing implementation of the <code>DnC</code> class.</p>
+<pre><code>jshell&gt; dnc = DnC.&lt;<span class="hljs-built_in">Pair</span>&lt;<span class="hljs-built_in">Integer</span>,<span class="hljs-built_in">Integer</span>&gt;,<span class="hljs-built_in">Integer</span>&gt;of(() -&gt; pairOf(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>), pred, f, 
+   <span class="hljs-params">...</span>&gt;     <span class="hljs-built_in">pair</span> -&gt; {
+   <span class="hljs-params">...</span>&gt;         int a = <span class="hljs-built_in">pair</span>.first();
+   <span class="hljs-params">...</span>&gt;         int b = <span class="hljs-built_in">pair</span>.second();
+   <span class="hljs-params">...</span>&gt;         int mid = (a + b) / <span class="hljs-number">2</span>;
+   <span class="hljs-params">...</span>&gt;         <span class="hljs-keyword">return</span> <span class="hljs-built_in">Pair</span>.of(() -&gt; pairOf(a, mid), () -&gt; pairOf(mid + <span class="hljs-number">1</span>, b));
+   <span class="hljs-params">...</span>&gt;     })
+dnc ==&gt; DnC@<span class="hljs-number">42</span>d80b78
+</code></pre><p><em>Side note: the type-witness above is necessary to avoid type binding ambiguities by forcing</em> <code>Supplier&lt;Pair&lt;Integer,Integer&gt;&gt;</code> <em>to be bound to</em> <code>Supplier&lt;T&gt;</code> <em>and not</em> <code>T</code>.</p>
+<pre><code>jshell&gt; BinaryOperator&lt;Integer&gt; bop = (x,y) -&gt; x + y
+bop ==&gt; $Lambda$<span class="hljs-number">21</span>/<span class="hljs-number">0x00000008000b2440</span>@<span class="hljs-number">5</span>b275dab
+
+jshell&gt; dnc.solve(bop)
+(<span class="hljs-number">5</span>, <span class="hljs-number">7</span>) evaluated
+(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>) evaluated
+(<span class="hljs-number">6</span>, <span class="hljs-number">6</span>) evaluated
+(<span class="hljs-number">7</span>, <span class="hljs-number">7</span>) evaluated
+$.. ==&gt; Optional[<span class="hljs-number">110</span>]
+</code></pre><p>Notice that the creation of a <code>DnC</code> no longer produce any evaluations, and the outcome of <code>dnc.solve(bop)</code> evaluates each problem/sub-problem only once. Moreover, the evaluation is done in a depth-first manner, i.e. the left sub-problems will be evaluated before the right sub-problems.</p>
+<h3 id="level-6">Level 6</h3>
+<p>Let&#39;s use the <code>DnC</code> class for summing the elements of a <code>List</code> of integers.</p>
+<p>Create a <code>SumList</code> class by adhering to the following:</p>
+<ul>
+<li>The <code>SumList</code> class inherits from the <code>DnC</code> class;</li>
+<li>Write a constructor that takes in a <code>List&lt;Integer&gt;</code>;</li>
+<li>You are only allowed to write ONE constructor; you cannot include any other methods or - properties;</li>
+<li>You are allowed to expose existing constructors (or additional constructors) in <code>DnC</code> to its sub-classes so as to facilitate the creation of the <code>SumList</code> object.</li>
+</ul>
+<p>Here is a sample run of how <code>SumList</code> works. Only the following methods will be tested:</p>
+<ul>
+<li><code>left()</code></li>
+<li><code>right()</code></li>
+<li><code>solve(BinaryOperator)</code></li>
+</ul>
+<pre><code>jshell&gt; SumList sumlist = <span class="hljs-keyword">new</span> SumList(List.<span class="hljs-keyword">of</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>))
+sumlist ==&gt; SumList@<span class="hljs-number">20e</span>2cbe0
+
+jshell&gt; sumlist <span class="hljs-keyword">instanceof</span> DnC
+$.. ==&gt; <span class="hljs-literal">true</span>
+
+jshell&gt; sumlist.solve<span class="hljs-function"><span class="hljs-params">((x,y) -&gt; x + y)</span>
+<span class="hljs-title">$</span>.. ==&gt; <span class="hljs-title">Optional</span>[15]
+
+<span class="hljs-title">jshell</span>&gt; <span class="hljs-title">sumlist</span>.<span class="hljs-title">left</span><span class="hljs-params">()</span>.<span class="hljs-title">solve</span><span class="hljs-params">((x,y) -&gt; x + y)</span>
+<span class="hljs-title">$</span>.. ==&gt; <span class="hljs-title">Optional</span>[6]
+
+<span class="hljs-title">jshell</span>&gt; <span class="hljs-title">sumlist</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">solve</span><span class="hljs-params">((x,y) -&gt; x + y)</span>
+<span class="hljs-title">$</span>.. ==&gt; <span class="hljs-title">Optional</span>[9]
+
+<span class="hljs-title">jshell</span>&gt; <span class="hljs-title">sumlist</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">solve</span><span class="hljs-params">((x,y) -&gt; x + y)</span>
+<span class="hljs-title">$</span>.. ==&gt; <span class="hljs-title">Optional</span>[5]
+
+<span class="hljs-title">jshell</span>&gt; <span class="hljs-title">sumlist</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">right</span><span class="hljs-params">()</span>.<span class="hljs-title">solve</span><span class="hljs-params">((x,y) -&gt; x + y)</span>
+<span class="hljs-title">$</span>.. ==&gt; <span class="hljs-title">Optional</span>[5]</span>
+</code></pre><p><em>Addendum</em>:</p>
+<ul>
+<li><code>SumList</code> can be used for more than just summing. It should probably be called <code>OpIntList</code> instead, since we can pass other forms of BinaryOperator like <code>(x,y) -&gt; x * y</code></li>
+<li>Some of you would probably use the <code>subList</code> method of <code>List</code> in <code>SumList</code>. As a challenge, think of a solution without using <code>subList</code> and still adhere to the restrictions.</li>
+</ul>
