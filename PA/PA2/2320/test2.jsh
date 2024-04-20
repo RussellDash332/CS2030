@@ -1,0 +1,10 @@
+StateM.<Integer>get()
+StateM.<Integer>get().accept(0)
+StateM.<Integer>get().accept(10)
+Nothing nothing = Nothing.nothing()
+Function<Nothing, Integer> f = x -> 1
+f.apply(Nothing.nothing())
+StateM.<Integer>put(10)
+StateM.<Integer>put(10).accept(0)
+StateM.<String, Integer>unit("init").get().put(10).unit(4).accept(0)
+StateM.<Integer, Integer>unit(4).accept(0)
