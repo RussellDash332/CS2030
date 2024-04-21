@@ -1,0 +1,542 @@
+<h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p>Throughout this course, we have been working with and encouraged to use <i>pure functions</i> with no side-effects, where possible.
+
+    <pre>
+    jshell&gt; Function&lt;String, Integer&gt; f = s -&gt; s.length()
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;Integer, Integer&gt; g = x -&gt; x * 2
+    g ==&gt; $Lambda$..
+    
+    jshell&gt; f.apply("abc")
+    $.. ==&gt; 3
+    
+    jshell&gt; g.apply(3)
+    $.. ==&gt; 6
+    </pre>
+    
+    <p>Pure functions can also be composed to create more complex pure functions:
+    
+    <pre>
+    jshell&gt; g.compose(f).apply("abc")
+    $.. ==&gt; 6
+    </pre>
+    
+    <p>Let us consider logging using an external variable (or state).
+    
+    <pre>
+    jshell&gt; String log = ""
+    log ==&gt; ""
+    
+    jshell&gt; Function&lt;String, Integer&gt; f = s -&gt; { log = log + "f"; return s.length(); }
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;Integer, Integer&gt; g = x -&gt; { log = log + "g"; return x * 2; }
+    g ==&gt; $Lambda$..
+    
+    jshell&gt; g.compose(f).apply("abc")
+    $.. ==&gt; 6
+    
+    jshell&gt; log
+    log ==&gt; "fg" // log is changed!
+    
+    jshell&gt; g.compose(f).apply("abc")
+    $.. ==&gt; 6
+    
+    jshell&gt; log
+    log ==&gt; "fgfg" // log is changed again!
+    </pre>
+    
+    <p>One way of avoiding the side-effect is to encapsulate the value and the log into a pair.
+    
+    <pre>
+    jshell&gt; Function&lt;Pair&lt;String, String&gt;, Pair&lt;Integer, String&gt;&gt; f = x -&gt; 
+       ...&gt; new Pair&lt;Integer, String&gt;(x.first().length(), x.second() + "f")
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;Pair&lt;Integer, String&gt;, Pair&lt;Integer, String&gt;&gt; g = x -&gt; 
+       ...&gt; new Pair&lt;Integer, String&gt;(x.first() * 2, x.second() + "g")
+    g ==&gt; $Lambda$..
+    
+    jshell&gt; g.compose(f).apply(new Pair&lt;String, String&gt;("abc",""))
+    $.. ==&gt; (6, fg)
+    
+    jshell&gt; g.compose(f).apply(new Pair&lt;String, String&gt;("abc",""))
+    $.. ==&gt; (6, fg) // value is unchanged
+    </pre>
+    
+    <p>However, the above entails that the accumulation of the log is to be handled together with the transformation of the value by each pure function, such as <tt>f</tt> and <tt>g</tt>.  
+    
+    <p>We shall now attempt to separate these two tasks.
+    Let us first generalize our situation by considering the two functions <tt>f</tt> and <tt>g</tt> below with arbitrary types
+    <tt>A</tt>,
+    <tt>B</tt>, and
+    <tt>C</tt>.
+    
+    <ul>
+    <li><tt>f :: A -&gt; B</tt>
+    <li><tt>g :: B -&gt; C</tt>
+    </ul>
+    
+    which can be composed to give <tt>g o f :: A -&gt; C</tt>
+    
+    <p>As we have seen, we can include the state (of type <tt>S</tt>) by adding it to a pair.
+    
+    <ul>
+    <li><tt>f :: (A, S) -&gt; (B, S)</tt>
+    <li><tt>g :: (B, S) -&gt; (C, S)</tt>
+    </ul>
+    
+    <p>which will give the composition <tt>g o f :: (A, S) -&gt; (C, S)</tt>.
+    
+    <p>Notice that the functions <tt>f</tt> and <tt>g</tt> above can be <i>curried</i>:
+    
+    <ul>
+    <li><tt>f :: A -&gt; (S -&gt; (B, S))</tt>
+    <li><tt>g :: B -&gt; (S -&gt; (C, S))</tt>
+    </ul>
+    
+    <p>but we cannot readily compose <tt>g o f</tt> as the output type of <tt>f</tt> and input type of <tt>g</tt> are now different.
+    
+    <p>Let us encapsulate the function of the form <tt>(S -&gt; (T, S))</tt> into a <i>context</i> <tt>StateM&lt;T, S&gt;</tt>.
+    We now have
+    
+    <ul>
+    <li><tt>f :: A -&gt; StateM&lt;B, S&gt;</tt>
+    <li><tt>g :: B -&gt; StateM&lt;C, S&gt;</tt>
+    </ul>
+    
+    begin with an initial context <tt>state</tt> of type <tt>StateM&lt;A,
+    S&gt;</tt>. To perform the composition, we can now make use of
+    <tt>flatMap</tt>!
+    
+    <pre>
+    state.flatMap(f).flatMap(g)
+    </pre>
+    
+    <h2>Task</h2>
+    
+    <p>Your task is to define <tt>StateM</tt> with the appropriate <tt>flatMap</tt> method, as well as other methods to update the state.
+    
+    <h2>Take Note!</h2>
+    
+    <p>This task comprises a number of levels.
+    You are required to complete ALL levels.</p>
+    
+    <p>The following are the constraints imposed on this task.
+    In general, you should keep to the constructs and programming discipline 
+    instilled throughout the module.</p>
+    
+    <ul>
+    <li>Write each class or interface in its own file.
+    Do not use single letter names for classes or interfaces.
+    </li>
+    <li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>, unless otherwise specified.</li>
+    <li>Ensure that your classes are NOT cyclic dependent.</li>
+    <li>ONLY the following java libraries ARE allowed:
+    <ul>
+    <li><tt>java.util.Optional</tt>
+    <li>functional interfaces from <tt>java.util.function</tt>
+    </ul>
+    <li>The following are NOT allowed:
+    <ul>
+    <li><tt>null</tt>
+    <li><tt>instanceof</tt>
+    <!-- (except checking for an instance of its own class) -->
+    <!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+    -->    
+    <li><tt>for</tt>, <tt>while</tt>
+    <li><tt>enum</tt>
+    <li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+    <!-- <li>methods of the <tt>String</tt> class -->
+    </ul>
+    <li>There is no need to use bounded wildcards.
+    <li>You are NOT allowed to define anonymous inner classes; define lambdas instead.
+    <li>Other usual restrictions:
+    <ul>
+    <li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+    DO NOT use bitwise operators.
+    <li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+    <li>You are NOT allowed to use method references <tt>::</tt>
+    <li>You are NOT allowed to define array constructs, e.g.
+    <tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+    <li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+    </ul>
+    </ul>
+    
+    <p>The 
+    <tt><a href="Pair.java">Pair</a></tt> and
+    <tt><a href="AbstractStateM.java">AbstractStateM</a></tt> 
+    classes have been provided for you.
+    You are NOT ALLOWED to modify these classes.
+    
+    <h2>Level 1</h2>
+    
+    <p>Given the following <tt>AbstractStateM</tt> class.
+    
+    <pre>
+    abstract class AbstractStateM&lt;T, S&gt; {
+        private final Function&lt;S, Pair&lt;T, S&gt;&gt; f;
+    
+        AbstractStateM(Function&lt;S, Pair&lt;T, S&gt;&gt; f) {
+            this.f = f;
+        }
+    
+        AbstractStateM(T t) {
+            this(s -&gt; new Pair&lt;T, S&gt;(t, s));
+        }
+    
+        Pair&lt;T, S&gt; accept(S s) {
+            return this.f.apply(s);
+        }
+    }
+    </pre>
+    
+    <p>Write the concrete class <tt>StateM&lt;T, S&gt;</tt> that inherits from <tt>AbstractStateM</tt> with the following methods:
+    
+    <ul>
+    <li>a <tt>static</tt> factory method <tt>unit</tt> that takes in a value of type <tt>T</tt> and returns a <tt>StateM</tt> object with the value wrapped within it;
+    <li>a <tt>toString</tt> method that returns <tt>"StateM"</tt> as the string representation.
+    </ul>
+    
+    <p>You may write your own constructors.  However, DO NOT declare any
+    other instance properties or constants in <tt>StateM</tt>.  
+    All other helper methods, if any, must be declared <tt>private</tt>.
+    
+    <pre>
+    jshell&gt; StateM.&lt;String, Integer&gt;unit("init")
+    $.. ==&gt; StateM
+    </pre>
+    
+    <p>The initial state value of type <tt>S</tt> is passed
+    into the pipeline via the terminating <tt>accept</tt> method.
+    Subsequently, a <tt>Pair&lt;T, S&gt;</tt> object comprising the value
+    of type <tt>T</tt> and the state of type <tt>S</tt> is returned at
+    the end of the pipeline.
+    
+    <pre>
+    jshell&gt; StateM.&lt;String, Integer&gt;unit("init").accept(0)
+    $.. ==&gt; (init, 0)
+    </pre>
+    
+    <h2>Level 2</h2>
+    
+    <p>To change the state within the pipeline, we need two more <tt>static</tt> factory methods to read and write states.
+    
+    <p>Write the <tt>get</tt> method that takes no arguments, and returns a <tt>StateM</tt> object where the value is the same as the state.
+    
+    <pre>
+    jshell&gt; StateM.&lt;Integer&gt;get()
+    $.. ==&gt; StateM
+    
+    jshell&gt; StateM.&lt;Integer&gt;get().accept(0)
+    $.. ==&gt; (0, 0)
+    
+    jshell&gt; StateM.&lt;Integer&gt;get().accept(10)
+    $.. ==&gt; (10, 10)
+    </pre>
+    
+    <p>Next, write the <tt>put</tt> method that takes in a new state and returns
+    <tt>StateM</tt> with the updated state, but no value (or nothing).
+    
+    <p>You will first need to define a <tt>Nothing</tt> type (or class) according to the sample run below:
+    
+    <pre>
+    jshell&gt; Nothing nothing = Nothing.nothing()
+    nothing ==&gt; -
+    
+    jshell&gt; Function&lt;Nothing, Integer&gt; f = x -&gt; 1
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; f.apply(Nothing.nothing())
+    $.. ==&gt; 1
+    
+    jshell&gt; StateM.&lt;Integer&gt;put(10)
+    $.. ==&gt; StateM
+    
+    jshell&gt; StateM.&lt;Integer&gt;put(10).accept(0)
+    $.. ==&gt; (-, 10)
+    </pre>
+    
+    The last test case above first takes in <tt>0</tt> as the state,
+    which then gets updated to <tt>10</tt>.
+    
+    <p>It is worth noting that since <tt>unit</tt>, <tt>get</tt> and
+    <tt>put</tt> are <tt>static</tt> factory methods, they cannot be called one
+    after another, e.g.
+    
+    <pre>
+    jshell&gt; StateM.&lt;String, Integer&gt;unit("init").get().put(10).unit(4).accept(0)
+    $.. ==&gt; (4, 0)
+    </pre>
+    
+    <p>is just simply
+    
+    <pre>
+    jshell&gt; StateM.&lt;Integer, Integer&gt;unit(4).accept(0)
+    $.. ==&gt; (4, 0)
+    </pre>
+    
+    <p>Moreover, chaining in the above way does not allow updating the state to say, "10 more than the previous state".  This is where <tt>flatMap</tt> comes in.
+    
+    
+    <h2>Level 3</h2>
+    
+    <p>Write the <tt>flatMap</tt> method to sequence <tt>StateM</tt> objects following the sample run below.
+    You can ignore bounded wildcards for simplicity.
+    
+    <pre>
+    jshell&gt; StateM.&lt;String, Integer&gt;unit("init").
+       ...&gt; flatMap(x -&gt; StateM.&lt;Integer, Integer&gt;unit(x.length()))
+    $.. ==&gt; StateM
+    
+    jshell&gt; StateM.&lt;String, Integer&gt;unit("init").
+       ...&gt; flatMap(x -&gt; StateM.&lt;Integer, Integer&gt;unit(x.length())).accept(0)
+    $.. ==&gt; (4, 0)
+    
+    jshell&gt; Function&lt;Integer, StateM&lt;Integer, String&gt;&gt; id = x -&gt; 
+       ...&gt; StateM.&lt;Integer, String&gt;unit(x)
+    id ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;Integer, StateM&lt;Integer, String&gt;&gt; f = x -&gt; 
+       ...&gt; StateM.&lt;Integer, String&gt;unit(x + 1)
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; f.apply(1).accept("initState")
+    $.. ==&gt; (2, initState)
+    
+    jshell&gt; id.apply(1).flatMap(f).accept("initState")
+    $.. ==&gt; (2, initState)
+    
+    jshell&gt; f.apply(1).flatMap(id).accept("initState")
+    $.. ==&gt; (2, initState)
+    
+    jshell&gt; StateM.&lt;Integer, String&gt;unit(1).
+       ...&gt; flatMap(f).
+       ...&gt; flatMap(f).
+       ...&gt; accept("initState")
+    $.. ==&gt; (3, initState)
+    
+    jshell&gt; StateM.&lt;Integer, String&gt;unit(1).
+       ...&gt; flatMap(x -&gt; f.apply(x).
+       ...&gt; flatMap(f)).accept("initState")
+    $.. ==&gt; (3, initState)
+    </pre>
+    
+    <p>A more practical test case is given below.
+    
+    <pre>
+    jshell&gt; StateM&lt;Integer, Integer&gt; bar(StateM&lt;String, Integer&gt; sm) {
+       ...&gt;     return sm.flatMap(x -&gt; StateM.&lt;Integer&gt;get()
+       ...&gt;         .flatMap(y -&gt; StateM.&lt;Integer&gt;put(y + 10))
+       ...&gt;         .flatMap(z -&gt; StateM.&lt;Integer, Integer&gt;unit(x.length())));
+       ...&gt; }
+    |  modified method bar(StateM&lt;String, Integer&gt;)
+    
+    jshell&gt; bar(StateM.&lt;String, Integer&gt;unit("init")).accept(1)
+    $.. ==&gt; (4, 11)
+    </pre>
+    
+    <p>Admittedly the <tt>bar</tt> method looks rather contrived.
+    However, its <i>monad comprehension</i> is just simply
+    
+    <pre>
+    StateM<Integer, Integer> bar(StateM&lt;String, Integer&gt; sm) {
+       do {
+          x &lt;- sm; // get the string value from sm
+          y &lt;- get(); // get the state from sm
+          put(y + 10); // increase state by 10
+          unit(x.length()); // transform string value to its length
+       }
+    }
+    </pre>
+    
+    <p>Interestingly, here is how we can make use of a <tt>String</tt> state for logging:
+    
+    <pre>
+    jshell&gt; Function&lt;String, StateM&lt;Integer, String&gt;&gt; f = s -&gt; {
+       ...&gt;     return StateM.&lt;String&gt;get()
+       ...&gt;         .flatMap(x -&gt; StateM.&lt;String&gt;put(x + "f"))
+       ...&gt;         .flatMap(y -&gt; StateM.&lt;Integer, String&gt;unit(s.length()));
+       ...&gt; }
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;Integer, StateM&lt;Integer, String&gt;&gt; g = x -&gt; {
+       ...&gt;     return StateM.&lt;String&gt;get()
+       ...&gt;         .flatMap(y -&gt; StateM.&lt;String&gt;put(y + "g"))
+       ...&gt;         .flatMap(z -&gt; StateM.&lt;Integer, String&gt;unit(2 * x));
+       ...&gt; }
+    g ==&gt; $Lambda$..
+    
+    jshell&gt; StateM.&lt;String, String&gt;unit("abc").flatMap(f).flatMap(g).accept("")
+    $.. ==&gt; (6, fg)
+    </pre>
+    
+    <!--
+    <p>Here are some further tests:
+    
+    <pre>
+    jshell&gt; IntStateM.&lt;String&gt;unit("init").flatMap(x -&gt; IntStateM.get()).run(0)
+    $.. ==&gt; (0, 0)
+    
+    jshell&gt; IntStateM.&lt;String&gt;unit("init").flatMap(x -&gt; IntStateM.get()).run(10)
+    $.. ==&gt; (10, 10)
+    
+    jshell&gt; IntStateM.get().flatMap(x -&gt; IntStateM.unit("abc"))
+    $.. ==&gt; IntStateM
+    
+    jshell&gt; IntStateM.get().flatMap(x -&gt; IntStateM.unit("abc")).run(0)
+    $.. ==&gt; (abc, 0)
+    
+    jshell&gt; IntStateM.put(10).flatMap(x -&gt; IntStateM.get()).run(0)
+    $.. ==&gt; (10, 10)
+    
+    jshell&gt; IntStateM.put(10).flatMap(x -&gt; IntStateM.unit("abc")).run(0)
+    $.. ==&gt; (abc, 10)
+    
+    jshell&gt; Function&lt;String, IntStateM&lt;String&gt;&gt; id = x -&gt; IntStateM.unit(x)
+    id ==&gt; $Lambda$..
+    
+    jshell&gt; Function&lt;String, IntStateM&lt;String&gt;&gt; f = x -&gt; IntStateM.unit(x + x)
+    f ==&gt; $Lambda$..
+    
+    jshell&gt; f.apply("init").run(0)
+    $.. ==&gt; (initinit, 0)
+    
+    jshell&gt; f.apply("init").flatMap(id).run(0)
+    $.. ==&gt; (initinit, 0)
+    
+    jshell&gt; id.apply("init").flatMap(f).run(0)
+    $.. ==&gt; (initinit, 0)
+    
+    jshell&gt; Function&lt;String, IntStateM&lt;Integer&gt;&gt; g = x -&gt; IntStateM.unit(x.length())
+    g ==&gt; $Lambda$..
+    
+    jshell&gt; IntStateM.unit("init").flatMap(f).flatMap(g).run(0)
+    $.. ==&gt; (8, 0)
+    
+    jshell&gt; IntStateM.unit("init").flatMap(f).run(0)
+    $.. ==&gt; (initinit, 0)
+    
+    jshell&gt; IntStateM.unit("init").flatMap(x -&gt; f.apply(x).flatMap(g)).run(0)
+    $.. ==&gt; (8, 0)
+    </pre>
+    -->
+    
+    <h2>Level 4</h2>
+    
+    <p>The following is an attempt to count the number of method calls to the <tt>fib</tt> method when finding the <tt>n</tt>-th term of the Fibonacci sequence.
+    Clearly, it uses an external state with side-effects.
+    
+    <pre>
+    jshell&gt; int count = 0
+    count ==&gt; 0
+    
+    jshell&gt; int fib(int n) { 
+       ...&gt;     count = count + 1;
+       ...&gt;     if (n <= 1) {
+       ...&gt;         return n;
+       ...&gt;     } else {
+       ...&gt;         return fib(n - 1) + fib(n - 2);
+       ...&gt;     }
+       ...&gt; }
+    |  modified method fib(int)
+    
+    jshell&gt; fib(5)
+    $.. ==&gt; 5
+    
+    jshell&gt; count
+    count ==&gt; 15
+    
+    jshell&gt; fib(5)
+    $.. ==&gt; 5
+    
+    jshell&gt; count
+    count ==&gt; 30
+    </pre>
+    
+    <p>Rewrite the <tt>fib</tt> function in <tt>level4.jsh</tt> so as to capture the number of function activations using <tt>StateM&lt;Integer, Integer&gt;</tt> instead.
+    
+    <p>First, create a method <tt>inc()</tt> in <tt>level4.jsh</tt> to increment the integer state by 1.
+    
+    <pre>
+    shell&gt; inc()
+    $.. ==&gt; StateM
+    
+    jshell&gt; inc().accept(0)
+    $.. ==&gt; (-, 1)
+    
+    jshell&gt; inc().accept(10)
+    $.. ==&gt; (-, 11)
+    </pre>
+    
+    <p>Now use the following monad comprehension as a guide to define the <tt>fib</tt> method.
+    
+    <pre>
+    StateM&lt;Integer, Integer&gt; fib(int n) {
+       do {
+          inc();
+          if (n &lt;= 1) {
+             unit(n);
+          } else {
+             do {
+                x &lt;- fib(x-1);
+                y &lt;- fib(x-2);
+                unit(x+y)
+             }
+          }
+       }
+    }
+    </pre>
+    
+    <p>A sample run is given below.
+    
+    <pre>
+    jshell&gt; fib(5)
+    $.. ==&gt; StateM
+    
+    jshell&gt; fib(5).accept(0)
+    $.. ==&gt; (5, 15)
+    
+    jshell&gt; fib(6).accept(0)
+    $.. ==&gt; (8, 25)
+    </pre>
+    
+    <h2>Level 5</h2>
+    
+    <p>Finally, we would like to find out the number of function activations and the maximum depth of recursion for the Ackermann function defined below:
+    
+    <pre>
+    jshell&gt; int ack(int m, int n) {
+       ...&gt;     if (m == 0) {
+       ...&gt;         return n + 1;
+       ...&gt;     }
+       ...&gt;     if (n == 0) {
+       ...&gt;         return ack(m - 1, 1);
+       ...&gt;     }
+       ...&gt;     return ack(m - 1, ack(m, n - 1));
+       ...&gt; }
+    |  created method ack(int,int)
+    
+    jshell&gt; ack(1, 2)
+    $.. ==&gt; 4
+    </pre>
+    
+    <p>Rewrite the <tt>ack</tt> function in <tt>level5.jsh</tt> so that it returns the result, together with the number of method calls and maximum depth of recursion.
+    
+    <p>Define your own custom state in the class <tt>FuncStat</tt>.
+    
+    <pre>
+    jshell&gt; ack(1, 2)
+    $.. ==&gt; StateM
+    
+    jshell&gt; new FuncStat()
+    $.. ==&gt; count=0 maxDepth=0
+    
+    jshell&gt; Pair&lt;Integer, FuncStat&gt; result = ack(1, 2).accept(new FuncStat())
+    result ==&gt; (4, [count=6 maxDepth=4]) // 6 function calls with maximum recursion depth of 4
+    </pre>
+    
+    <i>Hint: Try to define the monad comprehension first, then apply the translation scheme.</i>

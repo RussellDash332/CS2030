@@ -1,0 +1,6 @@
+inc()
+inc().accept(0)
+inc().accept(10)
+fib(5)
+fib(5).accept(0)
+fib(6).accept(0)
