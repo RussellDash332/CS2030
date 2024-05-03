@@ -1,0 +1,349 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 Practical Assessment #1</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p>A public transport system comprises buses and trains.
+    Passengers pay a fare according to the bus and/or train rides within a trip.
+    The fare is based upon a prescribed fare system, and there are many fare systems available.
+    
+    <h2>Task</h2>
+    
+    <p>Your task is to track the different rides within a trip and compute the fare for the
+    entire trip based on a given fare system.
+    Although this exercises only focuses on buses and trains, your program should be able to support other rides.
+    
+    <h2>Take note!</h2>
+    
+    <p>There are altogether five levels.
+    You are required to complete ALL levels.</p>
+    
+    <p>You should keep to the constructs taught in class, as well as the programming discipline 
+    instilled throughout the course.</p>
+    
+    <ul>
+    <li>Write each <tt>class</tt>/<tt>interface</tt> in its own file; you are NOT allowed to use
+    <tt>enum</tt> or <tt>record</tt>.
+    <li>Ensure that ALL declarations of object properties and class constants include the <tt>private</tt> and <tt>final</tt> modifiers. </li>
+    <li>Ensure that your classes are NOT cyclic dependent.</li>
+    <li>You are NOT allowed to use java libraries, other than those
+    from <tt>java.lang</tt>, <tt>java.util.List</tt>,
+    <tt>java.util.Comparator</tt> and
+    <tt>java.util.Iterator</tt>.</li>
+    <li>If necessary, use only the <tt>ImList</tt> class and <tt>Pair</tt> class provided; do NOT create your own.
+    <li><tt>instanceof</tt> can only be used in a class to check <tt>instanceof</tt> the same class, e.g. within a typical <tt>equals(Object)</tt> method.
+    <li>You are NOT allowed to use java keywords/literals: <tt>null</tt>. 
+    <li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+    <li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+    <li>You are NOT allowed to use explicit typecasts to convert between
+    types.
+    <li>You are NOT allowed to define anonymous inner classes or lambdas.
+    <li>You are NOT allowed to define array constructs, e.g.
+    <tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+    </ul>
+    
+    <p>You may assume that all tests provide valid arguments to the methods; hence there is no need to validate method arguments. </li>
+    
+    
+    <h2>Level 1</h2>
+    
+    <p>The following interface <tt>Ride</tt> is provided:
+    
+    <pre>
+    interface Ride {
+        public int distance();
+    
+        public boolean isSameRide(Ride otherRide);
+    }
+    </pre>
+    
+    <p>Define the class <tt>Bus</tt> as an implementation of <tt>Ride</tt> with a constructor that
+    takes in an alphanumeric bus number as a <tt>String</tt>, an integer boarding stage and an integer alighting stage.
+    You may assume that each stage is 800 metres, and that the boarding stage is strictly less than the alighting stage.
+    
+    <p>Include the <tt>distance</tt> method that returns the distance (in metres) between the two stages of the bus ride.
+    
+    <p>Include an appropriate <tt>toString</tt> method that returns a <tt>String</tt> representation of the bus ride.
+    As we not testing <tt>isSameRide</tt> in this level, you may implement the method in any way you wish.
+    
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; Bus bus = new Bus("96A", 4, 7)
+    bus ==&gt; [Bus 96A: 4 -- 7]
+    
+    jshell&gt; bus.distance()
+    $.. ==&gt; 2400
+    
+    jshell&gt; Ride ride = bus
+    ride ==&gt; [Bus 96A: 4 -- 7]
+    </pre>
+    
+    
+    <h2>Level 2</h2>
+    
+    <p>A trip involves a series of rides.  In this level, the only rides are bus rides.
+    
+    <p>Write a class <tt>Trip</tt> with a constructor that takes in the first ride to start the trip.
+    
+    <p>Include the method <tt>next</tt> that takes in a new ride, and appends it to the end of the current trip.
+    
+    <p>Include an appropriate <tt>toString</tt> method that returns a <tt>String</tt> representation of the bus trip.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new Trip(new Bus("96A", 4, 7))
+    $.. ==&gt; [Bus 96A: 4 -- 7]
+    
+    jshell&gt; Trip trip = new Trip(new Bus("96A", 4, 7))
+    trip ==&gt; [Bus 96A: 4 -- 7]
+    
+    jshell&gt; trip.next(new Bus("95", 3, 10))
+    $.. ==&gt; [Bus 96A: 4 -- 7][Bus 95: 3 -- 10]
+    
+    jshell&gt; trip
+    trip ==&gt; [Bus 96A: 4 -- 7]
+    
+    jshell&gt; trip.next(new Bus("96A", 6, 10))
+    $.. ==&gt; [Bus 96A: 4 -- 7]
+    </pre>
+    
+    <p>Note from the last test above that a new ride with the same bus number as the last bus ride cannot be appended to the trip, regardless of the boarding and alighting stages.
+    You will need to define the <tt>isSameRide</tt> method to serve this purpose.
+    
+    <h2>Level 3</h2>
+    
+    <p>We now include the train.
+    Write a class <tt>Train</tt> with a constructor that takes two
+    integers: the boarding train station and the alighting train
+    station, where the boarding station is strictly less than the
+    alighting station.
+    For now, you may assume that there are only five stations in the current rail system with the distance (in metres) between stations indicated by the table below:
+    
+    <ul>
+    <li>From station 1 to station 2: <tt>1500</tt>
+    <li>From station 2 to station 3: <tt>2400</tt>
+    <li>From station 3 to station 4: <tt>1200</tt>
+    <li>From station 4 to station 5: <tt>900</tt>
+    </ul>
+    
+    <p>Include the <tt>distance</tt> method that returns the distance (in metres) traveled
+    between the two stations, and an appropriate <tt>toString</tt> method that returns a <tt>String</tt> representation of the train ride.
+    
+    <p>Moreover, a train ride can now be included in a trip.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; Train train = new Train(1, 2)
+    train ==&gt; [Train: 1 -- 2]
+    
+    jshell&gt; train.distance()
+    $.. ==&gt; 1500
+    
+    jshell&gt; train = new Train(1, 3)
+    train ==&gt; [Train: 1 -- 3]
+    
+    jshell&gt; train.distance()
+    $.. ==&gt; 3900
+    
+    jshell&gt; Ride ride = train
+    ride ==&gt; [Train: 1 -- 3]
+    
+    jshell&gt; Trip trip = new Trip(train)
+    trip ==&gt; [Train: 1 -- 3]
+    
+    jshell&gt; trip.next(new Bus("96A", 4, 7))
+    $.. ==&gt; [Train: 1 -- 3][Bus 96A: 4 -- 7]
+    
+    jshell&gt; trip.next(new Train(3, 5))
+    $.. ==&gt; [Train: 1 -- 3]
+    
+    jshell&gt; trip.next(new Train(3, 5)).next(new Bus("96A", 4, 7)).next(new Bus("96A", 6, 10))
+    $.. ==&gt; [Train: 1 -- 3][Bus 96A: 4 -- 7]
+    </pre>
+    
+    <p>Notice from the last two test cases above that consecutive train rides where the passenger alights at a station and boards another train at the same station is not allowed.
+    
+    
+    <h2>Level 4</h2>
+    
+    <p>We are now ready to include the fare system.  
+    For simplicity, we assume that the same fare system is applied to all types of rides.
+    
+    <p>We start with the staged fare system that is based on separate fares for each ride within a trip.
+    The total fare can then be computed as a sum of the fares.
+    
+    <p>The following interface <tt>Fare</tt> is provided:
+    
+    <pre>
+    interface Fare {
+        public int computeFare(Iterable&lt;Ride&gt; trip);
+    }
+    </pre>
+    
+    <p>Notice that the <tt>computeFare</tt> method takes in a trip as an <tt>Iterable&lt;Ride&gt;</tt>. 
+    Although it may seem that the <tt>computeFare</tt> method can take in a trip as a <tt>Trip</tt>, you will realize later that <tt>Trip</tt> would have to be dependent on <tt>Fare</tt>, and hence a cyclic dependency arises.
+    
+    <!-- This is to facilitate iterating the rides via the enhanced <tt>for</tt> loop. -->
+    
+    <p>Write the <tt>StagedFare</tt> class to represent the table of fares (in cents), e.g.
+    
+    <ul>
+    <li>up to 4000m: <tt>90</tt>
+    <li>up to 7000m: <tt>110</tt>
+    <li>up to 10000m: <tt>130</tt>
+    <li>...
+    </ul>
+    
+    <p>Rather than hard-coding the fare table, it should be constructed "on-the-fly". 
+    This is useful since higher fares for longer distances can be added to an existing fare table
+    when the need arises, e.g. due to inflation.
+    
+    <p>Write a class <tt>StagedFare</tt> that implements <tt>Fare</tt>.
+    Include a constructor that takes the initial entry of the fare table as two integer arguments: the distance (in metres) and the fare (in cents).
+    As an example, <tt>new StagedFare(4000, 90)</tt> will initialize a new bus fare table with a fare
+    of 90 cents up to 4000 metres.  However, as there is no further entry, distances greater than 4000 will also be 90 cents.
+    
+    <p>To add another entry into the table, include the <tt>add</tt> method that takes in a distance and a fare. For example,
+    
+    <pre>
+    new StagedFare(4000, 90).add(7000, 110)
+    </pre>
+    
+    <p>will create a fare table where the fare is 90 cents up to 4000m, and 110 cents up to 7000m.  Since there is no further entry, distances above 7000 will also be 110 cents.
+    
+    <p>You may assume that longer distances have correspondingly higher bus fares.
+    However, you cannot assume that entries will be added to the fare table in increasing distances or fares.
+    
+    <p>Include a <tt>toString</tt> that returns a <tt>String</tt> representation of the fare with the corresponding fare range (i.e. lowest and highest fares) in the table.
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new StagedFare(4000, 90)
+    $.. ==&gt; Staged fare from 90 to 90
+    
+    jshell&gt; new StagedFare(4000, 90).add(7000, 110)
+    $.. ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; new StagedFare(7000, 110).add(4000, 90)
+    $.. ==&gt; Staged fare from 90 to 110
+    </pre>
+    
+    <p>How do we compute the fare of a trip?
+    In the <tt>Trip</tt> class, include the method <tt>fare</tt> that takes in a fare system and returns the total fare over all rides within the trip.
+    Doing this will allow us to compute the fare of a trip under different fare systems.
+    
+    <pre>
+    jshell&gt; StagedFare sfare = new StagedFare(7000, 110).add(4000, 90)
+    sfare ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; Fare fare = sfare
+    fare ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; Trip trip = new Trip(new Train(1, 5))
+    trip ==&gt; [Train: 1 -- 5]
+    
+    jshell&gt; trip.fare(sfare)
+    $.. ==&gt; 110
+    
+    jshell&gt; trip.next(new Bus("96A", 4, 7)).fare(sfare)
+    $.. ==&gt; 200
+    </pre>
+    
+    <h2>Level 5</h2>
+    
+    <p>We would like to offer a rebate for each transfer within the trip.
+    The rebate is offered based on an existing staged fare system.
+    
+    <p>Write a <tt>RebateFare</tt> class with a constructor that takes in a <tt>StagedFare</tt> and an integer rebate amount so as to offer a rebate for all transfers from one ride to another.
+    Note that rebate can only be applied to a staged fare system.
+    You may also assume that the rebate amount will not exceed the minimum fare of the system.
+    
+    <p>Include a <tt>toString</tt> method to indicate that a rebate is applied to the fare system.
+    
+    <pre>
+    jshell&gt; StagedFare sfare = new StagedFare(7000, 110).add(4000, 90)
+    sfare ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; RebateFare rfare = new RebateFare(sfare, 25)
+    rfare ==&gt; Staged fare from 90 to 110 (with rebate 25)
+    
+    jshell&gt; Trip trip = new Trip(new Train(1, 5))
+    trip ==&gt; [Train: 1 -- 5]
+    
+    jshell&gt; trip.fare(rfare)
+    $.. ==&gt; 110
+    
+    jshell&gt; trip.next(new Bus("96A", 4, 7)).fare(rfare)
+    $.. ==&gt; 175
+    </pre>
+    
+    <p>Notice from the last test case above that a rebate is applied only upon a transfer, and not for every ride.
+    
+    <p>Lastly, include another distance-based fare system.
+    As an example, 
+    
+    <ul>
+    <li>91 cents up to 3200m, followed by 
+    <li>10 cents for every 1000m fare bands, up to
+    <li>40200m (excluding the first 3200m)
+    </ul>
+    
+    <p>Write a class <tt>DistanceFare</tt> and include a constructor that takes five arguments: the flat fare up to the first flat fare distance, the band fare for each band fare distance, and the maximum distance.  Using the above example, the corresponding <tt>DistanceFare</tt> created is:
+    
+    <pre>
+    new DistanceFare(91, 3200, 10, 1000, 40200)
+    </pre>
+    
+    Include an appropriate <tt>toString</tt> method to return the <tt>String</tt> representation of the distance-based fare.
+    
+    <pre>
+    jshell&gt; DistanceFare dfare = new DistanceFare(91, 3200, 10, 1000, 40200)
+    dfare ==&gt; Distance fare: 91 up to 3200; 10 every 1000 up to 40200
+    
+    jshell&gt; Trip trip = new Trip(new Train(1, 5))
+    trip ==&gt; [Train: 1 -- 5]
+    
+    jshell&gt; trip.fare(dfare)
+    $.. ==&gt; 121
+    
+    jshell&gt; trip.next(new Bus("96A", 4, 7)).fare(dfare)
+    $.. ==&gt; 151
+    </pre>
+    
+    <p>Note that a rebate cannot be offered to distance-based fares.
+     Also a fare system that has a rebate cannot be offered a further rebate.
+    
+    <pre>
+    jshell&gt; StagedFare sfare = new StagedFare(7000, 110).add(4000, 90)
+    sfare ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; RebateFare rfare = new RebateFare(sfare, 25)
+    rfare ==&gt; Staged fare from 90 to 110 (with rebate 25)
+    
+    jshell&gt; new RebateFare(dfare, 25)
+    |  Error:
+    |  incompatible types: DistanceFare cannot be converted to StagedFare
+    |  new RebateFare(dfare, 25)
+    |                 ^---^
+    
+    jshell&gt; new RebateFare(rfare, 25)
+    |  Error:
+    |  incompatible types: RebateFare cannot be converted to StagedFare
+    |  new RebateFare(rfare, 25)
+    |                 ^---^
+    </pre>
+    
+    <p>And finally, just to make sure...
+    
+    <pre>
+    jshell&gt; Fare fare = sfare
+    fare ==&gt; Staged fare from 90 to 110
+    
+    jshell&gt; Fare fare = rfare
+    fare ==&gt; Staged fare from 90 to 110 (with rebate 25)
+    
+    jshell&gt; Fare fare = dfare
+    fare ==&gt; Distance fare: 91 up to 3200; 10 every 1000 up to 40200
+    </pre>

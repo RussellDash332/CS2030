@@ -1,0 +1,8 @@
+new Point(1.0, 1.0).toStr()
+new Point(1.0, 1.0).toStr().run(x -> System.out.println(x))
+new Point(1.0, 1.0).toStr().trace(x -> System.out.println(x))
+new Circle(new Point(0.0, 0.0), 1.0).toStr()
+new Circle(new Point(0.0, 0.0), 1.0).toStr().run(x -> System.out.println(x))
+new Circle(new Point(0.0, 0.0), 1.0).toStr().trace(x -> System.out.println(x))
+new Circle(new Point(0.0, 0.0), 1.0).toStr().run(x -> {})
+new Circle(new Point(0.0, 0.0), 1.0).toStr().trace(x -> {})
