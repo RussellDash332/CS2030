@@ -1,0 +1,334 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 Practical Assessment #1</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p>Our favourite Cool-Spot at COM2 has decided to ride on the robot-barista bandwagon by engaging Ro'Bro as an additional helper.
+    Ro'Bro's job is to serve up a variety of hot drinks to students and staff who require a daily fix to
+    maintain their function (and also sanity) throughout the day.
+    Moreover, in line with our government's Nutri-Grade initiative to "grade" our drinks, each drink will be
+    labeled with its nutrition content.
+    
+    <h2>Task</h2>
+    
+    <p>Your task is to write a program to create various types of drinks using different ingredients and
+    toppings, while also determining the corresponding nutrition content of each drink.
+    
+    <h2>Take note!</h2>
+    
+    <p>There are altogether five levels.
+    You are required to complete ALL levels.</p>
+    
+    <p>You should keep to the constructs taught in class, as well as the programming discipline 
+    instilled throughout the course.</p>
+    
+    <ul>
+    <li>Write each <tt>class</tt>/<tt>interface</tt> in its own file; you are NOT allowed to use
+    <tt>enum</tt> or <tt>record</tt>.
+    <li>Ensure that ALL declarations of object properties and class constants include the <tt>private</tt> and <tt>final</tt> modifiers. </li>
+    <li>Ensure that your classes are NOT cyclic dependent.</li>
+    <li>You are NOT allowed to use java libraries, other than those
+    from <tt>java.lang</tt>, <tt>java.util.List</tt>,
+    <tt>java.util.Comparator</tt> 
+    and
+    <tt>java.util.Iterator</tt> or as specified in the question.</li>
+    <li>If necessary, use only the <tt>ImList</tt> class and <tt>Pair</tt> class provided; do NOT create your own.
+    <li><tt>instanceof</tt> can only be used in a class to check <tt>instanceof</tt> the same class, e.g. within a typical <tt>equals(Object)</tt> method.
+    <li>You are NOT allowed to use java keywords/literals: <tt>null</tt>. 
+    <li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+    <li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+    <li>You are NOT allowed to use explicit typecasts to convert between
+    types.
+    <li>You are NOT allowed to define anonymous inner classes or lambdas.
+    <li>You are NOT allowed to define array constructs, e.g.
+    <tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+    </ul>
+    
+    <p>You may assume that all tests provide valid arguments to the methods; hence there is no need to validate method arguments. </li>
+    
+    
+    <h2>Level 1</h2>
+    
+    <p>The following <tt>Drink</tt> interface is provided.
+    You are NOT ALLOWED to modify this interface.
+    
+    <pre>
+    interface Drink {
+        public Nutri value();
+    }
+    </pre>
+    
+    <p>The <tt>Drink</tt> interface specifies a <tt>value</tt> method that takes no argument, and returns the
+    nutrition content of the drink encapsulated in a <tt>Nutri</tt> object.
+    Define the <tt>Nutri</tt> class with one constructor that takes in a <tt>String</tt> followed by an integer
+    so as to create a <tt>Nutri</tt> object comprising one nutrient with its corresponding amount in milligrams.
+    
+    <!-- You may define the <tt>Nutri</tt> class in any way you wish, and modify it as you progress through the levels.
+    -->
+    
+    <p>Define the classes <tt>Tea</tt> and <tt>Coffee</tt> to represent plain black tea and plain black
+    coffee.  
+    Include the <tt>value</tt> method to return the nutrition content in milligrams: 100mg of caffeine for coffee; 50mg of caffeine for tea.
+    
+    <p>Include an appropriate <tt>toString</tt> method that returns a <tt>String</tt> representation of the
+    drink in lowercase.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new Nutri("caffeine", 10)
+    $.. ==&gt; [(caffeine, 10)]
+    
+    jshell&gt; new Coffee()
+    $.. ==&gt; coffee
+    
+    jshell&gt; new Coffee().value()
+    $.. ==&gt; [(caffeine, 100)]
+    
+    jshell&gt; Drink drink = new Tea()
+    drink ==&gt; tea
+    
+    jshell&gt; Nutri nutri = new Tea().value()
+    nutri ==&gt; [(caffeine, 50)]
+    </pre>
+    
+    In this level, your program will be tested against other drinks.
+    You may assume that each drink contains only one nutrient (not necessarily caffeine) with its corresponding amount in milligrams.
+    
+    <h2>Level 2</h2>
+    
+    <p>We can add sugar to either coffee or tea.
+    
+    <p>Write a <tt>Sugar</tt> class that takes in a coffee or tea (or any base drink) and returns the drink with sugar added.
+    The amount of sugar added is a constant 8 grams (or 8000 mg) per drink.
+    Note that while sugar is an ingredient, it also contains sugar as a nutrient.
+    
+    <p>Since tea (or coffee) with sugar is itself a drink, it will have a nutrition content that includes both sugar and caffeine.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new Sugar(new Coffee())
+    $.. ==&gt; sugar
+    
+    jshell&gt; new Sugar(new Coffee()).value()
+    $.. ==&gt; [(caffeine, 100), (sugar, 8000)]
+    
+    jshell&gt; Drink drink = new Sugar(new Tea())
+    drink ==&gt; sugar
+    
+    jshell&gt; drink.value()
+    $.. ==&gt; [(caffeine, 50), (sugar, 8000)]
+    </pre>
+    
+    <p>The nutrition content should be output by alphabetic order of the nutrient.
+    In the above example, <tt>"caffeine"</tt> is placed before <tt>"sugar"</tt> in the output nutrient list.
+    You may assume that all nutrients are lowercase.
+    
+    <p>Moreover, for simplicity, the <tt>String</tt> representation of <tt>new Sugar(..)</tt> should remain as only <tt>"sugar"</tt>, leaving out the rest of the components of the drink.
+    
+    <p>In this level, your program will be tested against drinks with or without sugar added.  
+    The base drinks will not contain sugar.
+    
+    <h2>Level 3</h2>
+    
+    <p>Other than sugar as an ingredient, we can add further ingredients such as milk.
+    Using coffee as an example, we can now make additional varieties of coffee.
+    
+    <ul>
+    <li>plain coffee with no milk and no sugar
+    <li>coffee with milk only
+    <li>coffee with sugar only
+    <li>coffee with milk and sugar
+    </ul>
+    
+    <p>To construct additional drinks out of various ingredients, writing a class for each combination can become cumbersome.
+    Instead, we need only write classes for each ingredient, but create combinations of drinks on-the-fly (or dynamically), e.g. <tt>new Milk(new Sugar(new Coffee()))</tt>.
+    
+    <p>Now include the <tt>Milk</tt> class.  The portion of milk mixed into coffee or tea has a nutrition content of 
+    2680 mg of fat and 4340 mg of sugar.  Since milk has more than one nutrient, include an <tt>update</tt>
+    method in the <tt>Nutri</tt> class that allows the nutrient content to be updated.
+    It will also be useful to consider updating the same nutrient by adding the amounts.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new Nutri("fat", 1).update("sugar", 2).update("caffeine", 3).update("sugar",4)
+    $.. ==&gt; [(caffeine, 3), (fat, 1), (sugar, 6)]
+    
+    jshell&gt; new Milk(new Coffee())
+    $.. ==&gt; milk
+    
+    jshell&gt; new Milk(new Coffee()).value()
+    $.. ==&gt; [(caffeine, 100), (fat, 2680), (sugar, 4340)]
+    
+    jshell&gt; Drink drink = new Milk(new Tea())
+    drink ==&gt; milk
+    
+    jshell&gt; drink.value()
+    $.. ==&gt; [(caffeine, 50), (fat, 2680), (sugar, 4340)]
+    
+    jshell&gt; new Sugar(new Milk(new Coffee()))
+    $.. ==&gt; sugar
+    
+    jshell&gt; new Sugar(new Milk(new Coffee())).value()
+    $.. ==&gt; [(caffeine, 100), (fat, 2680), (sugar, 12340)]
+    
+    jshell&gt; new Milk(new Sugar(new Tea()))
+    $.. ==&gt; milk
+    
+    jshell&gt; new Milk(new Sugar(new Tea())).value()
+    $.. ==&gt; [(caffeine, 50), (fat, 2680), (sugar, 12340)]
+    </pre>
+    
+    <p>In this level, your program will be test against more types of drinks other than just combinations of tea, coffee, sugar and milk.
+    Specifically,
+    
+    <ul>
+    <li>each base drink may contain multiple nutrients;
+    <li>each ingredient may contain multiple nutrients;
+    <li>base drinks and ingredients may contain overlapping nutrients;
+    <li>each base drink and ingredient will not be used more than once.
+    </ul>
+    
+    <h2>Level 4</h2>
+    
+    <p>Just like ingredients, we can add toppings to a drink.
+    We shall illustrate with two toppings: cinnamon and cream.
+    
+    <ul>
+    <li>cinnamon: 220mg of fat; 150mg of sugar
+    <li>cream: 10000mg of fat; 2000mg of sugar
+    </ul>
+    
+    <p>Write the <tt>Cinnamon</tt> and <tt>Cream</tt> classes to represent the two toppings.
+    We can now create further combination of drinks.
+    You may assume that each ingredient/topping will not be used more than once.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; new Milk(new Cinnamon(new Tea())).value()
+    $.. ==&gt; [(caffeine, 50), (fat, 2900), (sugar, 4490)]
+    
+    jshell&gt; new Cream(new Sugar(new Coffee()))
+    $.. ==&gt; cream
+    
+    jshell&gt; new Cream(new Sugar(new Coffee())).value()
+    $.. ==&gt; [(caffeine, 100), (fat, 10000), (sugar, 10000)]
+    
+    jshell&gt; new Cinnamon(new Milk(new Cream(new Sugar(new Coffee()))))
+    $.. ==&gt; cinnamon
+    
+    jshell&gt; new Cinnamon(new Milk(new Cream(new Sugar(new Coffee())))).value()
+    $.. ==&gt; [(caffeine, 100), (fat, 12900), (sugar, 14490)]
+    </pre>
+    
+    <p>Although toppings and ingredients look similar, during preparation ingredients need to be added first into an empty cup, then the drink is poured into the cup, and finally topped up with toppings.
+    
+    <p>We now upgrade the <tt>Drink</tt> interface to the following.
+    
+    <pre>
+    interface Process {
+        public String prep();
+    }
+    
+    interface Drink extends Process { // please modify Drink.java with "extends Process"
+        public Nutri value();
+    }
+    </pre>
+    
+    <p>DO NOT modify these two interfaces from now on.
+    
+    <p>We illustrate with an example of <tt>Tea</tt> with <tt>Milk</tt> and <tt>Cinnamon</tt> where milk is added
+    first, followed by tea, and then topped up with cinnamon.
+    Note that the preparations below are the same.
+    
+    <pre>
+    jshell&gt; new Milk(new Cinnamon(new Tea())).prep()
+    $.. ==&gt; "milk&gt;[tea]&lt;cinnamon"
+    jshell&gt; new Cinnamon(new Milk(new Tea())).prep()
+    $.. ==&gt; "milk&gt;[tea]&lt;cinnamon"
+    </pre>
+    
+    <p>Specifically, append (add to the back) each addition of an ingredient with <tt>&gt;</tt>, and prepend (add to the front) each addition of a topping with <tt>&lt;</tt>.
+    The base drink is surrounded by square brackets <tt>[..]</tt>.
+    
+    <p>The example below illustrates the order of adding multiple ingredients and toppings.
+    Ingredients are added from left to right, but toppings are added from right to left.
+    
+    <pre>
+    jshell&gt; new Cinnamon(new Milk(new Cream(new Sugar(new Coffee())))).prep()
+    $.. ==&gt; "milk&gt;sugar&gt;[coffee]&lt;cream&lt;cinnamon"
+    
+    jshell&gt; new Cream(new Milk(new Cinnamon(new Sugar(new Coffee())))).prep()
+    $.. ==&gt; "milk&gt;sugar&gt;[coffee]&lt;cinnamon&lt;cream"
+    </pre>
+    
+    <h2>Level 5</h2>
+    
+    <p>With the introduction of Ro'Bro, Cool-Spot now sees a never-ending queue of students.
+    University Health Service is now deeply concerned about the nutritional content of drinks and their effects on the health of students.
+    They have decided to conduct an audit to ascertain the health effects.
+    
+    <p>Write an <tt>Audit</tt> class with a method <tt>add</tt> that takes in a <tt>Drink</tt> and tracks the
+    grade of the drink using a frequency table.
+    The grade of a drink is determined as follows:
+    
+    <!--
+    <ul>
+    <li>Grade A: up to 2400mg fat; up to 1680mg sugar
+    <li>
+    Grade B: &gt;2400 to 12000mg fat; &gt;1680 to 2880mg sugar
+    <li>
+    Grade C: &gt;12000 to 24000mg fat; &gt;2880 to 6720mg sugar
+    <li>
+    Grade D: &gt;24000mg fat; &gt;6720mg sugar
+    </ul>
+    -->
+    
+    <p><table border=1 cellpadding=5 width=50%>
+    <tr>
+    <th>Grade</th>
+    <th>Sugar</th>
+    <th>Fat</th>
+    </tr>
+    <tr align=center>
+    <td>A</td>
+    <td>up to 2400mg</td>
+    <td>up to 1680mg</td>
+    </tr>
+    <tr align=center>
+    <td>B</td>
+    <td>&gt;2400 to 12000mg</td>
+    <td>&gt;1680 to 2880mg</td>
+    </tr>
+    <tr align=center>
+    <td>C</td>
+    <td>&gt;12000 to 24000mg</td>
+    <td>&gt;2880 to 6720mg</td>
+    </tr>
+    <tr align=center>
+    <td>D</td>
+    <td>&gt;24000mg</td>
+    <td>&gt;6720mg</td>
+    </tr>
+    </table>
+    
+    <p>Every drink added to <tt>Audit</tt> will be tracked as a data point in a frequency table.
+    This table is returned via the <tt>toString</tt> method of <tt>Audit</tt>.
+    
+    <pre>
+    $ javac your_java_files
+    $ jshell your_java_files_in_bottom-up_dependency_order
+    jshell&gt; Drink drink = new Cinnamon(new Milk(new Cream(new Sugar(new Coffee()))))
+    drink ==&gt; cinnamon
+    
+    jshell&gt; drink.value().grade()
+    $.. ==&gt; "D"
+    
+    jshell&gt; new Audit().add(new Coffee()).add(new Tea()).add(drink)
+    $.. ==&gt; [(A, 2), (B, 0), (C, 0), (D, 1)]
+    jshell&gt; /exit
+    
+    </pre>
+    
+    <p>In the above, two grade "A" drinks, and one grade "D" drink have been added.

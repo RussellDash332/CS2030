@@ -1,0 +1,5 @@
+new Nutri("caffeine", 10)
+new Coffee()
+new Coffee().value()
+Drink drink = new Tea()
+Nutri nutri = new Tea().value()
