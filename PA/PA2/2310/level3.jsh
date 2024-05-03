@@ -1,0 +1,7 @@
+Str.of("$0 ==> ").join(new Point(1.0, 1.0).toStr())
+Str.of("$0 ==> ").join(new Point(1.0, 1.0).toStr()).print()
+Str.of(() -> "$0 ==> ").join(new Point(1.0, 1.0).toStr())
+Str.of(() -> "$0 ==> ").join(new Point(1.0, 1.0).toStr()).run(x -> System.out.println(x))
+Str.of(() -> { System.out.print("beep..."); return "$0 ==> ";}).join(new Point(1.0, 1.0).toStr())
+Str.of(() -> { System.out.print("beep..."); return "$0 ==> ";}).join(new Point(1.0, 1.0).toStr()).run(x -> System.out.println(x))
+Str.of(() -> { System.out.print("beep..."); return "$0 ==> ";}).join(new Point(1.0, 1.0).toStr()).print()

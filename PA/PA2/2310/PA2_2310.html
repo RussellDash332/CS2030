@@ -1,0 +1,404 @@
+<h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p>One of the earliest design principles taught to CS2030 students is "Tell-Don't-Ask", in which data encapsulated in objects are hidden from the client while only exposing appropriate services that operate on them.
+    However, with the inclusion of the <tt>toString</tt> method, a handful of students <i>unintentionally</i> work around "Tell-Don't-Ask" by extracting data from the <tt>String</tt> that is returned by the method.  As an example, given the following <tt>Point</tt> class:
+    
+    <pre>
+    class Point {
+        private final double x;
+        private final double y;
+    
+        Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    
+        public String toString() {
+            return "(" + this.x + ", " + this.y + ")";
+        }
+    }
+    
+    jshell&gt; System.out.println(new Point(1.0, 1.0).toString())
+    (1.0, 1.0)
+    </pre>
+    
+    <p>One can retrieve the x-coordinate using
+    
+    <pre>
+    jshell&gt; Double.parseDouble(
+       ...&gt; new Point(1.0, 1.0).toString()
+       ...&gt; .replaceAll("[() ]","")
+       ...&gt; .split(",")[0])
+    </pre>
+    
+    <p><i>please don't do this...</i>
+    
+    <p>After much deliberation, we have decided to restrict students from defining an overriding <tt>toString</tt> method, or any methods that returns <tt>String</tt>.
+    From now on, students will define the <tt>Point</tt> class as follows:
+    
+    <pre>
+    class Point implements Stringable {
+        ...
+        public Str toStr() {
+            return Str.of("(" + this.x + ", " + this.y + ")");
+        }
+    }
+    </pre>
+    
+    <p>A class should implement the <tt>Stringable</tt> interface that specifies the method <tt>toStr()</tt> that returns a <tt>Str</tt> object.
+    
+    <pre>
+    interface Stringable {
+        public Str toStr();
+    }
+    </pre>
+    
+    <p>The <tt>Str</tt> class is a special class that encapsulates a <tt>String</tt> but does not allow
+    for it to be returned; in other words, there are no non-private methods that return a <tt>String</tt>.  To print an object, the following will be used instead:
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr().run(x -&gt; System.out.println(x))
+    (1.0, 1.0)
+    </pre>
+    
+    <h2>Task</h2>
+    
+    <p>In this task, you are to design the <tt>Str</tt> class, primarily to address the issue of adherence to "Tell-Don't-Ask".
+    You are given the
+    <a href="Stringable.java"><tt>Stringable</tt></a> interface, as well as the
+    <a href="Point.java"><tt>Point</tt></a> and
+    <a href="Circle.java"><tt>Circle</tt></a> classes.
+    DO NOT modify these programs.
+    
+    <h2>Take Note!</h2>
+    
+    <p>This task comprises a number of levels.
+    You are required to complete ALL levels.</p>
+    
+    <p>The following are the constraints imposed on this task.
+    In general, you should keep to the constructs and programming discipline 
+    instilled throughout the module.</p>
+    
+    <ul>
+    <li>Write each class or interface in its own file.
+    Do not use single letter names for classes or interfaces.
+    </li>
+    <li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>, unless otherwise specified.</li>
+    <li>Ensure that your classes are NOT cyclic dependent.</li>
+    <li>ONLY the following java libraries ARE allowed:
+    <ul>
+    <li><tt>java.util.Optional</tt>
+    <li>functional interfaces from <tt>java.util.function</tt>
+    </ul>
+    <li>The following are NOT allowed:
+    <ul>
+    <li><tt>null</tt>
+    <li><tt>instanceof</tt>
+    <!-- (except checking for an instance of its own class) -->
+    <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+    <li><tt>for</tt>, <tt>while</tt>
+    <li><tt>enum</tt>
+    <li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+    <li>methods of the <tt>String</tt> class
+    </ul>
+    <li>There is no need to use bounded wildcards.
+    <li>You are NOT allowed to define anonymous inner classes; define lambdas instead.
+    <li>Other usual restrictions:
+    <ul>
+    <li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+    <li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+    <li>You are NOT allowed to use method references <tt>::</tt>
+    <li>You are NOT allowed to define array constructs, e.g.
+    <tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+    <li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+    </ul>
+    </ul>
+    
+    <!--
+    <p>The <tt><a href="Pair.java">Pair</a></tt> class with
+    an additional <tt>of</tt> method to simplify the creation of
+    <tt>Pair</tt> objects is provided for you.
+    -->
+    
+    <h2>Level 1</h2>
+    
+    <p>Start by creating a <tt>Str</tt> class to support output.
+    The <tt>Point</tt> class below illustrates how methods of the <tt>Str</tt> class are used.
+    
+    <pre>
+    class Point implements Stringable {
+        private final double x;
+        private final double y;
+    
+        Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    
+        public Str toStr() {
+            return Str.of("(" + this.x + ", " + this.y + ")");
+        }
+    }
+    
+    jshell&gt; new Point(1.0, 1.0)
+    $.. ==&gt; Point@...
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().run(x -&gt; System.out.println(x))
+    (1.0, 1.0)
+    </pre>
+    
+    <p>Write the <tt>Str</tt> class and include methods:
+    
+    <ul>
+    <li><tt>of</tt> that takes in a <tt>String</tt> and encapsulates it in a newly created <tt>Str</tt> object;
+    <li><tt>run</tt> that takes in an appropriate <tt>Consumer</tt> as an action and performs the given action on the <tt>String</tt> encapsulated in <tt>Str</tt>;
+    <li>any <tt>private</tt> constructors deemed necessary.
+    </ul>
+    
+    <p>For ease of use, define another <tt>print()</tt> method that takes the place of the <tt>run</tt> method in the last test case above.
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr().print()
+    (1.0, 1.0)
+    </pre>
+    
+    <h2>Level 2</h2>
+    
+    <p>You are now given the <tt>Circle</tt> class that makes use of the <tt>Point</tt> class.
+    
+    <pre>
+    class Circle implements Stringable {
+        private final Point centre;
+        private final double radius;
+    
+        Circle(Point centre, double radius) {
+            this.centre = centre;
+            this.radius = radius;
+        }
+    
+        public Str toStr() {
+            return Str.of("Circle at centre ")
+                .join(this.centre.toStr())
+                .join(" with radius " + this.radius);
+        }
+    }
+    </pre>
+    
+    <p>Firstly, include the <tt>map</tt> and <tt>flatMap</tt> methods in the <tt>Str</tt> class.  
+    Both <tt>map</tt> and <tt>flatMap</tt> should only transform the encapsulated <tt>String</tt> into another <tt>String</tt>.
+    Transforming to a value with a type other than <tt>String</tt> should not be allowed.
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr().map(x -&gt; "$0 ==&gt; " + x).print()
+    $0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().
+       ...&gt; flatMap(x -&gt; Str.of("$0 ==&gt; ").
+       ...&gt; map(y -&gt; y + x)).
+       ...&gt; run(x -&gt; System.out.println(x))
+    $0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().map(x -&gt; x.length())
+    |  Error:
+    |  incompatible types: bad return type in lambda expression
+    |      int cannot be converted to java.lang.String
+    |  new Point(1.0, 1.0).toStr().map(x -&gt; x.length())
+    |
+    </pre>
+    
+    <p>Since we do not expect the client to know how to use <tt>map</tt> and <tt>flatMap</tt>, we need to facilitate joining to a <tt>String</tt> or <tt>Str</tt> object using <tt>join</tt> instead.
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr().join("...").print()
+    (1.0, 1.0)...
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().join(Str.of("...")).run(x -&gt; System.out.println(x))
+    (1.0, 1.0)...
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().join(new Point(2.0, 2.0).toStr()).print()
+    (1.0, 1.0)(2.0, 2.0)
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0)
+    $.. ==&gt; Circle@...
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().run(x -&gt; System.out.println(x))
+    Circle at centre (0.0, 0.0) with radius 1.0
+    </pre>
+    
+    <h2>Level 3</h2>
+    
+    <p>We now make our <tt>Str</tt> class perform lazy evaluation by including an overloaded <tt>of</tt> method that takes in an appropriate <tt>Supplier</tt>.
+    
+    <pre>
+    jshell&gt; Str.of("$0 ==&gt; ").join(new Point(1.0, 1.0).toStr())
+    $.. ==&gt; Str@...
+    
+    jshell&gt; Str.of("$0 ==&gt; ").join(new Point(1.0, 1.0).toStr()).print()
+    $0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; Str.of(() -&gt; "$0 ==&gt; ").join(new Point(1.0, 1.0).toStr())
+    $.. ==&gt; Str@...
+    
+    jshell&gt; Str.of(() -&gt; "$0 ==&gt; ").join(new Point(1.0, 1.0).toStr()).run(x -&gt; System.out.println(x))
+    $0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; Str.of(() -&gt; { System.out.print("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; join(new Point(1.0, 1.0).toStr())
+    $.. ==&gt; Str@...
+    
+    jshell&gt; Str.of(() -&gt; { System.out.print("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; join(new Point(1.0, 1.0).toStr()).
+       ...&gt; run(x -&gt; System.out.println(x))
+    beep...$0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; Str.of(() -&gt; { System.out.print("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; join(new Point(1.0, 1.0).toStr()).
+       ...&gt; print()
+    beep...$0 ==&gt; (1.0, 1.0)
+    </pre>
+    
+    <p>Note that value caching is not required.
+    
+    <h2>Level 4</h2>
+    
+    <p>To aid testing and development of the <tt>Str</tt> class, we shall include a debugging feature in <tt>Str</tt> that allows us to trace the formation of the <tt>String</tt>.  As an example,
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr()
+    $.. ==&gt; Str@...
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().print()
+    (1.0, 1.0)
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().trace()
+    traced Str: (1.0, 1.0)
+    (1.0, 1.0)
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr()
+    $.. ==&gt; Str@...
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().print()
+    Circle at centre (0.0, 0.0) with radius 1.0
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().trace()
+    traced Str: Circle at centre // line 1
+    traced Str: (0.0, 0.0) // line 2
+    traced map: Circle at centre (0.0, 0.0) // line 3
+    traced flatMap: Circle at centre (0.0, 0.0) // line 4
+    traced map: Circle at centre (0.0, 0.0) with radius 1.0 // line 5
+    Circle at centre (0.0, 0.0) with radius 1.0 // same output as print()
+    </pre>
+    
+    <p>Below is an explanation of the output of the last test above (with comments included separately) which is a trace of the <tt>return</tt> statement in the <tt>toStr</tt> method of the <tt>Circle</tt> class:
+    
+    <pre>
+            return Str.of("Circle at centre ")
+                .join(this.centre.toStr())
+                .join(" with radius " + this.radius);
+    </pre>
+    
+    <ul>
+    <li>
+    <pre>
+    traced Str: Circle at centre // line 1
+    </pre> 
+    <p>the <tt>Str</tt> constructor of <tt>Str.of("Circle at centre")</tt> is invoked.</p>
+    
+    <li>
+    <pre>
+    traced Str: (0.0, 0.0) // line 2
+    traced map: Circle at centre (0.0, 0.0) // line 3
+    traced flatMap: Circle at centre (0.0, 0.0) // line 4
+    </pre>
+    
+    <p>the first <tt>join</tt> method invokes <tt>flatMap</tt> which invokes <tt>map</tt> which in turn invokes the <tt>Str</tt> constructor of <tt>this.centre.toStr()</tt>.
+    
+    <li>
+    <pre>
+    traced map: Circle at centre (0.0, 0.0) with radius 1.0 // line 5
+    </pre>
+    
+    <p>the second <tt>join</tt> method that takes in a <tt>String</tt> will invoke <tt>map</tt> directly.
+    
+    </ul>
+    
+    <p>Note that <tt>trace</tt> will end off with the same output as <tt>print</tt> after tracing the formation.
+    
+    <p>Here are examples with lazy evaluation.
+    
+    <pre>
+    jshell&gt; Str.of(() -&gt; { System.out.println("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; join(new Point(1.0, 1.0).toStr())
+    $.. ==&gt; Str@...
+    
+    jshell&gt; Str.of(() -&gt; { System.out.println("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; join(new Point(1.0, 1.0).toStr()).
+       ...&gt; trace()
+    beep...
+    traced Str: $0 ==&gt;
+    traced Str: (1.0, 1.0)
+    traced map: $0 ==&gt; (1.0, 1.0)
+    traced flatMap: $0 ==&gt; (1.0, 1.0)
+    $0 ==&gt; (1.0, 1.0)
+    
+    jshell&gt; Str.of(() -&gt; { System.out.println("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; flatMap(x -&gt; { System.out.println("ouch..."); return new Point(1.0, 1.0).toStr();})
+    $.. ==&gt; Str@...
+    
+    jshell&gt; Str.of(() -&gt; { System.out.println("beep..."); return "$0 ==&gt; ";}).
+       ...&gt; flatMap(x -&gt; { System.out.println("ouch..."); return new Point(1.0, 1.0).toStr();}).
+       ...&gt; trace()
+    beep...
+    traced Str: $0 ==&gt;
+    ouch...
+    traced Str: (1.0, 1.0)
+    traced flatMap: (1.0, 1.0)
+    (1.0, 1.0)
+    </pre>
+    
+    <p><i>Hint: Perform the traces within each <tt>Supplier</tt> that requires tracing.</i>
+    
+    <h2>Level 5</h2>
+    
+    <p>Depending on how <tt>trace</tt> is implemented above, you could have included 
+    <tt>System.out.println(..)</tt> statements throughout your code.
+    Remove these <i>side-effects</i> by including an overloaded <tt>trace</tt> method that takes in an appropriate <tt>Consumer</tt>, so that the trace is "consumed" by this <tt>Consumer</tt> instead.
+    
+    <pre>
+    jshell&gt; new Point(1.0, 1.0).toStr()
+    $.. ==&gt; Str@...
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().run(x -&gt; System.out.println(x))
+    (1.0, 1.0)
+    
+    jshell&gt; new Point(1.0, 1.0).toStr().trace(x -&gt; System.out.println(x))
+    traced Str: (1.0, 1.0)
+    (1.0, 1.0)
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr()
+    $.. ==&gt; Str@...
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().run(x -&gt; System.out.println(x))
+    Circle at centre (0.0, 0.0) with radius 1.0
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().trace(x -&gt; System.out.println(x))
+    traced Str: Circle at centre
+    traced Str: (0.0, 0.0)
+    traced map: Circle at centre (0.0, 0.0)
+    traced flatMap: Circle at centre (0.0, 0.0)
+    traced map: Circle at centre (0.0, 0.0) with radius 1.0
+    Circle at centre (0.0, 0.0) with radius 1.0
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().run(x -&gt; {})
+    
+    jshell&gt; new Circle(new Point(0.0, 0.0), 1.0).toStr().trace(x -&gt; {})
+    </pre>
+    
+    <p>From the last two test cases, notice that the <tt>Consumer</tt> does nothing; hence there is no output.
+    
+    <p><i>More hints: modify how tracing is done within each <tt>Supplier</tt> in the level above. You may start by turning the traces on and off by letting <tt>trace</tt> take in a boolean argument, say <tt>trace(true)</tt> to trace.  Then replace the <tt>boolean</tt> argument with a <tt>Consumer</tt> to consume the trace.</i>
+    
+    <!--
+    <h2>Level 6 (Ungraded)</h2>
+    
