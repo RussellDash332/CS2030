@@ -1,0 +1,1 @@
+p.view(new DayView(3))
