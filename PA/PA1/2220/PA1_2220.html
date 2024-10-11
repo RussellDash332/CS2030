@@ -1,0 +1,368 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 Practical Assessment #1</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+
+<p>We can better manage our lives by keeping track of a schedule of
+tasks.
+A task can be scheduled on a certain day, and within a time period.
+Recurring tasks can also be scheduled which occurs for a
+number of times based on a certain frequency. 
+You may assume that all tasks are scheduled within a month.
+
+<h2>Task</h2>
+
+<p>Your task is to manage single-session tasks, as well as recurring tasks within a planner.
+
+<h2>Take note!</h2>
+
+<p>There are altogether five levels.
+You are required to complete ALL levels.</p>
+
+<p>You should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each <tt>class</tt>/<tt>interface</tt> in its own file.
+DO NOT use <tt>enum</tt></li>.
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>. </li>
+<li>Ensure that that your classes are NOT cyclic dependent.</li>
+<li>You are NOT allowed to use java libraries, other than those
+from <tt>java.lang</tt>, <tt>java.util.List</tt> and
+<tt>java.util.Comparator</tt>.</li>
+<li>Use only the <tt>ImList</tt> class provided with this question. 
+<li>You are NOT allowed to use java keywords/literals: <tt>null</tt>, <tt>instanceof</tt>
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>Class</tt>
+<li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<li>You are NOT allowed to use explicit typecasts to convert between
+types.
+<li>You are NOT allowed to define anonymous inner classes, or lambdas.
+<li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+</ul>
+
+<p>You may assume that all tests provide valid arguments to methods; hence there is no need to validate method arguments. </li>
+
+
+<h2>Level 1</h2>
+
+<p>Write a class <tt>Task</tt> with a constructor that takes in three
+integers (the day, the start time and the end time) followed by a
+description of the task.
+
+<p>You will also need to include the following methods:
+
+<ul>
+<li>an <tt>edit</tt> method that allow the task to be
+rescheduled within the same day, by taking in the start time and the end time.
+<li>a <tt>cancel</tt> method to denote that the task is cancelled.
+</ul>
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Task t = new Task(1, 12, 14, "lunch with boss")
+t ==&gt; Task: 1,12,14,lunch with boss
+
+jshell&gt; t.edit(13, 14)
+$.. ==&gt; Task: 1,13,14,lunch with boss
+
+jshell&gt; t
+t ==&gt; Task: 1,12,14,lunch with boss
+
+jshell&gt; t = t.edit(13, 14)
+t ==&gt; Task: 1,13,14,lunch with boss
+
+jshell&gt; t.cancel()
+$.. ==&gt; Task: 1,13,14,lunch with boss[cancelled]
+
+jshell&gt; t.cancel().edit(12, 14)
+|  Error:
+|  cannot find symbol
+|    symbol:   method edit(int,int)
+|  t.cancel().edit(12, 14)
+|  ^-------------^
+
+jshell&gt; t.cancel().cancel()
+|  Error:
+|  cannot find symbol
+|    symbol:   method cancel()
+|  t.cancel().cancel()
+|  ^---------------^
+</pre>
+
+<p>Note that a cancelled task cannot be edited nor cancelled again.
+
+
+<h2>Level 2</h2>
+
+<p>Define a <tt>RecurringTask</tt> class that creates a recurring
+task with a constructor that takes in a task, followed by the
+frequency and the number of occurrences.
+
+<p>The following example shows a recurrence of a weekly task (7 days)
+for four occurrences.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Task t = new Task(1,12,14,"lunch with boss")
+t ==&gt; Task: 1,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+</pre>
+
+
+<p>Just like a normal task, a recurring task can be editted and
+cancelled:
+
+<pre>
+jshell&gt; RecurringTask rt = new RecurringTask(t, 7, 4)
+rt ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task:  ... : 22,12,14,lunch with boss
+
+jshell&gt; t.cancel() // this is cancelling t, not rt!
+$.. ==&gt; Task: 1,12,14,lunch with boss[cancelled]
+
+jshell&gt; rt // rt is not affected by cancelling t!
+rt ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; rt.cancel()
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss[cancelled]
+
+jshell&gt; rt.cancel().cancel()
+|  Error:
+|  cannot find symbol
+|    symbol:   method cancel()
+|  rt.cancel().cancel()
+|  ^----------------^
+
+jshell&gt; rt.cancel().edit()
+|  Error:
+|  cannot find symbol
+|    symbol:   method edit()
+|  rt.cancel().edit()
+|  ^--------------^
+
+jshell&gt; rt.edit(11, 13)
+$.. ==&gt; Recurring Task: 1,11,13,lunch with boss
+#1:Task: 1,11,13,lunch with boss
+#2:Task: 8,11,13,lunch with boss
+#3:Task: 15,11,13,lunch with boss
+#4:Task: 22,11,13,lunch with boss
+
+jshell&gt; rt.edit(11, 13).cancel()
+$.. ==&gt; Recurring Task: 1,11,13,lunch with boss[cancelled]
+</pre>
+
+<h2>Level 3</h2>
+
+<p>Rather than batch-editing or batch-cancelling all occurrences of a recurring task, we
+would like to edit or cancel one of them.  We do that by specifying the index as the
+first argument to the <tt>cancel</tt> or <tt>edit</tt> methods:
+
+<p>The following shows how the single-argument <tt>cancel</tt> method works:
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Task t = new Task(1,12,14,"lunch with boss")
+t ==&gt; Task: 1,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(1)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss[cancelled]
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(1).cancel(1)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss[cancelled]
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(1).cancel(3)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss[cancelled]
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss[cancelled]
+#4:Task: 22,12,14,lunch with boss
+</pre>
+
+<p>When editing a single occurrence of a recurring task, we are allowed to edit the day, start time and end time.
+
+<pre>
+jshell&gt; new RecurringTask(t, 7, 4).edit(3, 10, 8, 10) // edit third occurrence to day 10, start 8, end 10
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 10,8,10,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).edit(3, 5, 8, 10)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 5,8,10,lunch with boss
+#3:Task: 8,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+</pre>
+
+<p>Notice in the last test that editing the schedule of one occurrence of a
+recurring task may require the recurring tasks to be re-ordered in chronological order.
+
+<p>Moreover, unlike cancelling all occurrences of a recurring task, 
+a specific occurrence of a recurring task that has been cancelled
+can be re-edited.
+
+<pre>
+jshell&gt; new RecurringTask(t, 7, 4).cancel(3)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss[cancelled]
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 10,8,10,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+</pre>
+
+<p>Here is what happens when we try to cancel/edit one occurrence of a recurring task that has already
+been batch-cancelled via <tt>cancel()</tt>.
+
+<pre>
+jshell&gt; new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10).cancel().edit(1, 2, 3, 4)
+|  Error:
+|  cannot find symbol
+|    symbol:   method edit(int,int,int,int)
+|  new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10).cancel().edit(1, 2, 3, 4)
+|  ^-------------------------------------------------------------------^
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10).cancel().cancel(1)
+|  Error:
+|  cannot find symbol
+|    symbol:   method cancel(int)
+|  new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10).cancel().cancel(1)
+|  ^---------------------------------------------------------------------^
+</pre>
+
+<p>The last example below shows the effect of batch editing after a single occurrence cancel/edit.
+Notice that edit is based upon the original specification of the recurring task.
+<pre>
+jshell&gt; new RecurringTask(t, 7, 4)
+$.. ==&gt; Recurring Task: 1,12,14,lunch with boss // this is the original specification
+#1:Task: 1,12,14,lunch with boss
+#2:Task: 8,12,14,lunch with boss
+#3:Task: 15,12,14,lunch with boss
+#4:Task: 22,12,14,lunch with boss
+
+jshell&gt; new RecurringTask(t, 7, 4).cancel(3).edit(3, 10, 8, 10).edit(14, 15)
+$.. ==&gt; Recurring Task: 1,14,15,lunch with boss
+#1:Task: 1,14,15,lunch with boss
+#2:Task: 8,14,15,lunch with boss
+#3:Task: 15,14,15,lunch with boss
+#4:Task: 22,14,15,lunch with boss
+</pre>
+
+
+</pre>
+
+<h2>Level 4</h2>
+
+<p>Now let's plan our lives!
+
+<p>Write a <tt>Planner</tt> class with an empty constructor to create an empty planner.
+Include an <tt>add</tt> method to add a normal task or recurring task.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Planner p = new Planner();
+p ==&gt; 
+
+jshell&gt; Task t = new Task(1,12,14,"lunch with boss")
+t ==&gt; Task: 1,12,14,lunch with boss
+
+jshell&gt; p.add(t)
+$18 ==&gt; 
+Task: 1,12,14,lunch with boss
+
+jshell&gt; p
+p ==&gt; 
+
+jshell&gt; p = p.add(t)
+p ==&gt; 
+Task: 1,12,14,lunch with boss
+
+jshell&gt; p = p.add(new Task(3,16,18,"dinner with spouse"))
+p ==&gt; 
+Task: 1,12,14,lunch with boss
+Task: 3,16,18,dinner with spouse
+
+jshell&gt; t = new Task(3,7,8,"fetch kids to school")
+t ==&gt; Task: 3,7,8,fetch kids to school
+
+jshell&gt; p = p.add(new RecurringTask(t,1,5))
+p ==&gt; 
+Task: 1,12,14,lunch with boss
+Task: 3,16,18,dinn ... 7,7,8,fetch kids to school
+
+jshell&gt; p = p.add(new Task(3,14,15,"nap").cancel())
+p ==&gt; 
+Task: 1,12,14,lunch with boss
+Task: 3,16,18,dinn ... sk: 3,14,15,nap[cancelled]
+
+jshell&gt; System.out.println(p.toString())
+
+Task: 1,12,14,lunch with boss
+Task: 3,16,18,dinner with spouse
+Recurring Task: 3,7,8,fetch kids to school
+#1:Task: 3,7,8,fetch kids to school
+#2:Task: 4,7,8,fetch kids to school
+#3:Task: 5,7,8,fetch kids to school
+#4:Task: 6,7,8,fetch kids to school
+#5:Task: 7,7,8,fetch kids to school
+Task: 3,14,15,nap[cancelled]
+</pre>
+
+<p>There is no need to check for clashes (it just shows how hectic life can be).
+Moreover, cancelled tasks are also included.
+
+<h2>Level 5</h2>
+
+<p>There are different ways to view the planner, say on a daily or weekly basis; here
+we shall just define a daily view.
+
+<p>An interface <tt>View</tt> is defined below:
+
+<pre>
+interface View {
+    void view(ImList<...> tasks); // the ... depends on your implementation
+}
+</pre>
+
+Define a class <tt>DayView</tt> with a constructor that takes in a particular day, and
+an implementation of the <tt>view</tt> method that provides a view of the daily schedule for that day.
+You should print out the tasks for that day in chronological order.
+You should also ignore all cancelled tasks.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; p.view(new DayView(3))
+Task: 3,7,8,fetch kids to school
+Task: 3,16,18,dinner with spouse
+</pre>

@@ -1,0 +1,7 @@
+Transaction r1 = new Request(new Seating(20), new Pair<Integer,Integer>(10, 10), 2030, x -> x % 2 == 0)
+Transaction r2 = new Request(new Seating(20), new Pair<Integer,Integer>(15,2), 2040, x -> false)
+Transaction r3 = new Request(new Seating(20), new Pair<Integer,Integer>(8,2), 1010, x -> false)
+Transaction init = new Init(new Seating(20).book(new Pair<Integer,Integer>(1,5)))
+Transaction afterR1 = r1.transact(init)
+Transaction afterR2 = r2.transact(afterR1)
+r3.transact(afterR2)

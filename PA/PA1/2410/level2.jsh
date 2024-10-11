@@ -1,0 +1,8 @@
+new Seating(20)
+new Seating(20).isAvailable(new Pair<Integer,Integer>(1,5))
+new Seating(20).book(new Pair<Integer,Integer>(1,5))
+new Seating(20).book(new Pair<Integer,Integer>(1,5)).isAvailable(new Pair<Integer,Integer>(5,5))
+new Seating(20).book(new Pair<Integer,Integer>(1,5)).book(new Pair<Integer,Integer>(5,5))
+new Seating(20).isAvailable(new Pair<Integer,Integer>(15,10))
+new Seating(20).book(new Pair<Integer,Integer>(15,10))
+new Seating(20).isAvailable(new Pair<Integer,Integer>(-5,10))
