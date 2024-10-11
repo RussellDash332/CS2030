@@ -1,0 +1,339 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 Practical Assessment #1</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p><i>Based on a true story...</i>
+
+<p>After almost a month of non-stop work, Dad wanted to atone for the loss of family time by treating everyone to watch a musical performance.
+As it was decided late, Dad hastily tried to book tickets online; there was only a pocket of three seats at a corner in the last row.
+Dad quickly selected the seats, and proceeded to make payment.. but <i>arghhh..</i> the browser hung!!!
+
+<p>He quickly refreshed the booking site but to his horror, the seats were already booked! He tried
+to clear the browser cache, use incognito mode, use different browsers, different devices... all to no
+avail!  Someone must have booked the same three seats!  Dad was left exasperated.
+
+<p>An hour later, Mum accessed the booking site out of curiosity and found that the same seats were still available. Long story short... Mum saved the day!
+
+<p>But why would the booking system keep the seats booked even if payment did not proceed?  
+There was something <i>very</i> wrong with the design of the system!
+
+<h2>Task</h2>
+
+<p>Your task is to design a better seat-booking system.
+Users can access the system at the same time, but seats are only locked upon payment.
+In this way, if one user fails to book the seats, other users can still proceed.
+In the case of Dad, he would just need to refresh and book the seats again.
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> <!--,
+unless otherwise specified.</li>-->
+<li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>java.util.List</tt>
+<li><tt>java.util.stream.IntStream</tt>
+<li><tt>java.util.stream.Stream</tt>
+<li>functional interfaces from <tt>java.util.function</tt>
+</ul>
+<li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+<li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+<li><tt>for</tt>, <tt>while</tt>
+-->    
+<!-- <li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+-->
+<!-- <li>methods of the <tt>String</tt> class -->
+</ul>
+<li>There is no need to use bounded wildcards.
+<li>You are NOT allowed to define anonymous inner classes; if necessary, define lambdas instead.
+<li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+<li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<li>You are NOT allowed to use method references <tt>::</tt>
+<li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+<li>You are NOT allowed to use exception handling
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</ul>
+</ul>
+
+<p>A minimal 
+<tt><a href="/taskfile.php/5647/Pair.java">Pair</a></tt> class (not a record, but behaves similarly) has been provided for you.  DO NOT replace this with your own version.
+
+<!--
+<p>In the following level specifications, you will be guided on the non-private methods to define.
+Any other method you create yourself must be declated <tt>private</tt>.
+However, you can create other non-private constructors.
+-->
+
+<h2>Level 1</h2>
+
+<p>Let's start by creating a seating plan.  The <tt>Seat</tt> interface has been provided for you.  DO NOT modify it.
+
+<pre>
+interface Seat {
+    public boolean isBooked();
+}
+</pre>
+
+Create the <tt>Available</tt> and <tt>Booked</tt> classes as implementations of <tt>Seat</tt> so that
+calling <tt>isBooked()</tt> returns <tt>false</tt> and <tt>true</tt> respectively.  Moreover, include
+the <tt>toString</tt> method that correspondingly returns the string representation <tt>.</tt> and <tt>B</tt>.
+
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Stream.&lt;Seat&gt;of(new Available(), new Booked()).map(x -&gt; x.isBooked()).toList()
+$.. ==&gt; [false, true]
+
+jshell&gt; Stream.&lt;Seat&gt;of(new Available(), new Booked()).forEach(x -&gt; System.out.println(x))
+.
+B
+</pre>
+
+<h2>Level 2</h2>
+
+<p>We simplify the seating arrangement as one single row of seats.
+Seats are numbered starting from <tt>0</tt>, just like in regular list indexing.
+
+<p>Create the <tt>Seating</tt> class following the specifications below:
+
+<ul>
+<li><tt>Seating(int capacity)</tt>
+<p>takes in a positive integer capacity and creates a seating plan of all available seats.
+
+<li><tt>boolean isAvailable(Pair&lt;Integer,Integer&gt; rowOfSeats)</tt></br>
+<p>takes in a row of seats specified as a pair of values comprising the starting seat number and the number of consecutive seats, and proceeds to test if all seats are available.
+You will also need to check the avaiability (as well as validity) of the row of seats against the current seating plan.
+
+<li><tt>Seating book(Pair&lt;Integer,Integer&gt; rowOfSeats)</tt>
+<p>books the row of seats specified.  If seats are available, the updated seating plan is returned; otherwise the original seating plan is returned.</p>
+
+<li><tt>public String toString()</tt>
+<p>returns the string representation of the seating plan.</p>
+</ul>
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; new Seating(20)
+$.. ==&gt; ....................
+
+jshell&gt; new Seating(20).isAvailable(new Pair&lt;Integer,Integer&gt;(1,5))
+$.. ==&gt; true
+
+jshell&gt; new Seating(20).book(new Pair&lt;Integer,Integer&gt;(1,5))
+$.. ==&gt; .BBBBB..............
+
+jshell&gt; new Seating(20).book(new Pair&lt;Integer,Integer&gt;(1,5)).
+   ...&gt; isAvailable(new Pair&lt;Integer,Integer&gt;(5,5))
+$.. ==&gt; false
+
+jshell&gt; new Seating(20).book(new Pair&lt;Integer,Integer&gt;(1,5)).
+   ...&gt; book(new Pair&lt;Integer,Integer&gt;(5,5))
+$.. ==&gt; .BBBBB..............
+
+jshell&gt; new Seating(20).isAvailable(new Pair&lt;Integer,Integer&gt;(15,10))
+$.. ==&gt; false
+
+jshell&gt; new Seating(20).book(new Pair&lt;Integer,Integer&gt;(15,10))
+$.. ==&gt; ....................
+
+jshell&gt; new Seating(20).isAvailable(new Pair&lt;Integer,Integer&gt;(-5,10))
+$.. ==&gt; false
+</pre>
+
+<h2>Level 3</h2>
+
+<p>Booking and purchasing seats are handled via different transactions.  We shall first look at the <tt>Request</tt> (request-to-book) transaction, just one of many sub-classes of <tt>Transaction</tt>.
+
+<!--While creating the <tt>Request</tt> class, be mindful of how it should work with the parent <tt>Transaction</tt> class. -->
+
+<p>When a user makes a booking request, he/she selects a row of seats from a given seating plan.
+As part of the purchase later, the billing number as well as the bank is required.
+
+<p>Create a constructor <tt>Request</tt> so as to instantiate a request transaction.
+Note that this is only a request, no actual booking or billing is done.
+
+<pre>
+Request(Seating plan, Pair&lt;Integer,Integer&gt; rowOfSeats, int billing, Bank bank)
+</pre> 
+
+<P>Here is an example when a request for five seats are made on an empty seating plan.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+jshell&gt; Transaction t = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(1,5), 2030, x -&gt; x % 2 == 0)
+t ==&gt; REQUEST:
+Requesting
+....................
+</pre>
+
+<p>The first two arguments are the seating plan and the row of seats to be booked (availability will be checked later).  
+The third argument is an integer billing identifier.  
+
+<p>The fourth argument is interesting. <tt>Bank</tt> parameter takes in a lambda expression where the input is an integer and the output is a <tt>boolean</tt> value.  
+Doing this allows us to simulate a successful or failed purchase when the lambda expression is applied on the billing identifier. 
+In the above example, since the bank identifier is even, the purchase will eventually proceed.
+If all seems confusing, right now just figure out how to correctly define <tt>Bank</tt>.
+
+<p>The output comprises three parts:
+
+<ul>
+<li>First line is the type of the transaction, in this case <tt>REQUEST</tt>
+<li>Next line is a log of the transaction; this log will grow as the request transitions to other transactions.  As of now, it is only a single line.
+<li>Last line is just the seating plan from which the user was considering his/her booking choice.
+</ul>
+
+<p>You may assume that the seats that are booked by a user are valid.  You will need to check the validity again later when the actual booking takes place.
+
+<h2>Level 4</h2>
+
+<p>Suppose three users are planning to book seats at around the same time.
+They will all see the same seating plan.  Let's assume no seats have been booked yet.
+
+<pre>
+jshell&gt; Transaction r1 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(10, 10), 2030, x -&gt; x % 2 == 0)
+r1 ==&gt; REQUEST:
+Requesting
+....................
+
+jshell&gt; Transaction r2 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(15,2), 2040, x -&gt; false)
+r2 ==&gt; REQUEST:
+Requesting
+....................
+
+jshell&gt; Transaction r3 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(8,2), 1010, x -&gt; false)
+r3 ==&gt; REQUEST:
+Requesting
+....................
+</pre>
+
+<p>All request transactions will now be processed one by one.
+We start off with an initial transaction <tt>Init</tt>.  This transaction encapsulates the current seating which will be used for the actual booking.
+
+<pre>
+jshell&gt; Transaction init = new Init(new Seating(20).book(new Pair&lt;Integer,Integer&gt;(1,5)))
+init ==&gt; INIT:
+Initializing
+.BBBBB..............
+</pre>
+
+<p>The first request transaction takes in the initial transaction and attempts to perform a booking.
+
+<pre>
+jshell&gt; Transaction afterR1 = r1.transact(init)
+afterR1 ==&gt; APPROVED:
+Initializing
+billed 2030; booked 10--19
+.BBBBB....BBBBBBBBBB
+</pre>
+
+<p>Notice that the transaction is approved because seats are available and the bank approves the
+billing (because <tt>2030</tt> is even). Billing identifier and range of seats booked are also logged.
+The resulting transaction is an <tt>Approve</tt> transaction.
+
+<p>The next request transaction proceeds.
+
+<pre>
+jshell&gt; Transaction afterR2 = r2.transact(afterR1)
+afterR2 ==&gt; APPROVED:
+Initializing
+billed 2030; booked 10--19
+.BBBBB....BBBBBBBBBB
+</pre>
+
+<p>Notice that nothing happens.  This is because the seats are no longer available.
+For simplicity, we do not need to log since no attempt to bill takes place.
+In this case, the transaction returned will be the same as the one after the <tt>r1</tt> transaction, as though <tt>r2</tt> has not taken place.
+
+<p>Now for the third request,
+
+<pre>
+jshell&gt; r3.transact(afterR2)
+$.. ==&gt; REJECTED:
+Initializing
+billed 2030; booked 10--19
+not billed 1010
+.BBBBB....BBBBBBBBBB
+</pre>
+
+<p>In this case, the seats are available, but the bank rejects the billing.  This is logged in the transaction.  The resulting transaction is a <tt>Reject</tt> transaction.
+Note that this only means that the last transaction is rejected, not all transactions have been rejected.
+
+<p>Your task is to write the <tt>Init</tt>, <tt>Approve</tt> and <tt>Reject</tt> transaction classes.
+All transactions classes require the following method to be defined.
+
+<pre>
+Transaction transact(Transaction t)
+</pre>
+
+<p><i>Tip: for those transactions whose <tt>transact</tt> method is never called, you can simply return <tt>this</tt>.</i>
+
+<h2>Level 5</h2>
+
+<p>Now the easy part. Within the given <tt>Main.java</tt>, include the method 
+
+<pre>
+Transaction process(Stream&lt;Transaction&gt; transactions, Init init)
+</pre> 
+
+that takes in a stream of request transactions, processes them one by one using the seating plan within the <tt>init</tt> transaction.  The method returns the resulting transaction after processing all requests.
+
+<pre>
+$ javac --release 21 --enable-preview Main.java
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; Transaction r1 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(10, 10), 2030, x -&gt; x % 2 == 0)
+r1 ==&gt; REQUEST:
+Requesting
+....................
+
+jshell&gt; Transaction r2 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(15,2), 2040, x -&gt; false)
+r2 ==&gt; REQUEST:
+Requesting
+....................
+
+jshell&gt; Transaction r3 = new Request(new Seating(20), 
+   ...&gt;    new Pair&lt;Integer,Integer&gt;(8,2), 1010, x -&gt; false)
+r3 ==&gt; REQUEST:
+Requesting
+....................
+
+jshell&gt; Init init = new Init(new Seating(20).book(new Pair&lt;Integer,Integer&gt;(1,5)))
+init ==&gt; INIT:
+Initializing
+.BBBBB..............
+
+jshell&gt; process(Stream.of(r1, r2, r3), init)
+$.. ==&gt; REJECTED:
+Initializing
+billed 2030; booked 10--19
+not billed 1010
+.BBBBB....BBBBBBBBBB
+</pre>
