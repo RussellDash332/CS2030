@@ -1,0 +1,468 @@
+<h1>CS2030 Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+<p>Turtle graphics is a pedagogical tool for novices to learn
+programming by maneuvering a turtle on a Cartesian plane.
+A turtle has two main attributes: a position and an orientation.
+
+<!--
+<p><i>There is usually a pen which may be pointed down or lifted up, but we
+shall assume that it is always pointed down for this assessment.</i>
+-->
+
+<p>Drawing with the turtle involves moving the turtle with commands
+relative to its current position, e.g. "move forward 10
+steps" or "turn left 120 degrees". Moving the turtle will result in a
+line drawn following its path, and allow us to build complex shapes and composite figures.
+
+<p>As an example, assuming that the turtle faces north at the start,
+the following 
+
+<pre>
+jshell&gt; void triangle() {
+   ...&gt;     Turtle t = new Turtle();
+   ...&gt;     t.moveForward(100);
+   ...&gt;     t.turnLeft(120);
+   ...&gt;     t.moveForward(100);
+   ...&gt;     t.turnLeft(120);
+   ...&gt;     t.moveForward(100);
+   ...&gt;     t.turnLeft(120);
+   ...&gt; }
+|  created method triangle()
+
+jshell&gt; triangle()
+</pre>
+
+<p>will draw the figure below:
+
+<p><img src="triangle.png">
+
+<p>Notice that <tt>turtle</tt> references a graphical <tt>Turtle</tt>
+object with methods <tt>forward</tt> and <tt>left</tt>; however these methods have <tt>void</tt> return types which do not return any values.
+In other words, <tt>Turtle</tt> is mutable and drawing with the turtle can only be achieved via side effects!
+
+<h2>Task</h2>
+
+<p>In this task, you are to design a functional turtle as a wrapper
+around a mutable turtle.
+In addition, since we cannot make use of a graphical turtle, we can
+only rely on a console-based alternative, <i>as well as your
+imagination</i>.
+
+<p>The <tt><a href="Terrapin.java">Terrapin</a></tt> class that implements the <tt><a href="Movable.java">Movable</a></tt> interface has been provided for you.
+Terrapins can only move forward and make a number of 90-degree left turns.
+A new terrapin object is positioned at location <tt>(0, 0)</tt> and facing north (<tt>0=north; 1=west; 2=south; 3=east</tt>).
+
+<pre>
+jshell&gt; Terrapin t = new Terrapin()
+Terrapin @ (0, 0) faces 0
+t ==&gt; Terrapin
+
+jshell&gt; t.forward(100) // move north 100 steps
+Terrapin @ (100, 0) faces 0
+
+jshell&gt; t.left(1) // turn left 90 degrees to face west
+Terrapin @ (100, 0) faces 1
+
+jshell&gt; t.forward(100) // move west 100 steps
+Terrapin @ (100, -100) faces 1
+
+jshell&gt; t.left(1) // turn left 90 degrees to face south
+Terrapin @ (100, -100) faces 2
+
+jshell&gt; t.forward(100) // move south 100 steps
+Terrapin @ (0, -100) faces 2
+
+jshell&gt; t.left(1) // turn left 90 degrees to face east
+Terrapin @ (0, -100) faces 3
+
+jshell&gt; t.forward(100) // move east 100 steps
+Terrapin @ (0, 0) faces 3
+
+jshell&gt; t.left(1) // turn left 90 degrees to face north; back to starting state
+Terrapin @ (0, 0) faces 0
+</pre>
+
+<p>Pictorially, the end state should look like this:
+
+<p><img src="square.png">
+
+<p>Notice that we cannot construct a pipeline of Terrapin movements;
+moreover each movement is eagerly evaluated.
+
+<p>Your task is to wrap <tt>Terrapin</tt> (or any other
+<tt>Movable</tt> object) around a <tt>Functle</tt> so as to make it operate functionally.
+
+<!--
+You are given the
+<a href="Stringable.java"><tt>Stringable</tt></a> interface, as well as the
+<a href="Point.java"><tt>Point</tt></a> and
+<a href="Circle.java"><tt>Circle</tt></a> classes.
+DO NOT modify these programs.
+-->
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt>, unless otherwise specified.</li>
+<li>All constructors MUST BE declared <tt>private</tt>.
+<li>Ensure that your classes are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>java.util.Optional</tt>
+<li>functional interfaces from <tt>java.util.function</tt>
+<li>Java streams from <tt>java.util.stream</tt>
+</ul>
+<li>The following are NOT allowed:
+<ul>
+<li><tt>null</tt>
+<li><tt>instanceof</tt>
+<!-- (except checking for an instance of its own class) -->
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression -->
+<!-- <li><tt>for</tt>, <tt>while</tt> -->
+<li><tt>enum</tt>, <tt>default</tt>, <tt>var</tt>, <tt>throw</tt>, <tt>throws</tt>, <tt>try</tt>, <tt>catch</tt>
+<li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+</ul>
+<li>There is no need to use bounded wildcards.
+<li>You are NOT allowed to define anonymous inner classes; define lambdas instead.
+<li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+<li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<li>You are NOT allowed to use method references <tt>::</tt>
+<li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+<li>You are NOT allowed any form of string processing; methods of the <tt>String</tt> class are NOT ALLOWED
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</ul>
+</ul>
+
+<p>In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<p>The <tt><a href="Pair.java">Pair</a></tt> class with
+an additional <tt>of</tt> method to simplify the creation of
+<tt>Pair</tt> objects is provided for you.
+
+<h2>Level 1</h2>
+
+<p>You have been provided the <tt><a href="Terrapin.java">Terrapin</a></tt> class that implements the given <tt>
+    <a href="Movable.java">Movable&lt;T&gt;</a></tt> interface reproduced below.  
+    You are NOT ALLOWED to change the <tt>Movable</tt> interface or <tt>Terrapin</tt> class.
+
+<pre>
+interface Movable&lt;T&gt; {
+    public void turnLeft(int theta);
+    public void moveForward(int step);
+    public boolean equals(Supplier&lt;T&gt; supplier);
+}
+</pre>
+
+<p>
+Write a <tt>Functle&lt;T&gt;</tt> class that wraps around a <tt>Movable&lt;T&gt;</tt> object.
+A <tt>Functle</tt> object is created via the <tt>of()</tt> factory method that takes no arguments.
+Note that all constructors MUST BE declared <tt>private</tt>.
+
+<p>Include the <tt>forward</tt> method that takes in an integer <tt>steps</tt>, as well as the <tt>left</tt> method that takes in an integer <tt>theta</tt>.
+
+<p>Also include a <tt>run</tt> method that takes in an object of type <tt>T</tt>.
+A <tt>Functle&lt;T&gt;</tt> pipeline is not evaluated until the <tt>run</tt> method is invoked.
+
+<pre>
+jshell&gt; Functle&lt;Terrapin&gt; t = Functle.&lt;Terrapin&gt;of()
+t ==&gt; Functle
+
+jshell&gt; t.forward(100)
+$.. ==&gt; Functle
+
+jshell&gt; t.left(1)
+$.. ==&gt; Functle
+
+jshell&gt; t.run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+
+jshell&gt; t.forward(100).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+
+jshell&gt; t.left(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (0, 0) faces 1
+</pre>
+
+<p>In this level, you may assume that the <tt>Functle</tt> pipeline comprises only one movement.
+
+<p>It is interesting to note that in the above examples, new <tt>Terrapin</tt> objects are passed to the <tt>run</tt> method.  What if an existing <tt>Terrapin</tt> is passed instead?
+
+<pre>
+jshell&gt; Terrapin p = new Terrapin()
+Terrapin @ (0, 0) faces 0
+p ==&gt; Terrapin
+
+jshell&gt; t.forward(100).run(p)
+Terrapin @ (100, 0) faces 0
+
+jshell&gt; t.forward(100).run(p)
+Terrapin @ (200, 0) faces 0
+</pre>
+
+<p>Since <tt>p</tt> references a mutable object, the behaviour of the
+<tt>Functle</tt> pipeline is no longer pure, i.e. the last two test cases give different results.
+Indeed, one cannot make something pure out of impure constructs.
+
+<p>As such, test cases in subsequent levels will be illustrated by passing newly created 
+    objects into the <tt>run</tt> method, so as to simplify the understanding of how each pipeline works.
+
+<h2>Level 2</h2>
+
+<p>We now create longer <tt>Functle</tt> pipelines comprising more movements. 
+
+<pre>
+jshell&gt; Functle&lt;Terrapin&gt; t = Functle.&lt;Terrapin&gt;of()
+t ==&gt; Functle
+
+jshell&gt; t.run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+
+jshell&gt; t.forward(100).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+
+jshell&gt; t.forward(100).left(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 1
+
+jshell&gt; t.forward(100).forward(100).left(1).left(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (200, 0) faces 0
+Terrapin @ (200, 0) faces 1
+Terrapin @ (200, 0) faces 2
+</pre>
+
+<p>Also include the <tt>backward</tt> and <tt>right</tt> methods to allow for backward movements and 90-degree right turns. 
+
+<pre>
+jshell&gt; t.backward(100).right(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (-100, 0) faces 3
+</pre>
+
+<p>Note that as <tt>Functle</tt> can take in any <tt>Movable</tt>
+object, you should not be tracking specific positional or orientation
+values within the <tt>Functle</tt> class.
+
+<h2>Level 3</h2>
+
+<p>Include the <tt>reverse()</tt> method to reverse the <tt>Functle</tt> path back to its starting state.
+Take note that <tt>reverse()</tt> does not undo the path since any additional movement will result in a path drawn.
+In other words, reversing will essentially draw over the path with another reverse path.
+
+<pre>
+jshell&gt; Functle&lt;Terrapin&gt; t = Functle.&lt;Terrapin&gt;of()
+t ==&gt; Functle
+
+jshell&gt; t.backward(100).right(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (-100, 0) faces 3
+
+jshell&gt; t.backward(100).right(1).reverse().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (-100, 0) faces 3
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+
+jshell&gt; t.backward(100).reverse().right(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+Terrapin @ (0, 0) faces 3
+
+jshell&gt; t.backward(100).reverse().right(1).reverse().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+Terrapin @ (0, 0) faces 3
+Terrapin @ (0, 0) faces 0
+
+jshell&gt; t.backward(100).right(1).reverse().reverse().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (-100, 0) faces 3
+Terrapin @ (-100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+</pre>
+
+<p>Note in the last test case that reversing a reversed path will have no effect.  This is to avoid
+ambiguities related to reversing any prior reversal(s).
+
+
+<h2>Level 4</h2>
+<p>Write the method <tt>andThen</tt> that combines two paths such that <tt>r.andThen(s)</tt> will result in a path <tt>r</tt>, followed by <tt>s</tt>, resulting in a single continuous path.
+
+<pre>
+jshell&gt; Functle&lt;Terrapin&gt; t = Functle.&lt;Terrapin&gt;of().forward(100).right(1)
+t ==&gt; Functle
+
+jshell&gt; t.andThen(t).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+</pre>
+
+<p>Take note of how the <tt>reverse()</tt> method behaves in the test cases below:
+
+<ul>
+<li>In the first test case, <tt>reverse()</tt> is applied on the entire <tt>t.andThen(t)</tt> path, resetting
+back to <tt>(0, 0) 0</tt>.
+
+<li>In the second test case, <tt>reverse()</tt> is applied on the argument path of <tt>andThen</tt>.  
+Hence it resets to the <tt>(100, 0) 3</tt>, which is the end of the preceding <tt>t</tt> path.
+</ul>
+
+<pre>
+jshell&gt; t.andThen(t).reverse().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+
+jshell&gt; t.andThen(t.reverse()).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 0) faces 3
+</pre>
+
+<p>Note that each path that is joined is treated as separate paths.  In the case of <tt>t.andThen(t)</tt>, 
+    the resulting path is a join of two paths that coincidentally describe the same sequence of movements.
+
+<p>Now include a method <tt>loop(n)</tt> that takes in an integer
+<tt>n &gt;= 0</tt> and loops the <tt>Functle</tt> path for <tt>n</tt> number of times.
+
+<pre>
+jshell&gt; t.loop(2).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+
+jshell&gt; t.loop(4).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (0, 100) faces 2
+Terrapin @ (0, 100) faces 1
+Terrapin @ (0, 0) faces 1
+Terrapin @ (0, 0) faces 0
+</pre>
+
+<p>The last test case forms a square.
+
+<h2>Level 5</h2>
+
+<p>We are now going to make the <TT>Functle</tt> object loop by itself until it comes home 
+        (i.e. the starting state), thus forming a regular polygon.
+
+<p><i>Hint:</i> Imagine you give your pet terrapin a path and ask it
+to follow once; if it finds itself lost, it is smart enough to
+backtrack and come home.  
+Then you ask it to repeat the path twice and so on, until repeating
+the path for the <i>n<sup>th</sup></i> time brings it home.
+
+<pre>
+jshell&gt; Functle&lt;Terrapin&gt; t = Functle.&lt;Terrapin&gt;of().forward(100).right(1)
+t ==&gt; Functle
+
+jshell&gt; t.comeHome().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (0, 100) faces 2
+Terrapin @ (0, 100) faces 1
+Terrapin @ (0, 100) faces 2
+Terrapin @ (100, 100) faces 2
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 0) faces 0
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+Terrapin @ (100, 100) faces 3
+Terrapin @ (100, 100) faces 2
+Terrapin @ (0, 100) faces 2
+Terrapin @ (0, 100) faces 1
+Terrapin @ (0, 0) faces 1
+Terrapin @ (0, 0) faces 0
+</pre>
+
+<p>It is worth noting that <tt>t.comeHome().reverse().run(new Terrapin())</tt> should give the same output as above.
+
+<p>You may assume that the given path is one that will eventually
+form a regular polygon.
+
+<p>Lastly, you are also reminded that your <tt>Functle</tt> implementation should be able to work for any <tt>Movable</tt> object.
+
+<!--
+<p>The above output is equivalent to
+
+<pre>
+t.loop(1).reverse().
+andThen(t.loop(2).reverse()).
+andThen(t.loop(3).reverse()).
+andThen(t.loop(4).reverse()).run(new Terra())
+</pre>
+
+<p>Notice that if a <tt>Terrapin</tt> object is passed to run, then it will be the same as
+<tt>loop(1)</tt>
+<pre>
+jshell&gt; t.loopTillHome().run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+
+jshell&gt; t.loop(1).run(new Terrapin())
+Terrapin @ (0, 0) faces 0
+Terrapin @ (100, 0) faces 0
+Terrapin @ (100, 0) faces 3
+</pre>
+-->

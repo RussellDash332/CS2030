@@ -1,0 +1,5 @@
+Functle<Terrapin> t = Functle.<Terrapin>of()
+t.run(new Terrapin())
+t.forward(100).run(new Terrapin())
+t.forward(100).forward(100).left(1).left(1).run(new Terrapin())
+t.backward(100).right(1).run(new Terrapin())
