@@ -1,0 +1,660 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0057)https://codecrunch.comp.nus.edu.sg/task_view.php?tid=5658 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="-1">
+
+<title>CodeCrunch</title>
+<!-- START NUS Includes-->
+<script type="text/javascript" src="./pa2_files/nussearch.js.download"></script>
+<link rel="stylesheet" type="text/css" href="./pa2_files/nusbase.css" media="screen, print, projection, handheld">
+<link rel="stylesheet" type="text/css" href="./pa2_files/nusmenu.css" media="screen, print, projection, handheld">
+<link rel="stylesheet" type="text/css" href="./pa2_files/nusscreen.css" media="screen, projection, print">
+<link href="https://codecrunch.comp.nus.edu.sg/nus/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<link rel="apple-touch-icon" href="https://codecrunch.comp.nus.edu.sg/nus/blank.png">
+<!-- END NUS Includes -->
+<script type="text/javascript" src="./pa2_files/ajax.js.download"></script>
+<script type="text/javascript" src="./pa2_files/jquery-3.6.0.min.js.download"></script>
+<script type="text/javascript" src="./pa2_files/jquery.tablesorter.min.js.download"></script>
+<script type="text/javascript" src="./pa2_files/jquery.tablesorter.pager.js.download"></script>
+<!--<script type="text/javascript" src="/js/folding.js"></script>-->
+<script type="text/javascript" src="./pa2_files/jquery.watermark.min.js.download"></script>
+<script type="text/javascript" src="./pa2_files/jquery.scrollTo-2.1.3-min.js.download"></script>
+<script type="text/javascript" src="./pa2_files/customScript.js.download"></script>
+<!--script type="text/javascript">
+            function enterPressButton(field, button) {
+                $(field).keypress(function(e){if(e.which==13)$(button).trigger("click");});
+            }
+</script>-->
+<link rel="stylesheet" href="./pa2_files/style.css" type="text/css">
+<link rel="stylesheet" href="./pa2_files/jquery.tablesorter.css" type="text/css">
+<script type="text/javascript" src="./pa2_files/jquery-3.6.0.min(1).js.download"></script>
+<!--<script type="text/javascript" src="js/folding.js"></script>-->
+<script type="text/javascript" src="./pa2_files/jquery.rating.js.download"></script>
+<script type="text/javascript" src="./pa2_files/behaviour.js.download"></script>
+<script type="text/javascript" src="./pa2_files/textarea_maxlen.js.download"></script>
+<script type="text/javascript" src="./pa2_files/jquery.timer.js.download"></script>
+
+<script type="text/javascript" src="./pa2_files/plupload.full.min.js.download"></script>
+
+<link rel="stylesheet" href="./pa2_files/jquery.rating.css" type="text/css">
+<link rel="stylesheet" href="./pa2_files/style.css" type="text/css">
+<link rel="stylesheet" href="./pa2_files/tagcloud.css" type="text/css">
+<link rel="stylesheet" href="./pa2_files/jquery-ui-1.7.2.custom.css" type="text/css">
+
+<link rel="stylesheet" href="./pa2_files/jquery.ui.plupload.css" type="text/css">
+
+<link rel="stylesheet" href="chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css"></head>
+
+<body>
+
+
+
+<div id="container">
+<div id="outer">
+<div id="inner">
+	<div id="content_full">                         
+		<div class="content-header"><h3>CS2030 (2420) Practical Assessment #2</h3></div>
+		<div class="spacer"></div>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tbody><tr><td valign="top" style="width: 30%;">
+				<div class="meta_header">Tags &amp; Categories</div>
+				<div id="classifyList"><span class="value">Tags:
+</span>
+<span class="value">Categories:
+</span></div>
+			</td>
+			<td valign="top" style="width: 40%;">
+				<div class="meta_header">Related Tutorials</div>
+				<div id="tutorialList"></div>
+			</td>
+			<td valign="top" style="width: 30%;">
+			</td>
+			</tr>
+		</tbody></table>
+		<div class="content-header">
+			<h3>Task Content
+							</h3>
+		</div>                          
+		<div class="panel"><div class="task-content">
+		<h2>Probability Monad</h2>
+
+<p>Many problems found in textbooks on probability and statistics
+can be solved by applying probabilistic functions.
+For example,
+
+</p><ul>
+<li>what is the probability of getting a head (or a tail) when tossing a coin?
+</li><li>what is the probability of getting two heads and one tail when tossing a coin three times?
+</li><li>what is the probability of getting at least two 6s when rolling a six-sided die <i>(no pun intended)</i>
+
+four times? 
+</li><li><i>etc..</i>
+</li></ul>
+
+<p>Since the techniques used to solve these problems are very similar, we can abstract out the computation into a computation context! 
+This frees up the client to focus on defining the problem and applying these abstractions via the context.
+<!--
+Another class of frequently found problems is exemplified by â€œWhat is the probability of drawing a red, green, and blue marble (in this order) from a jar containing two
+red, two green, and one blue marble without putting them back?â€. With an enumeration type for marbles containing the constructors R, G, and B, we can compute
+the answer as follows.
+-->
+
+</p><h2>Task</h2>
+
+<p>In this task, you are to define a probability context <tt>Dist&lt;T&gt;</tt> that takes in a distribution table of probability values as a 
+<tt>List&lt;T&gt;</tt>, so that it can be used to solve probability problems such as those mentioned above.
+Here is an example to find the probability of landing heads when tossing a coin.
+
+</p><pre>jshell&gt; Dist.&lt;String&gt;of(List.of("H","T"))
+$.. ==&gt; [H, T]
+
+jshell&gt; Dist.&lt;String&gt;of(List.of("H","T")).query(x -&gt; x.equals("H"))
+$.. ==&gt; 0.5
+</pre>
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> <!--,
+unless otherwise specified.</li>-->
+</li><li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<!--<li><tt>java.util.Comparator</tt>-->
+<li><tt>java.util.List</tt>
+<!-- <li><tt>java.util.Optional</tt> -->
+</li><li><tt>java.util.stream.Stream</tt>
+</li><li>functional interfaces from <tt>java.util.function</tt>
+</li></ul>
+</li><li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+</li><li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+<li><tt>for</tt>, <tt>while</tt>
+<li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+    and <tt>hashCode</tt>
+-->
+</li><li>methods of the <tt>String</tt> class
+</li></ul>
+<!-- <li>There is no need to use bounded wildcards.-->
+</li><li>You are NOT allowed to define anonymous inner classes; if necessary, define lambdas instead.
+</li><li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&amp;&amp;</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+</li><li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+</li><li>You are NOT allowed to use method references <tt>::</tt>
+</li><li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+</li><li>You are NOT allowed to use exception handling
+</li><li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</li></ul>
+</li></ul>
+
+<p>In the following level specifications, you will be guided on the non-private methods to define.
+Any other method you create yourself must be declared <tt>private</tt>.
+<!-- However, you can create other non-private constructors. -->
+
+</p><p>An
+<tt><a href="https://codecrunch.comp.nus.edu.sg/taskfile.php/5658/Event.java">Event</a></tt> class has been provided for you.
+It is similar to the usual <tt>Pair</tt> but the second value has a fixed type of <tt>double</tt>.
+DO NOT replace this with your own version.
+
+</p><p>DO NOT use any other Java records.  If necessary, write a class.
+
+</p><p>To keep things simple, all levels DO NOT require the use of <tt>bounded wildcards</tt>.
+
+</p><h2>Level 1</h2>
+
+<p>Write a generic class <tt>Dist&lt;T&gt;</tt> to represent a uniform probability distribution by taking in a <tt>List&lt;T&gt;</tt> of outcomes of an experiment, e.g. tossing a coin.
+
+</p><ul>
+<li>Write a factory method <tt>static &lt;T&gt; Dist&lt;T&gt; of(List&lt;T&gt; list)</tt> that encapsulates the list of outcomes;
+</li><li>Write a <tt>toString()</tt> method that returns a string representation of the outcomes, or events.
+</li></ul>
+
+<p>The sample run below depicts the probability distribution of tossing a fair coin, and rolling a fair die.
+
+</p><pre>jshell&gt; Dist&lt;String&gt; toss = Dist.&lt;String&gt;of(List.of("H","T"))
+toss ==&gt; [H, T]
+
+jshell&gt; Dist&lt;Integer&gt; roll = Dist.of(List.of(1,2,3,4,5,6))
+roll ==&gt; [1, 2, 3, 4, 5, 6]
+</pre>
+
+<p>Now include a <tt>forEach()</tt> method that output each event together
+with its probability of occurrence within that experiment as follows:
+
+</p><pre>jshell&gt; toss.forEach()
+Event[H, 0.500]
+Event[T, 0.500]
+
+jshell&gt; roll.forEach()
+Event[1, 0.167]
+Event[2, 0.167]
+Event[3, 0.167]
+Event[4, 0.167]
+Event[5, 0.167]
+Event[6, 0.167]
+</pre>
+
+<p>Notice that the probability values always sum to <tt>1.0</tt>,
+altough the output probability values are rounded.
+
+</p><h2>Level 2</h2>
+
+<p>Write a <tt>query</tt> method that takes in a <tt>Predicate&lt;T&gt;</tt> and returns a value of type <tt>double</tt> that represents the probability that an event occurs in the experiment.
+
+</p><pre>jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; query(x -&gt; x == 6)
+$.. ==&gt; 0.16666666666666666
+
+jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; query(x -&gt; x % 2 == 0)
+$.. ==&gt; 0.5
+</pre>
+
+<p>Thus far, we have been assuming fairness in the experiment.
+For the case of, say an unfair coin, we can also make use of <tt>Dist</tt> by passing in a list of occurrences of the events when performing the experiment over a period of time, e.g. <tt>[H,T,H,H,T,T,T]</tt>.
+
+</p><pre>jshell&gt; Dist.&lt;String&gt;of(List.of("H","T","H","H","T","T","T"))
+$.. ==&gt; [H, T]
+
+jshell&gt; Dist.&lt;String&gt;of(List.of("H","T","H","H","T","T","T")).
+   ...&gt; forEach()
+Event[H, 0.429]
+Event[T, 0.571]
+</pre>
+
+<p>Notice from the above that the outcomes are normalized so that it represents the probability distribution of the unfair coin.  
+In the above, since there are four occurrences of <tt>T</tt> out of seven, <tt>T</tt> has a higher probability of <tt>4/7</tt>.
+Moreover, normalization of events is performed in order of presentation of the outcomes of the experiment.
+In the above, since <tt>H</tt> is the first outcome, normalization for <tt>H</tt> is performed first.
+
+</p><h2>Level 3</h2>
+
+<p>Given a probability distribution of an experiment involving rolling a six-sided die, what is the probability that the number is even?  We can do this via map!
+
+</p><p>Write the method <tt>map</tt> that takes in an an appropriate <tt>Function</tt> and returns the resulting
+<tt>Dist</tt> object.
+
+</p><pre>jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; map(x -&gt; x % 2).
+   ...&gt; forEach()
+Event[1, 0.500]
+Event[0, 0.500]
+</pre>
+
+<p>Now write a method <tt>filter</tt> that takes in a predicate and removes all occurrences in the distribution that violates the predicate.
+
+</p><pre>jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; filter(x -&gt; x % 3 != 0)
+$.. ==&gt; [1, 2, 4, 5]
+
+jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; filter(x -&gt; x % 3 != 0).
+   ...&gt; forEach()
+Event[1, 0.250]
+Event[2, 0.250]
+Event[4, 0.250]
+Event[5, 0.250]
+
+jshell&gt; Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)).
+   ...&gt; map(x -&gt; x % 2).
+   ...&gt; filter(x -&gt; x == 0).
+   ...&gt; forEach()
+Event[0, 1.000]
+</pre>
+
+<h2>Level 4</h2>
+
+<p>Thus far, the experiment involves a simple action, i.e. a flip or a roll.
+We are now ready to combine distributions.
+
+</p><p>Write the method <tt>flatMap</tt> that takes in an an appropriate <tt>Function</tt> that allows us to
+combine the probability distributions, and returns the resulting <tt>Dist</tt> object.
+
+</p><pre>jshell&gt; Dist&lt;String&gt; toss = Dist.&lt;String&gt;of(List.of("H","T"))
+toss ==&gt; [H, T]
+
+jshell&gt; toss.flatMap(x -&gt; toss.map(y -&gt; x + y))
+$.. ==&gt; [HH, HT, TH, TT]
+
+jshell&gt; toss.flatMap(x -&gt; toss.map(y -&gt; x + y)).
+   ...&gt; forEach()
+Event[HH, 0.250]
+Event[HT, 0.250]
+Event[TH, 0.250]
+Event[TT, 0.250]
+
+jshell&gt; Dist&lt;Integer&gt; roll = Dist.of(List.of(1,2,3,4,5,6))
+roll ==&gt; [1, 2, 3, 4, 5, 6]
+
+jshell&gt; roll.flatMap(x -&gt; roll.map(y -&gt; x + y)).
+   ...&gt; forEach()
+Event[2, 0.028]
+Event[3, 0.056]
+Event[4, 0.083]
+Event[5, 0.111]
+Event[6, 0.139]
+Event[7, 0.167]
+Event[8, 0.139]
+Event[9, 0.111]
+Event[10, 0.083]
+Event[11, 0.056]
+Event[12, 0.028]
+</pre>
+
+<p>One can also perform an experiment of tossing a coin followed by rolling a die, or vice-versa.
+
+</p><pre>jshell&gt; toss.flatMap(x -&gt; roll.map(y -&gt; x + y))
+$.. ==&gt; [H1, H2, H3, H4, H5, H6, T1, T2, T3, T4, T5, T6]
+
+jshell&gt; roll.flatMap(x -&gt; toss.map(y -&gt; x + y))
+$.. ==&gt; [1H, 1T, 2H, 2T, 3H, 3T, 4H, 4T, 5H, 5T, 6H, 6T]
+</pre>
+
+<p>Now write a <tt>roll</tt> method that takes in a positive integer <tt>n</tt> and performs the experiment <tt>n</tt> times.  The method should also take in a <tt>BinaryOperator</tt> to represent the resulting event.
+
+</p><pre>jshell&gt; Dist&lt;String&gt; toss = Dist.&lt;String&gt;of(List.of("H","T"))
+toss ==&gt; [H, T]
+
+jshell&gt; toss.roll(1, (x,y) -&gt; x + y)
+$.. ==&gt; [H, T]
+
+jshell&gt; toss.roll(2, (x,y) -&gt; x + y)
+$.. ==&gt; [HH, HT, TH, TT]
+
+jshell&gt; toss.roll(3, (x,y) -&gt; x + y)
+$.. ==&gt; [HHH, HHT, HTH, HTT, THH, THT, TTH, TTT]
+
+jshell&gt; toss.roll(3, (x,y) -&gt; x + y).
+   ...&gt; forEach()
+Event[HHH, 0.125]
+Event[HHT, 0.125]
+Event[HTH, 0.125]
+Event[HTT, 0.125]
+Event[THH, 0.125]
+Event[THT, 0.125]
+Event[TTH, 0.125]
+Event[TTT, 0.125]
+</pre>
+
+<p>Here is an example for an unfair coin.
+
+</p><pre>jshell&gt; toss = Dist.&lt;String&gt;of(List.of("H","H","T"))
+toss ==&gt; [H, T]
+
+jshell&gt; toss.forEach()
+Event[H, 0.667]
+Event[T, 0.333]
+
+jshell&gt; toss.roll(1, (x,y) -&gt; x + y).
+   ...&gt; forEach()
+Event[H, 0.667]
+Event[T, 0.333]
+
+jshell&gt; toss.roll(2, (x,y) -&gt; x + y).
+   ...&gt; forEach()
+Event[HH, 0.444]
+Event[HT, 0.222]
+Event[TH, 0.222]
+Event[TT, 0.111]
+
+jshell&gt; toss.roll(3, (x,y) -&gt; x + y).
+   ...&gt; forEach()
+Event[HHH, 0.296]
+Event[HHT, 0.148]
+Event[HTH, 0.148]
+Event[HTT, 0.074]
+Event[THH, 0.148]
+Event[THT, 0.074]
+Event[TTH, 0.074]
+Event[TTT, 0.037]
+</pre>
+
+<h2>Level 5</h2>
+
+<p>Now we solve some probability problems.  Write your answers in <tt>level5.jsh</tt>.
+
+</p><ul>
+<li>Write a <tt>toss</tt> method that takes in a distribution comprising string outcomes <tt>"H"</tt> and
+<tt>"T"</tt> that represents the toss of a coin, and tosses the coin <tt>n</tt> times.  
+The method returns the probability distribution of different outcomes of the number of heads and tails, irrespective of it's order.
+
+<pre>jshell&gt; toss(Dist.&lt;String&gt;of(List.of("H","T")), 3)
+$.. ==&gt; [HHH, HHT, HTT, TTT]
+
+jshell&gt; toss(Dist.&lt;String&gt;of(List.of("H","T")), 3).
+   ...&gt; forEach()
+Event[HHH, 0.125]
+Event[HHT, 0.375]
+Event[HTT, 0.375]
+Event[TTT, 0.125]
+</pre>
+
+<p><i>Hint:</i> Use string concatenation.
+You are NOT ALLOWED to make use of methods from any Java library, including <tt>String</tt> methods to construct another string.
+
+</p></li><li>Write the method <tt>atLeastTwoSixes</tt> that takes in a distribution of integer outcomes when rolling a die, and returns the probability of getting at least two sixes after
+rolling <tt>n</tt> times.  For example, when <tt>n</tt> is <tt>4</tt>,
+
+<pre>jshell&gt; atLeastTwoSixes(Dist.&lt;Integer&gt;of(List.of(1,2,3,4,5,6)), 4)
+$.. ==&gt; 0.1319444444444444
+</pre>
+
+<p><i>Hint:</i> Use only arithmetic operations.
+You are NOT ALLOWED to make use of methods from any Java library.
+</p></li></ul>
+
+
+		</div></div>                          
+									<input type="hidden" id="tid" name="tid" value="5658">
+		</div>
+		<!-- end content -->
+</div>
+<!-- end inner -->
+<div id="loading-mask">
+        <p id="loading_mask_loader" class="loader" style="display: none;"> <img alt="Loading..." src="./pa2_files/ajax-loader-tr.gif"> <br>
+                Please wait... </p>
+</div>
+<script type="text/javascript">
+$(".star").rating({
+        focus: function(value, link) {
+                var tip = $("#rating_text");
+                tip[0].data = tip[0].data || tip.html(); 
+                tip.html(link.title || "value: " + value);
+        },
+        blur: function(value, link) {
+                var tip = $("#rating_text");
+                $("#rating_text").html(tip[0].data || "");
+        },
+        callback: function(value, link) {
+                $.ajax({
+                        type: "POST",
+                        url: "task_updaterating.php",
+                        data: ({tid:$("#tid").val(), rating:value}),
+                        success: function(html) {
+                                var msg = html.split(";");
+                                $("#rating_text").removeClass().addClass(msg[0]);
+                                $("#rating_text").html(msg[1]);
+                        }
+                });
+        }
+});
+
+function getComments() {
+        $.ajax({
+                type: "POST",
+                url: "task_getcomments.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#commentList").html(html);
+                }
+        });
+}
+
+function doTaskGrade(e, d) {
+        $.ajax({
+                type: "POST",
+                url: "doTaskGrade.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#practiceNotification").removeClass().addClass(msg[0]);
+                        $("#practiceNotification").html(msg[1]);
+                }
+        });
+
+}
+
+function doCourseTaskGrade(e, d) {
+        $.ajax({
+                type: "POST",
+                url: "doTaskGrade.php",
+                data: ({tid:$("#tid").val(), course_id:$("#course_id").val(), do_course:1}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#courseNotification").removeClass().addClass(msg[0]);
+                        $("#courseNotification").html(msg[1]);
+                }
+        });
+
+}
+
+function addComment() {
+        $.ajax({
+                type: "POST",
+                url: "task_addcomment.php",
+                data: ({tid:$("#tid").val(), comment:encodeURIComponent($("#comment").val())}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#commentNotification").removeClass().addClass(msg[0]);
+                        $("#commentNotification").html(msg[1]);
+                        
+                        getComments();
+                }
+        });
+}
+
+function deleteComment(c) {
+        $.ajax({
+                type: "POST",
+                url: "task_deletecomment.php",
+                data: ({comment_id:c}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#commentNotification").removeClass().addClass(msg[0]);
+                        $("#commentNotification").html(msg[1]);
+                        
+                        getComments();
+                }
+        });
+}
+
+function getClassify(){
+                $.ajax({
+                type: "GET",
+                url: "task_classify.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#classifyList").html(html);
+                }
+        });
+}
+
+function getTutorial(){
+        $.ajax({
+                type: "POST",
+                url: "task_gettutorials.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#tutorialList").html(html);
+                }
+        });
+}
+
+function getQueries() {
+        $.ajax({
+                type: "POST",
+                url: "task_getqueries.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#queryList").html(html);
+                }
+        });
+}
+
+function addQuery() {
+        $.ajax({
+                type: "POST",
+                url: "task_addquery.php",
+                data: ({tid:$("#tid").val(), contest_id:$("#contest_id").val(), query:encodeURIComponent($("#query").val())}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#queryNotification").removeClass().addClass(msg[0]);
+                        $("#queryNotification").html(msg[1]);
+                        
+                        getQueries();
+                }
+        });
+}
+
+function deleteQuery(q) {
+        $.ajax({
+                type: "POST",
+                url: "task_deletequery.php",
+                data: ({query_id:q}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#queryNotification").removeClass().addClass(msg[0]);
+                        $("#queryNotification").html(msg[1]);
+                        
+                        getQueries();
+                }
+        });
+}
+
+function addTag() {
+        $.ajax({
+                type: "POST",
+                url: "tag_add.php",
+                data: ({tid:$("#tid").val(), tags:$("#tagwords").val()}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#tagNotification").removeClass().addClass(msg[0]);
+                        $("#tagNotification").html(msg[1]);
+                        
+                        getClassify();
+                }
+        });
+}
+
+
+$(document).ready(function() {
+        getComments();
+        getQueries();
+        getClassify();
+        getTutorial();
+        //getCloud();
+});
+
+$(document).everyTime(60000, function(i) {
+        if ($("#tid").val() != "" && $("#tid").val() != null) {
+                $.ajax({
+                        type: "POST",
+                        url: "task_checkcontest.php",
+                        data: ({tid:$("#tid").val()}),
+                        success: function(html) {
+                                if (html == "0") {
+                                        $("#contest_submit").html("");
+                                }
+                        }
+                });
+                $.ajax({
+                        type: "POST",
+                        url: "task_checkcourse.php",
+                        data: ({tid:$("#tid").val()}),
+                        success: function(html) {
+                                if (html == "0") {
+                                        $("#course_submit").html("");
+                                }
+                        }
+                });
+        }
+}, 0);
+
+$('#loading_mask_loader')
+        .hide()  // hide it initially
+        .ajaxStart(function() {
+                $(this).show();
+        })
+        .ajaxStop(function() {
+                $(this).hide();
+        });
+        
+</script>
+
+
+</div> <!-- end outer -->
+
+</div> <!-- end container -->
+
+
+
+</body></html>
