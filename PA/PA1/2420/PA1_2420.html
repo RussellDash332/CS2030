@@ -1,0 +1,818 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0057)https://codecrunch.comp.nus.edu.sg/task_view.php?tid=5656 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="-1">
+
+<title>CodeCrunch</title>
+<!-- START NUS Includes-->
+<script type="text/javascript" src="./pa1_files/nussearch.js.download"></script>
+<link rel="stylesheet" type="text/css" href="./pa1_files/nusbase.css" media="screen, print, projection, handheld">
+<link rel="stylesheet" type="text/css" href="./pa1_files/nusmenu.css" media="screen, print, projection, handheld">
+<link rel="stylesheet" type="text/css" href="./pa1_files/nusscreen.css" media="screen, projection, print">
+<link href="https://codecrunch.comp.nus.edu.sg/nus/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+<link rel="apple-touch-icon" href="https://codecrunch.comp.nus.edu.sg/nus/blank.png">
+<!-- END NUS Includes -->
+<script type="text/javascript" src="./pa1_files/ajax.js.download"></script>
+<script type="text/javascript" src="./pa1_files/jquery-3.6.0.min.js.download"></script>
+<script type="text/javascript" src="./pa1_files/jquery.tablesorter.min.js.download"></script>
+<script type="text/javascript" src="./pa1_files/jquery.tablesorter.pager.js.download"></script>
+<!--<script type="text/javascript" src="/js/folding.js"></script>-->
+<script type="text/javascript" src="./pa1_files/jquery.watermark.min.js.download"></script>
+<script type="text/javascript" src="./pa1_files/jquery.scrollTo-2.1.3-min.js.download"></script>
+<script type="text/javascript" src="./pa1_files/customScript.js.download"></script>
+<!--script type="text/javascript">
+            function enterPressButton(field, button) {
+                $(field).keypress(function(e){if(e.which==13)$(button).trigger("click");});
+            }
+</script>-->
+<link rel="stylesheet" href="./pa1_files/style.css" type="text/css">
+<link rel="stylesheet" href="./pa1_files/jquery.tablesorter.css" type="text/css">
+<script type="text/javascript" src="./pa1_files/jquery-3.6.0.min(1).js.download"></script>
+<!--<script type="text/javascript" src="js/folding.js"></script>-->
+<script type="text/javascript" src="./pa1_files/jquery.rating.js.download"></script>
+<script type="text/javascript" src="./pa1_files/behaviour.js.download"></script>
+<script type="text/javascript" src="./pa1_files/textarea_maxlen.js.download"></script>
+<script type="text/javascript" src="./pa1_files/jquery.timer.js.download"></script>
+
+<script type="text/javascript" src="./pa1_files/plupload.full.min.js.download"></script>
+
+<link rel="stylesheet" href="./pa1_files/jquery.rating.css" type="text/css">
+<link rel="stylesheet" href="./pa1_files/style.css" type="text/css">
+<link rel="stylesheet" href="./pa1_files/tagcloud.css" type="text/css">
+<link rel="stylesheet" href="./pa1_files/jquery-ui-1.7.2.custom.css" type="text/css">
+
+<link rel="stylesheet" href="./pa1_files/jquery.ui.plupload.css" type="text/css">
+
+<link rel="stylesheet" href="chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css"></head>
+
+<body>
+
+
+
+<div id="container">
+<div id="outer">
+<div id="inner">
+	<div id="content_full">                         
+		<div class="content-header"><h3>CS2030 (2420) Practical Assessment #1</h3></div>
+		<div class="spacer"></div>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tbody><tr><td valign="top" style="width: 30%;">
+				<div class="meta_header">Tags &amp; Categories</div>
+				<div id="classifyList"><span class="value">Tags:
+</span>
+<span class="value">Categories:
+</span></div>
+			</td>
+			<td valign="top" style="width: 40%;">
+				<div class="meta_header">Related Tutorials</div>
+				<div id="tutorialList"></div>
+			</td>
+			<td valign="top" style="width: 30%;">
+			</td>
+			</tr>
+		</tbody></table>
+		<div class="content-header">
+			<h3>Task Content
+							</h3>
+		</div>                          
+		<div class="panel"><div class="task-content">
+		<h2>Book of Life</h2>
+
+<p>Mr. Get A. Life has come to the realization that he is approaching the middle stage of life.
+In order to leave a legacy behind, he has begun to write his own autobiography.
+As it is still very much in progress, he does not know how many chapters nor pages.  
+All he has now are scraps of writings which, many a time, he needs to refer back and forth.
+Let us help him organize his life story!
+
+</p><h2>Task</h2>
+
+<p>Your task is to model a book of possibly infinite chapters and infinite pages.
+Pages of a book can be flipped via an external viewer.
+
+</p><h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> <!--,
+unless otherwise specified.</li>-->
+</li><li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>java.util.List</tt>
+</li><li><tt>java.util.Optional</tt>
+</li><li><tt>java.util.stream.Stream</tt>
+</li><li>functional interfaces from <tt>java.util.function</tt>
+</li></ul>
+</li><li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+</li><li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+<li><tt>for</tt>, <tt>while</tt>
+-->    
+</li><li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+    and <tt>hashCode</tt>
+<!-- <li>methods of the <tt>String</tt> class -->
+</li></ul>
+</li><li>There is no need to use bounded wildcards.
+</li><li>You are NOT allowed to define anonymous inner classes; if necessary, define lambdas instead.
+</li><li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&amp;&amp;</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+</li><li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+</li><li>You are NOT allowed to use method references <tt>::</tt>
+</li><li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+</li><li>You are NOT allowed to use exception handling
+</li><li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</li></ul>
+</li></ul>
+
+<p>In the following level specifications, you will be guided on the non-private methods to define.
+Any other method you create yourself must be declared <tt>private</tt>.
+<!-- However, you can create other non-private constructors. -->
+
+</p><p>A minimal 
+<tt><a href="https://codecrunch.comp.nus.edu.sg/taskfile.php/5656/Pair.java">Pair</a></tt> class (not a record, but behaves similarly) has been provided for you.  DO NOT replace this with your own version.
+
+</p><h2>Level 1</h2>
+
+<p>You are given the following <tt><a href="https://codecrunch.comp.nus.edu.sg/taskfile.php/5656/Printable.java">Printable</a></tt> interface. DO NOT replace this with your own version.
+
+</p><pre>interface Printable {
+    public void show();
+}
+</pre>
+
+<p>Write an implementation class <tt>Para</tt> that encapsulates the paragraphs of text, each with an associated paragraph
+number.  The contents of the paragraph can only be output (via <tt>System.out.println</tt>) using the
+<tt>show()</tt> method.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new Para(1, "This is a paragraph")
+$.. ==&gt; paragraph
+
+jshell&gt; new Para(1, "This is a paragraph").show()
+1: This is a paragraph
+
+jshell&gt; Printable p = new Para(1, "This is a paragraph")
+p ==&gt; paragraph
+
+jshell&gt; p.show()
+1: This is a paragraph
+</pre>
+
+<!--
+<p>Ensure that only one constructor, <tt>toString</tt> and the <tt>show()</tt> methods are exposed to the client.
+DO NOT include any other non-private methods.
+-->
+
+<h2>Level 2</h2>
+
+<p>Write a <tt>Page</tt> class with a constructor that takes in a <tt>String</tt> comprising paragraphs separated by the newline <tt>\n</tt> character.  Here is an example of how you can break the lines using the <tt>lines()</tt> method.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; "one\ntwo\nthree".lines()
+$.. ==&gt; java.util.stream.ReferencePipeline$Head@..
+
+jshell&gt; "one\ntwo\nthree".lines().forEach(x -&gt; System.out.println(x))
+one
+two
+three
+</pre>
+
+<p>Note that the <tt>Page</tt> class should also implement the <tt>Printable</tt> interface.
+
+</p><pre>jshell&gt; Printable p = new Page("This is a paragraph.\nThis, is another paragraph.")
+p ==&gt; page
+
+jshell&gt; p.show()
+1: This is a paragraph.
+2: This, is another paragraph.
+</pre>
+
+<!--
+<p>Ensure that only one constructor, <tt>toString</tt> and the <tt>show()</tt> methods are exposed to the client.
+DO NOT include any other non-private methods.
+-->
+
+<h2>Level 3</h2>
+
+<p>Write a class <tt>Chapter</tt> that creates a chapter comprising pages via two constructors, 
+one that takes in a single page, and the other that takes in pages as a <tt>Stream</tt> of pages.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; Page pp1 = new Page("This is a paragraph.\nThis, is another paragraph.")
+pp1 ==&gt; page
+
+jshell&gt; Page pp2 = new Page("A page with only one paragraph.")
+pp2 ==&gt; page
+
+jshell&gt; new Chapter(pp1)
+$.. ==&gt; chapter
+
+jshell&gt; new Chapter(Stream.of(pp1, pp2))
+$.. ==&gt; chapter
+
+jshell&gt; new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("page " + x.toString())))
+$.. ==&gt; chapter
+</pre>
+
+<p>The last example illustrates a chapter comprising an infinite number of pages, each with only one paragraph, specifically <tt>page 1</tt>, <tt>page 2</tt>, ...
+
+</p><p>Pages of a chapter can be flipped back and forth. 
+Flipping the pages is implemented via a <tt>View</tt> that is returned from the <tt>view()</tt> method.  
+The implementation of this method is enforced by implementing the <tt>Viewable</tt> interface.
+
+</p><p>You are given the following <tt><a href="https://codecrunch.comp.nus.edu.sg/taskfile.php/5656/Viewable.java">Viewable</a></tt> interface. DO NOT replace this with your own version.
+
+</p><pre>interface Viewable {
+    public View view();
+}
+</pre>
+
+<p>Here is an example of calling the <tt>view</tt> method.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view()
+$.. ==&gt; view
+</pre>
+
+<p>Note that the purpose of the <tt>View</tt> is to flip pages, regardless of whether they are pages of a chapter or a book, or even a series
+of books.
+Include a <tt>pages()</tt> method that returns the pages of the chapter as a stream.  This is useful for you to verify that the pages are
+formed correctly.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().pages()
+$.. ==&gt; java.util.stream.ReferencePipeline$Head@..
+
+jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().pages().forEach(x -&gt; x.show())
+1: This is a paragraph.
+2: This, is another paragraph.
+1: A page with only one paragraph.
+</pre>
+
+<p>Moreover, a view is printable, i.e. the <tt>show()</tt> method can be invoked.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().show()
+1: This is a paragraph.
+2: This, is another paragraph.
+</pre>
+
+<p>You will notice that only the contents of the first page <tt>pp1</tt> is shown.
+Flipping to the next page is invoked via the <tt>next()</tt> method.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().next().show()
+1: A page with only one paragraph.
+</pre>
+
+<p>You can flip back to the previous page using the <tt>prev()</tt> method.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().next().prev().show()
+1: This is a paragraph.
+2: This, is another paragraph.
+</pre>
+
+<p>Since we may have an infinite number of pages in a chapter, flipping is implemented lazily:
+
+</p><ul>
+<li>every <tt>next()</tt> method call advances the page by one with no upper bound;
+</li><li>a <tt>prev()</tt> method call flips back one page;
+</li><li>if a <tt>prev()</tt> is called on the first page, it remains at the first page.
+</li></ul> 
+
+<p>Note that by the time the <tt>show()</tt> method is invoked and flipping has gone beyond a finite number
+of pages, the last page will be shown.
+
+</p><pre>jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().next().next().show()
+1: A page with only one paragraph.
+
+jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().next().next().prev().show()
+1: A page with only one paragraph.
+
+jshell&gt; new Chapter(Stream.of(pp1, pp2)).view().next().next().prev().prev().show()
+1: This is a paragraph.
+2: This, is another paragraph.
+</pre>
+
+<p>Moreover, a chapter of empty pages will simply show blank.  Flipping with <tt>next()</tt> and <tt>prev()</tt> will not have any effect.
+
+</p><pre>jshell&gt; new Chapter(Stream.of()).view().show()
+
+jshell&gt; new Chapter(Stream.of()).view().next().show()
+
+jshell&gt; new Chapter(Stream.of()).view().prev().show()
+
+jshell&gt;
+</pre>
+
+<h2>Level 4</h2>
+
+<p>Now we are ready to implement the <tt>Book</tt> class.
+A book may comprise one or more chapters.
+
+</p><p>As with chapters, define two <tt>Book</tt> constructors:
+one that takes in a single chapter, and the other that takes in a <tt>Stream</tt> of chapters.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; Page pp1 = new Page("This is a paragraph.\nThis, is another paragraph.")
+pp1 ==&gt; page
+
+jshell&gt; Page pp2 = new Page("A page with only one paragraph.")
+pp2 ==&gt; page
+
+jshell&gt; new Book(new Chapter(pp1))
+$.. ==&gt; book
+
+jshell&gt; new Book(new Chapter(Stream.of(pp1, pp2)))
+$.. ==&gt; book
+
+jshell&gt; new Book(Stream.of(
+   ...&gt;    new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;    new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+$.. ==&gt; book
+</pre>
+
+<p>A book may also have infinite number of chapters.
+
+</p><pre>jshell&gt; new Book(Stream.generate(() -&gt; new Chapter(Stream.of(pp1, pp2))))
+$.. ==&gt; book
+</pre>
+
+<p>And just like a chapter, a book is also viewable.
+
+</p><pre>jshell&gt; new Book(Stream.of(
+   ...&gt;    new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;    new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x))))).
+   ...&gt; view().show()
+1: This is a paragraph.
+2: This, is another paragraph.
+</pre>
+
+<p>In the above example, only the first page of the first chapter in the book is shown.
+Here is the sample run that demonstrates invoking a series of <tt>next()</tt> methods.
+
+</p><pre>jshell&gt; new Book(Stream.of(
+   ...&gt;    new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;    new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x))))).
+   ...&gt; view().next().show()
+1: A page with only one paragraph.
+
+jshell&gt; new Book(Stream.of(
+   ...&gt;    new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;    new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x))))).
+   ...&gt; view().next().next().show()
+1: para 1
+</pre>
+
+<p>In the last example, the first page of the second chapter is shown.
+
+</p><p>As with the previous level, <tt>prev()</tt> works the same way when flipping the pages of a book.
+
+</p><pre>jshell&gt; new Book(Stream.of(
+   ...&gt;    new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;    new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x))))).
+   ...&gt; view().next().next().prev().show()
+1: A page with only one paragraph.
+</pre>
+
+<p>The astute reader may have noticed that every test requires new books and chapters to be created.  
+This is due to the nature of streams being operated only once.
+
+</p><p>Furthermore, just like the case for chapters with empty pages, books with empty chapters will also show blank.
+
+</p><pre>jshell&gt; new Book(Stream.of()).view().show()
+
+jshell&gt; 
+</pre>
+
+<h2>Level 5</h2>
+
+<p>Write an unnamed <tt>Main.java</tt> with the <tt>show</tt> method that takes in a (possibly infinite) stream of chapters and books, 
+followed by two integers <tt>m</tt> and <tt>n</tt> where
+
+</p><ul>
+<li><tt>m</tt> denotes the <i>m<sup>th</sup></i> chapter/book in the stream (the first being <tt>1</tt>);
+</li><li><tt>n</tt> denotes the page number of chapter/book <tt>m</tt>.
+</li></ul>
+
+<p>The method will output the corresponding page.
+
+</p><p>Don't forget to include the necessary import statements and the following program fragment:
+
+</p><pre>void main() {}
+</pre>
+
+<p>Here is a sample run.
+
+</p><pre>$ javac --enable-preview --release 21 Main.java
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 1, 1)
+1: first
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 2, 1)
+1: second
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 2, 2)
+1: third
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 2, 3)
+1: fourth
+</pre>
+
+Anytime <tt>m</tt> or <tt>n</tt> is out of bounds, <tt>not found</tt> is output.
+
+<pre>jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 0, 1)
+not found
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 1, 2)
+not found
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 2, 4)
+not found
+
+jshell&gt; show(Stream.of(new Chapter(new Page("first")),
+   ...&gt;    new Book(Stream.of(new Chapter(new Page("second")), new Chapter(
+   ...&gt;       Stream.of(new Page("third"), new Page("fourth")))))),
+   ...&gt; 3, 1)
+not found
+</pre>
+
+<p>Here is a more contrived example of an infinite stream of books passed into the method.
+
+</p><pre>jshell&gt; show(Stream.generate(() -&gt; new Book(
+   ...&gt;    Stream.of(new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))),
+   ...&gt; 10, 7)
+1: para 5
+</pre>
+
+
+
+<!--
+Include a <tt>stitch</tt> method that takes in a
+(possibly infinite) stream of chapters and
+books, and stitches them together back-to-back so that it can be viewed with the <tt>prev()</tt>, <tt>next()</tt> and
+<tt>show()</tt> methods.
+Note that the <tt>stitch</tt> method also takes in a range of pages to view through the start and end pages.
+Here is a sample run.
+
+<pre>
+jshell&gt; Page pp1 = new Page("This is a paragraph.\nThis, is another paragraph.")
+pp1 ==&gt; page
+
+jshell&gt; Page pp2 = new Page("A page with only one paragraph.")
+pp2 ==&gt; page
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 1, 10) // range of pages
+$.. ==&gt; view
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 1, 10).
+   ...&gt; show()
+1: first chapter
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 1, 10).
+   ...&gt; next().show()
+1: This is a paragraph.
+2: This, is another paragraph.
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 1, 10).
+   ...&gt; next().next().next().show()
+1: para 1
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 1, 3).
+   ...&gt; next().next().next().show()
+1: A page with only one paragraph.
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 2, 4).
+   ...&gt; next().next().next().show()
+1: para 1
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 3, 5).
+   ...&gt; next().next().next().show()
+1: para 2
+
+jshell&gt; stitch(Stream.of(
+   ...&gt;    new Chapter(Stream.of(new Page("first chapter"))),
+   ...&gt;    new Book(Stream.of(
+   ...&gt;       new Chapter(Stream.of(pp1, pp2)),
+   ...&gt;       new Chapter(Stream.iterate(1, x -&gt; x + 1).map(x -&gt; new Page("para " + x)))))
+   ...&gt; ), 3, 5).
+   ...&gt; prev().show()
+1: A page with only one paragraph.
+</pre>
+
+-->
+		</div></div>                          
+									<input type="hidden" id="tid" name="tid" value="5656">
+		</div>
+		<!-- end content -->
+</div>
+<!-- end inner -->
+<div id="loading-mask">
+        <p id="loading_mask_loader" class="loader" style="display: none;"> <img alt="Loading..." src="./pa1_files/ajax-loader-tr.gif"> <br>
+                Please wait... </p>
+</div>
+<script type="text/javascript">
+$(".star").rating({
+        focus: function(value, link) {
+                var tip = $("#rating_text");
+                tip[0].data = tip[0].data || tip.html(); 
+                tip.html(link.title || "value: " + value);
+        },
+        blur: function(value, link) {
+                var tip = $("#rating_text");
+                $("#rating_text").html(tip[0].data || "");
+        },
+        callback: function(value, link) {
+                $.ajax({
+                        type: "POST",
+                        url: "task_updaterating.php",
+                        data: ({tid:$("#tid").val(), rating:value}),
+                        success: function(html) {
+                                var msg = html.split(";");
+                                $("#rating_text").removeClass().addClass(msg[0]);
+                                $("#rating_text").html(msg[1]);
+                        }
+                });
+        }
+});
+
+function getComments() {
+        $.ajax({
+                type: "POST",
+                url: "task_getcomments.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#commentList").html(html);
+                }
+        });
+}
+
+function doTaskGrade(e, d) {
+        $.ajax({
+                type: "POST",
+                url: "doTaskGrade.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#practiceNotification").removeClass().addClass(msg[0]);
+                        $("#practiceNotification").html(msg[1]);
+                }
+        });
+
+}
+
+function doCourseTaskGrade(e, d) {
+        $.ajax({
+                type: "POST",
+                url: "doTaskGrade.php",
+                data: ({tid:$("#tid").val(), course_id:$("#course_id").val(), do_course:1}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#courseNotification").removeClass().addClass(msg[0]);
+                        $("#courseNotification").html(msg[1]);
+                }
+        });
+
+}
+
+function addComment() {
+        $.ajax({
+                type: "POST",
+                url: "task_addcomment.php",
+                data: ({tid:$("#tid").val(), comment:encodeURIComponent($("#comment").val())}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#commentNotification").removeClass().addClass(msg[0]);
+                        $("#commentNotification").html(msg[1]);
+                        
+                        getComments();
+                }
+        });
+}
+
+function deleteComment(c) {
+        $.ajax({
+                type: "POST",
+                url: "task_deletecomment.php",
+                data: ({comment_id:c}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#commentNotification").removeClass().addClass(msg[0]);
+                        $("#commentNotification").html(msg[1]);
+                        
+                        getComments();
+                }
+        });
+}
+
+function getClassify(){
+                $.ajax({
+                type: "GET",
+                url: "task_classify.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#classifyList").html(html);
+                }
+        });
+}
+
+function getTutorial(){
+        $.ajax({
+                type: "POST",
+                url: "task_gettutorials.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#tutorialList").html(html);
+                }
+        });
+}
+
+function getQueries() {
+        $.ajax({
+                type: "POST",
+                url: "task_getqueries.php",
+                data: ({tid:$("#tid").val()}),
+                success: function(html) {
+                        $("#queryList").html(html);
+                }
+        });
+}
+
+function addQuery() {
+        $.ajax({
+                type: "POST",
+                url: "task_addquery.php",
+                data: ({tid:$("#tid").val(), contest_id:$("#contest_id").val(), query:encodeURIComponent($("#query").val())}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#queryNotification").removeClass().addClass(msg[0]);
+                        $("#queryNotification").html(msg[1]);
+                        
+                        getQueries();
+                }
+        });
+}
+
+function deleteQuery(q) {
+        $.ajax({
+                type: "POST",
+                url: "task_deletequery.php",
+                data: ({query_id:q}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#queryNotification").removeClass().addClass(msg[0]);
+                        $("#queryNotification").html(msg[1]);
+                        
+                        getQueries();
+                }
+        });
+}
+
+function addTag() {
+        $.ajax({
+                type: "POST",
+                url: "tag_add.php",
+                data: ({tid:$("#tid").val(), tags:$("#tagwords").val()}),
+                success: function(html) {
+                        var msg = html.split(";");
+                        $("#tagNotification").removeClass().addClass(msg[0]);
+                        $("#tagNotification").html(msg[1]);
+                        
+                        getClassify();
+                }
+        });
+}
+
+
+$(document).ready(function() {
+        getComments();
+        getQueries();
+        getClassify();
+        getTutorial();
+        //getCloud();
+});
+
+$(document).everyTime(60000, function(i) {
+        if ($("#tid").val() != "" && $("#tid").val() != null) {
+                $.ajax({
+                        type: "POST",
+                        url: "task_checkcontest.php",
+                        data: ({tid:$("#tid").val()}),
+                        success: function(html) {
+                                if (html == "0") {
+                                        $("#contest_submit").html("");
+                                }
+                        }
+                });
+                $.ajax({
+                        type: "POST",
+                        url: "task_checkcourse.php",
+                        data: ({tid:$("#tid").val()}),
+                        success: function(html) {
+                                if (html == "0") {
+                                        $("#course_submit").html("");
+                                }
+                        }
+                });
+        }
+}, 0);
+
+$('#loading_mask_loader')
+        .hide()  // hide it initially
+        .ajaxStart(function() {
+                $(this).show();
+        })
+        .ajaxStop(function() {
+                $(this).hide();
+        });
+        
+</script>
+
+
+</div> <!-- end outer -->
+
+</div> <!-- end container -->
+
+
+
+</body></html>
