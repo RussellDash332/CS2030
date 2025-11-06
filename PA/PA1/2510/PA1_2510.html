@@ -1,0 +1,447 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 Practical Assessment #1</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+<h2>Course Prerequisites</h2>
+
+<p>
+<i>This task was inspired from a HS2924 (Building Mental Wellbeing and
+Resilience) group project that aims to study the effectiveness of the
+Grade-Free (S/U) Scheme at NUS.</i>
+
+</p><p>Course prerequisites are upstream courses that a student must
+fulfil before they are allowed to read another downstream course.
+This is to ensure that students have the necessary knowledge and
+skillset before embarking on the new course, and prevents them from
+entering courses they are not ready for.
+</p>
+
+<h2>Task</h2>
+
+<p>Your task is to design a software to check that a set of courses
+that a student has taken fulfil all course prerequisites.  Different
+S/U schemes can also be introduced to trim down the list into an
+eventual list of graded courses.
+
+</p><h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> <!--,
+unless otherwise specified.</li>-->
+</li><li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<!--    
+<li><tt>java.util.List</tt>
+<li><tt>java.util.Optional</tt>
+<li><tt>java.util.stream.Stream</tt>
+-->
+<li>functional interfaces from <tt>java.util.function</tt>
+</li></ul>
+</li><li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+</li><li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+<li><tt>for</tt>, <tt>while</tt>
+<li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>, <tt>get</tt> and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), as well as <tt>equals</tt>
+    and <tt>hashCode</tt>
+-->    
+<!-- <li>methods of the <tt>String</tt> class -->
+</li></ul>
+</li><li>You are NOT allowed to use bounded type parameters or bounded wildcards.
+</li><li>You are NOT allowed to define anonymous inner classes or method
+    references <tt>::</tt><br>Define lambdas instead.
+</li><li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&amp;&amp;</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+</li><li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<!--    
+<li>You are NOT allowed to use method references <tt>::</tt>
+-->
+</li><li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+</li><li>You are NOT allowed to perform string processing using methods
+from <tt>String</tt>, <tt>StringBuffer</tt>,
+<tt>StringBuilder</tt>, etc.
+</li><li>You are NOT allowed to use exception handling
+</li><li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</li></ul>
+</li></ul>
+
+<p>In the following level specifications, you will be guided on the classes and non-private methods to define.
+DO NOT create any other classes.  Moreover, any other method you create must be declared <tt>private</tt>.
+<!-- However, you can create other non-private constructors. -->
+
+</p><p>The following classes has been provided for you.
+DO NOT replace them with your own versions.
+</p><ul>
+<li><tt><a href="Pair.java">Pair</a></tt> class (not a record, but
+behaves similarly)
+</li><li><tt><a href="Maybe.java">Maybe</a></tt> class
+</li><li><tt><a href="InfList.java">InfList</a></tt> class
+</li></ul>
+
+<blockquote>
+<table border="1" cellpadding="3">
+<tbody><tr><td>
+To automatically generate HTML documentation from the comments, issue the command:
+
+<pre>$ javadoc -d doc InfList.java Maybe.java Pair.java
+</pre>
+
+<p>You may then navigate through the documentation from <tt>allclasses-index.html</tt> found in the <tt>doc</tt> directory.
+</p></td></tr></tbody></table>
+</blockquote>
+
+
+<!--
+<p>The API for these custom classes can be found at the back of this
+document.
+-->
+
+<h2>Level 1</h2>
+
+<p>Write a <tt>Course</tt> class with a constructor that takes in the 
+course code as a <tt>String</tt>.
+Include a meaningful string representation for the class, as well as
+the <tt>equals</tt> method.  
+Two courses are the same as long as their course codes are
+the same.  Note that course codes are case-sensitive.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new Course("cs2030")
+$.. ==&gt; [cs2030]
+
+jshell&gt; new Course("cs2030").equals(new Course("cs2030"))
+$.. ==&gt; true
+
+jshell&gt; new Course("cs2030").equals(new Course("CS2030"))
+$.. ==&gt; false
+
+jshell&gt; new Course("cs2030").equals("cs2030")
+$.. ==&gt; false
+</pre>
+
+<h2>Level 2</h2>
+
+<p>In this level, you are to implement a class <tt>CourseReq</tt> to represent a course with a prerequisite.  <tt>CourseReq</tt> is still a course, but with an additional prerequisite (<tt>Prereq</tt>) that needs to be satisfied.
+
+</p><p>You are given the following 
+<tt><a href="Prereq.java">Prereq</a></tt> 
+interface. DO NOT replace this with your own version.
+
+</p><pre>interface Prereq {
+    public boolean satisfiedBy(InfList&lt;Course&gt; courses);
+}
+</pre>
+
+<p>Note that a <tt>CourseReq</tt> object may also be a prerequisite for some other <tt>CourseReq</tt> object.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; CourseReq cs1010 = new CourseReq("cs1010") // course with no prerequisite
+cs1010 ==&gt; [cs1010]
+
+jshell&gt; CourseReq cs2030 = new CourseReq("cs2030", cs1010) // course with a prerequisite
+cs2030 ==&gt; [cs2030]
+
+jshell&gt; CourseReq cs2040 = new CourseReq("cs2040", cs1010) // course with a prerequisite
+cs2040 ==&gt; [cs2040]
+</pre>
+
+<p>Following the specifications of the <tt>Prereq</tt> interface, implement the  <tt>satisfiedBy</tt> method that takes in a list of courses of type <tt>InfList&lt;Course&gt;</tt>, and returns <tt>true</tt> if the prerequisites are satisfied, and <tt>false</tt> otherwise.
+
+</p><p>In this level, only courses with at most one prerequisite course
+are tested.
+Moreover to simplify testing, <tt>InfList</tt> now includes an <tt>of</tt> method that takes in elements separated by commas. 
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; cs1010.satisfiedBy(InfList.&lt;Course&gt;of(cs1010))
+$.. ==&gt; true
+
+jshell&gt; cs1010.satisfiedBy(InfList.&lt;Course&gt;of(cs1010, cs2030))
+$.. ==&gt; true
+
+jshell&gt; cs2030.satisfiedBy(InfList.&lt;Course&gt;of(cs1010)) // need to also read cs2030
+$.. ==&gt; false
+
+jshell&gt; cs2030.satisfiedBy(InfList.&lt;Course&gt;of(cs1010, cs2030))
+$.. ==&gt; true
+
+jshell&gt; cs2030.satisfiedBy(InfList.&lt;Course&gt;of(cs2030)) // need cs1010 as a prerequisite
+$.. ==&gt; false
+
+jshell&gt; cs2030.satisfiedBy(InfList.&lt;Course&gt;of(cs1010, cs2040)) // need to read cs2030
+$.. ==&gt; false
+
+jshell&gt; cs2040.satisfiedBy(InfList.&lt;Course&gt;of(cs1010, cs2030, cs2040))
+$.. ==&gt; true
+
+jshell&gt; cs2030.satisfiedBy(InfList.&lt;Course&gt;of(cs2030, cs1010))
+$.. ==&gt; true
+</pre>
+
+<p>The last test case shows that the list of courses need not be in
+the order of the time they are read, so long as they meet the
+prerequisites, if any.
+
+</p><h2>Level 3</h2>
+
+<p>Let us take a look at another more interesting example.
+A simplified version of the prerequisite for CS2113 is given below:
+
+</p><pre>                     +--- CS2040C                  +--- CS2030
+                     |                             |
+CS2113 --- one of ---+              +--- one of ---+
+                     |              |              |
+                     |              |              +--- CS2030S
+                     |              |
+                     +--- all of ---+
+                                    |              +--- CS2040
+                                    |              |
+                                    +--- one of ---+
+                                                   |
+                                                   +--- CS2040S
+</pre>
+
+<p>Notice there are two general types of prerequisites: <i>one of</i> and <i>all of</i>.  Each one of these is a constraint over
+other prerequisites (can be <i>one of</i>, <i>all of</i>, or courses with prerequisites).
+
+</p><p>By now, you should already have defined the courses with prerequisites.
+
+</p><pre>jshell&gt; cs2030 instanceof Prereq
+$.. ==&gt; true
+
+jshell&gt; cs1010 instanceof Prereq
+$.. ==&gt; true
+</pre>
+
+<p>You will now need to write the <tt>AllOf</tt> and <tt>OneOf</tt> classes.
+For each of them, write a constructor that takes in a list of prerequisites.
+You will also need to define the <tt>satisfiedBy</tt> methods accordingly.
+Here are some examples.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; CourseReq cs1010 = new CourseReq("cs1010")
+cs1010 ==&gt; [cs1010]
+
+jshell&gt; CourseReq cs2030 = new CourseReq("cs2030", cs1010)
+cs2030 ==&gt; [cs2030]
+
+jshell&gt; CourseReq cs2030s = new CourseReq("cs2030s", cs1010)
+cs2030s ==&gt; [cs2030s]
+
+jshell&gt; CourseReq cs2040 = new CourseReq("cs2040", cs1010)
+cs2040 ==&gt; [cs2040]
+
+jshell&gt; Prereq oneOf2030 = new OneOf(InfList.of(cs2030, cs2030s))
+oneOf2030 ==&gt; OneOf@..
+
+jshell&gt; oneOf2030.satisfiedBy(InfList.of(cs1010))
+$.. ==&gt; false
+
+jshell&gt; oneOf2030.satisfiedBy(InfList.of(cs1010, cs2030))
+$.. ==&gt; true
+
+jshell&gt; oneOf2030.satisfiedBy(InfList.of(cs1010, cs2030s))
+$.. ==&gt; true
+
+jshell&gt; oneOf2030.satisfiedBy(InfList.of(cs1010, cs2030, cs2030s))
+$.. ==&gt; true
+
+jshell&gt; oneOf2030.satisfiedBy(InfList.of(cs2030, cs2030s)) // need cs1010 as a prerequisite
+$.. ==&gt; false
+
+jshell&gt; Prereq allOf2030_2040 = new AllOf(InfList.of(cs2030, cs2040))
+allOf20302040 ==&gt; AllOf@..
+
+jshell&gt; allOf2030_2040.satisfiedBy(InfList.of(cs2030))
+$.. ==&gt; false
+
+jshell&gt; allOf2030_2040.satisfiedBy(InfList.of(cs2040))
+$.. ==&gt; false
+
+jshell&gt; allOf2030_2040.satisfiedBy(InfList.of(cs2030, cs2040))
+$.. ==&gt; false
+
+jshell&gt; allOf2030_2040.satisfiedBy(InfList.of(cs2030, cs2040, cs1010))
+$.. ==&gt; true
+
+jshell&gt; allOf2030_2040.satisfiedBy(InfList.of(cs2030, cs1010))
+$.. ==&gt; false
+</pre>
+
+<p><i>Hint</i>: <tt>InfList</tt> now includes the <tt>anyMatch</tt>, <tt>allMatch</tt> and <tt>noneMatch</tt> methods that you may find useful.
+
+</p><p>Here is the complete test case for the prerequisite of CS2113 shown above.  
+To keep the example short, we assume that all variants of CS2030 and CS2040 only requires CS1010.  That being said, more rigorous testing will be done where, for example, CS2030 has a prerequisite of one of CS1010, CS1010a, CS1010e, CS1010s, etc.
+
+</p><pre>jshell&gt; CourseReq cs2040s = new CourseReq("cs2040s", cs1010)
+cs2040s ==&gt; [cs2040s]
+
+jshell&gt; CourseReq cs2040c = new CourseReq("cs2040c", cs1010)
+cs2040c ==&gt; [cs2040c]
+
+jshell&gt; CourseReq cs2113 = new CourseReq("cs2113",
+   ...&gt; new OneOf(InfList.of(cs2040c,
+   ...&gt;     new AllOf(InfList.of(
+   ...&gt;         new OneOf(InfList.of(cs2030, cs2030s)),
+   ...&gt;         new OneOf(InfList.of(cs2040, cs2040s)))))))
+cs2113 ==&gt; [cs2113]
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040c))
+$.. ==&gt; false
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040c, cs1010))
+$.. ==&gt; false
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040c, cs1010, cs2113))
+$.. ==&gt; true
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040, cs1010, cs2113))
+$.. ==&gt; false
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040, cs1010, cs2113, cs2030))
+$.. ==&gt; true
+
+jshell&gt; cs2113.satisfiedBy(InfList.of(cs2040, cs1010, cs2113, cs2030s))
+$.. ==&gt; true
+</pre>
+
+<h2>Level 4</h2>
+
+<p>Write a <tt>CoursePlan</tt> class with a constructor that takes in
+a list of courses with prerequisites, and creates a viable plan by
+ignoring all courses that do not meet the prerequisites.
+Include an appropriate <tt>toString</tt> method to represent all
+remaining courses, or <tt>"no courses"</tt> if there are no courses
+left.
+
+</p><pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new CoursePlan(InfList.of())
+$.. ==&gt; no courses
+
+jshell&gt; new CoursePlan(InfList.of(cs1010))
+$.. ==&gt; [cs1010]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040))
+$.. ==&gt; [cs1010][cs2030][cs2040]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113))
+$.. ==&gt; [cs1010][cs2030][cs2040][cs2113]
+
+jshell&gt; new CoursePlan(InfList.of(
+   ...&gt; cs1010, cs2030, cs2113)) // cs2113 dropped due to missing cs2040/cs2040s/cs2040c
+$.. ==&gt; [cs1010][cs2030]
+
+jshell&gt; new CoursePlan(InfList.of(
+   ...&gt; cs2030, cs2040, cs2113)) // all courses dropped due to missing cs1010
+$.. ==&gt; no courses
+</pre>
+
+<p>Note from the above examples that courses are displayed in order of presentation.
+
+</p><p>Now include a <tt>numOfCourses</tt> method that returns the number
+of remaining courses in the course plan.  Also include a <tt>drop</tt>
+method that takes in a course and drops the course from the plan
+(possibly due to academic dishonesty that was found out later) and
+rework the courses to meet the prerequisites.
+
+</p><pre>jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).numOfCourses()
+$.. ==&gt; 4
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).drop(cs2113)
+$.. ==&gt; [cs1010][cs2030][cs2040]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).drop(cs2113).
+   ...&gt; numOfCourses()
+$.. ==&gt; 3
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).drop(cs1010)
+$.. ==&gt; no courses
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).drop(cs1010).
+   ...&gt; numOfCourses()
+$.. ==&gt; 0
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040)).drop(cs2113)
+$.. ==&gt; [cs1010][cs2030][cs2040]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040)).drop(cs2113).numOfCourses()
+$.. ==&gt; 3
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040)).drop(new Course("cs2040")).
+   ...&gt; numOfCourses()
+$.. ==&gt; 2
+</pre>
+
+<h2>Level 5</h2>
+
+<p>In the <tt>CoursePlan</tt> class, include a <tt>trimSU</tt> method
+that returns a list of courses of type <tt>InfList&lt;Course&gt;</tt>
+after trimming all S/U'ed courses (i.e. courses with
+satisfactory/unsatisfactory grading).  Different policies for S/U can be provided to <tt>trimSU</tt>, e.g.
+
+</p><ul>
+<li>courses at the start of the prerequisite chain can be S/U'ed; or
+</li><li>courses at the end of the prerequisite chain can be S/U'ed, i.e.
+courses that are not prerequisites of other courses.
+<br><i>I personally find this a more meaningful policy to help build
+mental well-being (mine included) and resilience...</i>
+</li></ul>
+
+<p>The policy takes the form of a <tt>Predicate</tt> of some type.  
+A predicate is useful since we can just <tt>filter</tt> the list of courses in the course plan.
+That being said, you will still need to think about an appropriate <i>form</i> of the predicate.
+
+</p><p>Write each of the policies above as separate classes <tt>SUstart</tt> and <tt>SUend</tt>.
+Here are some examples:
+
+</p><pre>jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).
+   ...&gt; trimSU(new SUstart())
+$.. ==&gt; InfList$..
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).
+   ...&gt; trimSU(new SUstart()). // cs1010 at start of the chain is SU'ed
+   ...&gt; forEach(x -&gt; System.out.println(x))
+[cs2030]
+[cs2040]
+[cs2113]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040, cs2113)).
+   ...&gt; trimSU(new SUend()). // cs2113 at end of the chain is SU'ed
+   ...&gt; forEach(x -&gt; System.out.println(x))
+[cs1010]
+[cs2030]
+[cs2040]
+
+jshell&gt; new CoursePlan(InfList.of(cs1010, cs2030, cs2040)).
+   ...&gt; trimSU(new SUend()). // cs2030 and cs2040 at the end of both chains are SU'ed
+   ...&gt; forEach(x -&gt; System.out.println(x))
+[cs1010]
+</pre>
+
+<p><i>In the last case, the student who does not do well in both
+CS2030 and CS2040, will S/U the courses and most likely change to another
+degree programme without incurring too much harm to his/her GPA.</i></p>
