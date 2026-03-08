@@ -1,0 +1,264 @@
+<h1 id="cs2030-practical-assessment-1">CS2030 (2520) Practical Assessment #1</h1>
+	
+<h2>Elevator</h2>
+
+<p>Elevators are indeed a ubiquitous, and often overlooked, part of modern infrastructure, with an estimated 250 trips taken per person annually.
+They are essential for the functionality of multi-story, commercial, residential, and industrial buildings powered by Gemini.. note the extra commas and the mdash</p>
+
+<p>An elevator is operated by pressing a button outside the elevator, i.e. at the lobby.
+These buttons at different levels of the lobby are used to deploy an elevator to the desired level.
+After the elevator has been deployed, buttons within the elevator are pressed so as to fetch passengers to their desired levels.
+-- powered by hchia.. as well as the rest of this document</p>
+
+<h2>Task</h2>
+
+<p>Your task is to design a software using OOP modeling to simulate riding an elevator.</p>
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file. Do not use single letter names for classes or interfaces.</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt></li>
+<li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li>functional interfaces from <tt>java.util.function</tt></li>
+</ul>
+</li>
+<li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt></li>
+<li><tt>instanceof</tt> (except checking for an instance of its own class)</li>
+</ul>
+</li>
+<li>You are NOT allowed to use bounded type parameters or bounded wildcards.</li>
+<li>You are NOT allowed to define anonymous inner classes or method references <tt>::</tt></li>
+<li>Define lambdas instead.</li>
+<li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&amp;&amp;</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions. DO NOT use bitwise operators.</li>
+<li>You are NOT allowed to use wildcard imports.</li>
+<li>You are NOT allowed to define array constructs, e.g. <tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt></li>
+<li>You are NOT allowed to perform string processing using methods from <tt>String</tt>, <tt>StringBuffer</tt>, <tt>StringBuilder</tt>, etc.</li>
+<li>You are NOT allowed to use exception handling.</li>
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt></li>
+</ul>
+</li>
+</ul>
+
+<p>In the following level specifications, you will be guided on the classes and non-private methods to define.
+DO NOT create any other classes; any other method you create MUST be declared <tt>private</tt>.
+However, you can create other non-private constructors.</p>
+
+<p>The following classes has been provided for you. DO NOT replace them with your own versions.</p>
+<ul>
+<li><tt>Pair</tt> class (not a record, but behaves similarly)</li>
+<li><tt>Maybe</tt> class</li>
+<li><tt>InfList</tt> class</li>
+</ul>
+
+<h2>Level 1</h2>
+
+<p>Let us start by writing a <tt>Leveled</tt> abstract class to represent some abstract leveled entity (or thing), i.e. something with a level.
+The action of pressing a button at the lobby of a certain level is a concrete leveled entity, and we represent it using an <tt>Action</tt> class.</p>
+
+<p>Define the <tt>Action</tt> class according to the sample run below.</p>
+
+<pre>$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new Action(1)
+$.. ==&gt; Action at L1
+
+jshell&gt; new Action(5)
+$.. ==&gt; Action at L5
+
+jshell&gt; new Action(1) instanceof Leveled
+$.. ==&gt; true
+
+jshell&gt; new Leveled(1)
+Error:
+Leveled is abstract; cannot be instantiated
+ new Leveled(1)
+</pre>
+
+<p>In the above, L1 denotes level 1. You may also assume that levels are always positive integers (i.e. &gt; 0).</p>
+
+<h2>Level 2</h2>
+
+<p>Leveled entities can be compared and also checked for equality.
+Define the <tt>compareTo</tt> and <tt>equals</tt> method following the sample run below.</p>
+
+<pre>jshell&gt; new Action(1).compareTo(new Action(5)) &lt; 0
+$.. ==&gt; true
+
+jshell&gt; new Action(1).compareTo(new Action(1)) == 0
+$.. ==&gt; true
+
+jshell&gt; new Action(10).compareTo(new Action(5)) &gt; 0
+$.. ==&gt; true
+
+jshell&gt; Leveled lvled = new Action(10)
+lvled ==&gt; Action at L10
+
+jshell&gt; lvled.compareTo(lvled)
+$.. ==&gt; 0
+
+jshell&gt; new Action(1).equals(new Action(1))
+$.. ==&gt; true
+
+jshell&gt; new Action(1).equals(new Action(5))
+$.. ==&gt; false
+
+jshell&gt; new Action(1).equals(1)
+$.. ==&gt; false
+
+jshell&gt; lvled.equals(lvled)
+$.. ==&gt; true
+
+jshell&gt; lvled.equals(10)
+$.. ==&gt; false
+
+jshell&gt; lvled.equals(new Action(10))
+$.. ==&gt; true
+</pre>
+
+<h2>Level 3</h2>
+
+<p>When a button located at the lobby is pressed, an elevator is deployed to that level.
+Write an <tt>Elevator</tt> class to represent an elevator with a constructor that takes in the following in order:</p>
+
+<ul>
+<li>an integer representing the current level the elevator is at;</li>
+<li>an integer representing the current time; and</li>
+<li>an <tt>InfList</tt> of actions representing the pending actions from pressing buttons at the lobbies of different levels.</li>
+</ul>
+
+<p>The following is an example of an elevator situated at level 1 at time 3 units, with pending actions at levels 5 and 10.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10)))
+$.. ==&gt; Elevator: L1@3
+</pre>
+
+<p>For the purpose of debugging, include a <tt>printActions</tt> method to output the list of actions.
+Hint: since the <tt>printActions</tt> method is meant to terminate the pipeline, declare the return type as <tt>void</tt>.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).printActions()
+Action at L5
+Action at L10
+</pre>
+
+<p>Write a <tt>deploy</tt> method that takes no arguments so as to deploy the elevator to the first level indicated by the list of pending actions.
+You may assume the following:</p>
+<ul>
+<li>the elevator is upriding, and</li>
+<li>if the elevator is at level k, then the list of pending actions is such that all deployments are valid as the elevator rides upwards.</li>
+</ul>
+
+<p>Also take note that the elevator takes one unit of time to ride up one level. Here is an example:</p>
+
+<pre>jshell&gt; InfList&lt;Action&gt; actions = InfList.of(new Action(5), new Action(10))
+
+jshell&gt; new Elevator(1, 3, actions).deploy()
+$.. ==&gt; Elevator: L5@8
+</pre>
+
+<p>In the above test case, the elevator starts at level 1 at time 3. Deploying the elevator to level 5 (four levels up) will result in the elevator being deployed to that level in time 7. In addition, each action also takes an additional one unit of time (think of it as time taken to open the elevator doors). Hence the deployment completes in time 8.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, actions).deploy().printActions()
+Action at L10
+
+jshell&gt; new Elevator(1, 3, actions).deploy().deploy()
+$.. ==&gt; Elevator: L10@14
+
+jshell&gt; new Elevator(1, 3, actions).deploy().deploy().deploy()
+$.. ==&gt; Elevator: L10@14
+</pre>
+
+<p>Note in the last test case that deployment with no pending actions leaves the elevator as it is.</p>
+
+<h2>Level 4</h2>
+
+<p>Other than buttons outside the elevator (i.e at the lobby), there are also buttons inside the elevator to fetch passengers to different levels.
+Include a <tt>fetch</tt> method that takes in an integer to represent a passenger to be fetched to his/her desired level.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).fetch(5)
+$.. ==&gt; Elevator: L1@3
+</pre>
+
+<p>Note from the above that calling the <tt>fetch</tt> method does not immediately deploy the elevator to that level.
+Instead, a <tt>FetchAction</tt> is placed at the back of the pending actions list. Each <tt>FetchAction</tt> also takes up one unit of time.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).fetch(5).printActions()
+Action at L5
+Action at L10
+FetchAction at L5
+
+jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).fetch(5).deploy()
+$.. ==&gt; Elevator: L5@9
+
+jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).deploy().fetch(20).printActions()
+Action at L10
+FetchAction at L20
+
+jshell&gt; new Elevator(1, 3, InfList.of(new Action(5), new Action(10))).deploy().fetch(20).deploy()
+$.. ==&gt; Elevator: L10@14
+</pre>
+
+<p>Hint: to add to the list of pending actions, you may find the <tt>concat</tt> method of <tt>InfList</tt> useful.
+Also note that a passenger in an upriding elevator can only request to be fetched to levels above the current level.
+The following sample runs show that no further action is being added to the pending actions list for the case of an invalid fetch.</p>
+
+<pre>jshell&gt; InfList&lt;Action&gt; actions = InfList.of(new Action(5), new Action(10))
+
+jshell&gt; new Elevator(1, 3, actions).deploy().fetch(3).printActions() // invalid!
+Action at L10
+
+jshell&gt; new Elevator(1, 3, actions).deploy().fetch(5).printActions() // invalid!
+Action at L10
+</pre>
+
+<p>Lastly, there could be more than one passenger entering a lift at a certain level, each requesting to be fetched to different levels.
+Include an overloaded <tt>fetch</tt> method that takes in an <tt>InfList</tt> list of integers representing all levels to be fetched to. You may only assume that the list of integers are unique.</p>
+
+<pre>jshell&gt; new Elevator(1, 3, actions).fetch(InfList.of(7, 20)).deploy().deploy().deploy()
+$.. ==&gt; Elevator: L10@15
+</pre>
+
+<h2>Level 5</h2>
+
+<p>Thus far, Elevator has been defined to be upriding by default. Moreover, it is rather cumbersome to call the constructor with <tt>InfList&lt;Action&gt;</tt>.
+Write an <tt>UpRiding</tt> class to represent an upriding elevator with a constructor that takes in the following in order:</p>
+
+<ul>
+<li>an integer representing the current level the elevator is at;</li>
+<li>an integer representing the current time; and</li>
+<li>an <tt>InfList</tt> of integers representing the pending actions.</li>
+</ul>
+
+<p>Also include a <tt>DownRiding</tt> class to represent a downriding elevator with a constructor that takes the same arguments as the <tt>UpRiding</tt> class.</p>
+
+<pre>jshell&gt; Elevator elevator = new UpRiding(1, 3, InfList.of(5, 10))
+elevator ==&gt; Elevator: L1@3
+
+jshell&gt; elevator.deploy().deploy().deploy() instanceof UpRiding
+$.. ==&gt; true
+
+jshell&gt; elevator = new DownRiding(20, 3, InfList.of(5, 10))
+elevator ==&gt; Elevator: L20@3
+
+jshell&gt; elevator.deploy().fetch(InfList.of(9,10,11)).deploy()
+$.. ==&gt; Elevator: L9@16
+
+jshell&gt; elevator.deploy().fetch(InfList.of(9,10,11)).deploy() instanceof DownRiding
+$.. ==&gt; true
+</pre>
+
+<p>Note that every call to the <tt>deploy</tt> or <tt>fetch</tt> methods of an <tt>UpRiding</tt> (or <tt>DownRiding</tt>) elevator must return an elevator of the same type.
+In addition, to ensure proper adherence to the DRY principle, there should NOT be any properties declared in the <tt>UpRiding</tt> and <tt>DownRiding</tt> classes.</p>
