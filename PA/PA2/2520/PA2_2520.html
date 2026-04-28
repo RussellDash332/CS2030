@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editor</title>
+</head>
+<body>
+    <h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
+    
+    <h2>Editor</h2>
+    <p>An editor (like <code>vim</code>) allows us to craft a document (e.g. Java program) that facilitates undoing or redoing edits. We can represent a document as a stack of lines where the top of the stack is the most recently added line. In addition, we desire that the stack be an immutable data structure that never modifies itself in place. Consequently, every operation returns a fresh stack reflecting the updated state; the original is never changed. This makes structures safe to share across computations and a natural fit for the functional style practised throughout this course.</p>
+
+    <h2>Task</h2>
+    <p>Your task is to first design a generic immutable stack, so that type-parameterizing to <code>String</code> will allow us to represent a text document. We then encapsulate this document in an <code>Editor</code> to support further edits such as insert, delete, undo and redo.</p>
+
+    <h3>Take Note!</h3>
+    <p>This task comprises a number of levels. You are required to complete ALL levels.</p>
+    <p>The following are the constraints imposed on this task. In general, you should keep to the constructs and programming discipline instilled throughout the module.</p>
+    <ul>
+        <li>Write each class or interface in its own file. Do not use single letter names for classes or interfaces.</li>
+        <li>Ensure that ALL object properties and class constants are declared <code>private final</code></li>
+        <li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+        <li>ONLY the following java libraries ARE allowed: functional interfaces from <code>java.util.function</code></li>
+        <li>The following are NOT allowed: <code>var</code>, <code>null</code>, <code>default</code>, <code>enum</code>, <code>instanceof</code> (except checking for an instance of its own class)</li>
+        <li>You DO NOT need to use bounded type parameters or bounded wildcards.</li>
+        <li>You are NOT allowed to define anonymous inner classes or method references <code>::</code>. Define lambdas instead.</li>
+        <li>Use only <code>&amp;&amp;</code>, <code>||</code> and <code>!</code> in logical expressions. DO NOT use bitwise operators.</li>
+        <li>You are NOT allowed to use <code>*</code> wildcard imports.</li>
+        <li>You are NOT allowed to define array constructs, e.g. <code>String[]</code> or using ellipsis, e.g. <code>String...</code></li>
+        <li>You are NOT allowed to perform string processing using methods from <code>String</code>, <code>StringBuffer</code>, <code>StringBuilder</code>, etc.</li>
+        <li>You are NOT allowed to use exception handling</li>
+        <li>You are NOT allowed to use Java reflection, i.e. <code>Object::getClasses</code> and other methods from <code>java.lang.Class</code></li>
+    </ul>
+    <p>In the following level specifications, you will be guided on the classes and non-private methods to define.</p>
+    <ul>
+        <li>DO NOT create any other classes;</li>
+        <li>any other method you create MUST be declared <code>private</code>.</li>
+        <li>all constructors MUST be declared <code>private</code>.</li>
+    </ul>
+    <p>The <code>Maybe</code> class has been provided for you. DO NOT replace it with your own version.</p>
+
+    <h2>Level 1</h2>
+    <p>An immutable stack is naturally represented as a recursive linked structure. A stack is either</p>
+    <ul>
+        <li>empty containing no elements, or</li>
+        <li>a head (e.g. one element) paired with a tail (e.g. another <code>IStack</code>).</li>
+    </ul>
+    <p>Implement a generic class <code>IStack&lt;T&gt;</code> with the following two properties; DO NOT include any other properties.</p>
+<pre>
+private final Maybe&lt;T&gt; top;
+private final IStack&lt;T&gt; rest;
+</pre>
+    <p>Also include the following methods:</p>
+    <ul>
+        <li>a static method <code>empty()</code> that returns an empty <code>IStack</code>;</li>
+        <li>a <code>peek()</code> method that returns <code>Maybe&lt;T&gt;</code> with the top element encapsulated within, or <code>Maybe.empty</code> in the case of an empty stack;</li>
+        <li>a <code>push</code> method that takes in an element of type <code>T</code> and returns the new stack;</li>
+        <li>a <code>toString()</code> method that returns <code>"IStack:empty"</code> for an empty stack, or <code>"IStack:non-empty"</code> otherwise.</li>
+    </ul>
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell> IStack&lt;String&gt; s = IStack.&lt;String&gt;empty()
+s ==> IStack:empty
+
+jshell> s.peek()
+$.. ==> Maybe.empty
+
+jshell> s.push("line1")
+$.. ==> IStack:non-empty
+
+jshell> s.push("line1").peek()
+$.. ==> Maybe[line1]
+
+jshell> s.push("line1").push("line2").peek()
+$.. ==> Maybe[line2]
+
+jshell> s.push("line1").push("line2").push("line3").peek()
+$.. ==> Maybe[line3]
+</pre>
+
+    <h2>Level 2</h2>
+    <p>Now include the <code>pop()</code> method that returns the resulting stack with the top element removed. Note that performing a <code>pop()</code> operation on an empty stack remains as an empty stack.</p>
+    <p>In addition, include the following methods:</p>
+    <ul>
+        <li>a <code>print()</code> method to output the elements of the stack in last-in-first-out order;</li>
+        <li>a <code>size()</code> method to return the size of the stack. Clearly, the size of a non-empty stack is one more than the size of its tail</li>
+    </ul>
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell> IStack&lt;String&gt; s = IStack.&lt;String&gt;empty().
+   ...> push("line1").
+   ...> push("line2").
+   ...> push("line3")
+s ==> IStack:non-empty
+
+jshell> s.print()
+line3
+line2
+line1
+
+jshell> s.size()
+$.. ==> 3
+
+jshell> s.pop().peek()
+$.. ==> Maybe[line2]
+
+jshell> s.pop().print()
+line2
+line1
+
+jshell> s.pop().size()
+$.. ==> 2
+
+jshell> s.pop().pop().peek()
+$.. ==> Maybe[line1]
+
+jshell> s.pop().pop().pop().peek()
+$.. ==> Maybe.empty
+
+jshell> s.pop().pop().pop().print()
+
+jshell> s.pop().pop().pop().size()
+$.. ==> 0
+
+jshell> s.pop().pop().pop().pop().peek()
+$.. ==> Maybe.empty
+
+jshell> s.pop().pop().pop().pop().print()
+
+jshell> s.pop().pop().pop().pop().size()
+$.. ==> 0
+</pre>
+
+    <h2>Level 3</h2>
+    <p>We now wrap the document stack (<code>IStack&lt;String&gt;</code>) inside an <code>Editor</code>. For a line-based editor, we need to insert a line at an arbitrary position where position <code>0</code> is the top of the document. Because the stack is immutable we cannot update it in place. Instead, we use a two-phase recursive strategy:</p>
+    <ul>
+        <li>Unwind — recurse down the stack, popping elements off until we reach position 0, keeping track of the elements we passed.</li>
+        <li>Rebuild — on the way back up, push the passed elements back on top of the newly inserted line.</li>
+    </ul>
+    <p>The result is a brand-new stack with the line inserted at the right position; the original stack is untouched. Write the <code>Editor</code> class following the specifications below:</p>
+    <ul>
+        <li>a static method <code>empty()</code> that returns an empty <code>Editor</code> document;</li>
+        <li>a method <code>insertAt</code> that takes in a <code>String</code> and an integer <code>pos</code> that returns a new document with the strings inserted at position <code>pos</code>. In the case of <code>pos &lt; 0</code> or <code>pos</code> exceeding the number of lines in the document, return the same document;</li>
+        <li>a method <code>deleteAt</code> that takes an integer <code>pos</code> and return a new document with the element at position <code>pos</code> removed. In the case of invalid <code>pos</code> values, return the same document;</li>
+        <li>a <code>doc()</code> method that returns the current document as an <code>IStack&lt;String&gt;</code>;</li>
+        <li>a <code>toString()</code> method that returns <code>"Editor"</code>.</li>
+    </ul>
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell> Editor ed = Editor.empty()
+ed ==> Editor
+
+jshell> Editor ed = Editor.empty().
+   ...> insertAt("References.", 0).
+   ...> insertAt("Conclusion goes here.", 0).
+   ...> insertAt("Main argument follows.", 0);
+ed ==> Editor
+
+jshell> ed.doc().print()
+Main argument follows.
+Conclusion goes here.
+References.
+
+jshell> Editor ed2 = ed.insertAt("Introduction added here.", 1)
+ed2 ==> Editor
+
+jshell> ed2.doc().print()
+Main argument follows.
+Introduction added here.
+Conclusion goes here.
+References.
+
+jshell> ed2.deleteAt(3).doc().print()
+Main argument follows.
+Introduction added here.
+Conclusion goes here.
+
+jshell> ed2.deleteAt(3).deleteAt(1).doc().print()
+Main argument follows.
+Conclusion goes here.
+
+jshell> ed2.deleteAt(1).deleteAt(3).doc().print()
+Main argument follows.
+Conclusion goes here.
+References.
+</pre>
+
+    <h2>Level 4</h2>
+    <p>So far our operations on the encapsulated <code>IStack&lt;String&gt;</code> within an <code>Editor</code> produce new stacks but throw away the old ones. We now wrap the document stack inside an <code>Editor</code> that remembers past states so that edits can be undone and redone.</p>
+    <p>The key idea is to maintain two other separate <code>IStack&lt;Editor&gt;</code> structures for the past and future operations. These are represented respectively as:</p>
+    <ul>
+        <li>Undo stack — a sequence of past operations/states, most recent on top</li>
+        <li>Redo stack — operations/states that were undone but can be reapplied</li>
+    </ul>
+    <p>In the case of an undo operation, before any edit is applied, the current document is pushed onto the undo stack. Undoing an edit simply pops the stack and restores the previous document. However, undo alone loses the future; once you undo an edit you cannot reapply it. We fix this with a second redo stack.</p>
+    <p>Include the <code>undo()</code> and <code>redo</code> methods in the <code>Editor</code> class:</p>
+    <ul>
+        <li><code>undo()</code> — pops from undo stack then pushes onto the redo stack;</li>
+        <li><code>redo()</code> — pops from the redo stack then pushes onto the undo stack.</li>
+    </ul>
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell> Editor e0 = Editor.empty()
+e0 ==> Editor
+
+jshell> Editor e1 = e0.insertAt("Roses are red.", 0)
+e1 ==> Editor
+
+jshell> Editor e2 = e1.insertAt("Violets are blue.", 0)
+e2 ==> Editor
+
+jshell> Editor e3 = e2.insertAt("WRONG LINE", 0)
+e3 ==> Editor
+
+jshell> e3.doc().print()
+WRONG LINE
+Violets are blue.
+Roses are red.
+
+jshell> Editor e4 = e3.undo()
+e4 ==> Editor
+
+jshell> e4.doc().print()
+Violets are blue.
+Roses are red.
+
+jshell> e4.undo().doc().print()
+Roses are red.
+
+jshell> e4.undo().undo().doc().print()
+
+jshell> e4.undo().undo().undo().doc().print()
+</pre>
+    <p>Calling <code>undo()</code> on an <code>Editor</code> with no history does not alter the <code>Editor</code>.</p>
+<pre>
+jshell> Editor e5 = e4.undo()
+e5 ==> Editor
+
+jshell> e5.doc().print()
+Roses are red.
+
+jshell> Editor e6 = e5.redo()
+e6 ==> Editor
+
+jshell> e6.doc().print()
+Violets are blue.
+Roses are red.
+
+jshell> Editor e7 = e5.insertAt("Line X", 0)
+e7 ==> Editor
+
+jshell> e7.doc().print()
+Line X
+Roses are red.
+
+jshell> e7.redo().doc().print()
+Line X
+Roses are red.
+</pre>
+    <p>Notice from the last test case that a new edit (i.e. insertion or deletion) clears the redo stack.</p>
+    <p>Also note that any invalid edit (insertion or deletion) that does not change the document state will NOT be added to the undo/redo stacks. The following is an example demonstrating an invalid insertion.</p>
+<pre>
+jshell> Editor.empty().
+   ...> insertAt("line 1", 0).
+   ...> insertAt("line 2", 1). // last successful insert
+   ...> insertAt("line 3", 10). // invalid insert
+   ...> doc().print()
+line 1
+line 2
+
+jshell> Editor.empty().
+   ...> insertAt("line 1", 0).
+   ...> insertAt("line 2", 1). // last successful insert
+   ...> insertAt("line 3", 10). // invalid insert
+   ...> undo(). // undo last successful insert
+   ...> doc().print()
+line 1
+
+jshell> Editor.empty().
+   ...> insertAt("line 1", 0).
+   ...> insertAt("line 2", 1). // last successful insert
+   ...> insertAt("line 3", 10). // invalid insert
+   ...> undo(). // undo last successful insert
+   ...> redo(). // redo last successful insert
+   ...> doc().print()
+line 1
+line 2
+</pre>
+
+    <h2>Level 5</h2>
+    <p>We now introduce <code>flatMap</code> to allow multi-step edits to be composed as a single undoable operation. An Editor is a monad over its document state. <code>flatMap</code> allows you to chain a sequence of edits where each step may inspect the current document before deciding what to do next. The entire chain is treated as a single undoable step: only one snapshot is pushed onto the history before the chain begins. Include a <code>flatMap</code> method that takes in a <code>Function&lt;IStack&lt;String&gt;, Editor&gt;</code> and returns the resulting <code>Editor</code> after the operation.</p>
+    <p>For the purpose of testing, also include a static <code>of()</code> method to wrap an <code>IStack&lt;String&gt;</code> in an <code>Editor</code> with empty undo and redo stacks.</p>
+<pre>
+jshell> Editor e = Editor.empty().
+   ...> insertAt("Line A", 0).
+   ...> insertAt("Line B", 0).
+   ...> insertAt("Line C", 0)
+e ==> Editor
+
+jshell> e.doc().print()
+Line C
+Line B
+Line A
+
+jshell> UnaryOperator&lt;IStack&lt;String&gt;&gt; swap = doc ->
+   ...> doc.size() &lt;= 2 ? doc :
+   ...> doc.peek().map(line -> 
+   ...>    Editor.of(doc).deleteAt(0).insertAt(line,2).doc()).
+   ...> orElse(doc)
+swap ==> $Lambda..
+
+jshell> Editor swapped = e.flatMap(doc -> Editor.of(swap.apply(doc)))
+swapped ==> Editor
+
+jshell> swapped.doc().print()
+Line B
+Line A
+Line C
+
+jshell> swapped.undo().doc().print()
+Line C
+Line B
+Line A
+
+jshell> swapped.undo().undo().doc().print()
+Line B
+Line A
+</pre>
+    <p><code>flatMap(f)</code> should snapshot the current document onto history then apply <code>f</code>, keeping in mind that the intermediate steps inside <code>f</code> do not pollute the undo stack. The returned editor should have the original (pre-chain) history with one entry prepended.</p>
+
+</body>
+</html>
