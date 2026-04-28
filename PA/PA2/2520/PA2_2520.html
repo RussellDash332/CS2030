@@ -1,51 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Editor</title>
-</head>
-<body>
-    <h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
-    
-    <h2>Editor</h2>
-    <p>An editor (like <code>vim</code>) allows us to craft a document (e.g. Java program) that facilitates undoing or redoing edits. We can represent a document as a stack of lines where the top of the stack is the most recently added line. In addition, we desire that the stack be an immutable data structure that never modifies itself in place. Consequently, every operation returns a fresh stack reflecting the updated state; the original is never changed. This makes structures safe to share across computations and a natural fit for the functional style practised throughout this course.</p>
+<h1 id="cs2030-practical-assessment-2">CS2030 Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
 
-    <h2>Task</h2>
-    <p>Your task is to first design a generic immutable stack, so that type-parameterizing to <code>String</code> will allow us to represent a text document. We then encapsulate this document in an <code>Editor</code> to support further edits such as insert, delete, undo and redo.</p>
+<h2>Editor</h2>
+<p>An editor (like <code>vim</code>) allows us to craft a document (e.g. Java program) that facilitates undoing or redoing edits. We can represent a document as a stack of lines where the top of the stack is the most recently added line. In addition, we desire that the stack be an immutable data structure that never modifies itself in place. Consequently, every operation returns a fresh stack reflecting the updated state; the original is never changed. This makes structures safe to share across computations and a natural fit for the functional style practised throughout this course.</p>
 
-    <h3>Take Note!</h3>
-    <p>This task comprises a number of levels. You are required to complete ALL levels.</p>
-    <p>The following are the constraints imposed on this task. In general, you should keep to the constructs and programming discipline instilled throughout the module.</p>
-    <ul>
-        <li>Write each class or interface in its own file. Do not use single letter names for classes or interfaces.</li>
-        <li>Ensure that ALL object properties and class constants are declared <code>private final</code></li>
-        <li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
-        <li>ONLY the following java libraries ARE allowed: functional interfaces from <code>java.util.function</code></li>
-        <li>The following are NOT allowed: <code>var</code>, <code>null</code>, <code>default</code>, <code>enum</code>, <code>instanceof</code> (except checking for an instance of its own class)</li>
-        <li>You DO NOT need to use bounded type parameters or bounded wildcards.</li>
-        <li>You are NOT allowed to define anonymous inner classes or method references <code>::</code>. Define lambdas instead.</li>
-        <li>Use only <code>&amp;&amp;</code>, <code>||</code> and <code>!</code> in logical expressions. DO NOT use bitwise operators.</li>
-        <li>You are NOT allowed to use <code>*</code> wildcard imports.</li>
-        <li>You are NOT allowed to define array constructs, e.g. <code>String[]</code> or using ellipsis, e.g. <code>String...</code></li>
-        <li>You are NOT allowed to perform string processing using methods from <code>String</code>, <code>StringBuffer</code>, <code>StringBuilder</code>, etc.</li>
-        <li>You are NOT allowed to use exception handling</li>
-        <li>You are NOT allowed to use Java reflection, i.e. <code>Object::getClasses</code> and other methods from <code>java.lang.Class</code></li>
-    </ul>
-    <p>In the following level specifications, you will be guided on the classes and non-private methods to define.</p>
-    <ul>
-        <li>DO NOT create any other classes;</li>
-        <li>any other method you create MUST be declared <code>private</code>.</li>
-        <li>all constructors MUST be declared <code>private</code>.</li>
-    </ul>
-    <p>The <code><tt><a href="Maybe.java">Maybe</a></tt></code> class has been provided for you. DO NOT replace it with your own version.</p>
+<h2>Task</h2>
+<p>Your task is to first design a generic immutable stack, so that type-parameterizing to <code>String</code> will allow us to represent a text document. We then encapsulate this document in an <code>Editor</code> to support further edits such as insert, delete, undo and redo.</p>
 
-    <h2>Level 1</h2>
-    <p>An immutable stack is naturally represented as a recursive linked structure. A stack is either</p>
-    <ul>
-        <li>empty containing no elements, or</li>
-        <li>a head (e.g. one element) paired with a tail (e.g. another <code>IStack</code>).</li>
-    </ul>
-    <p>Implement a generic class <code>IStack&lt;T&gt;</code> with the following two properties; DO NOT include any other properties.</p>
+<h3>Take Note!</h3>
+<p>This task comprises a number of levels. You are required to complete ALL levels.</p>
+<p>The following are the constraints imposed on this task. In general, you should keep to the constructs and programming discipline instilled throughout the module.</p>
+<ul>
+    <li>Write each class or interface in its own file. Do not use single letter names for classes or interfaces.</li>
+    <li>Ensure that ALL object properties and class constants are declared <code>private final</code></li>
+    <li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+    <li>ONLY the following java libraries ARE allowed: functional interfaces from <code>java.util.function</code></li>
+    <li>The following are NOT allowed: <code>var</code>, <code>null</code>, <code>default</code>, <code>enum</code>, <code>instanceof</code> (except checking for an instance of its own class)</li>
+    <li>You DO NOT need to use bounded type parameters or bounded wildcards.</li>
+    <li>You are NOT allowed to define anonymous inner classes or method references <code>::</code>. Define lambdas instead.</li>
+    <li>Use only <code>&amp;&amp;</code>, <code>||</code> and <code>!</code> in logical expressions. DO NOT use bitwise operators.</li>
+    <li>You are NOT allowed to use <code>*</code> wildcard imports.</li>
+    <li>You are NOT allowed to define array constructs, e.g. <code>String[]</code> or using ellipsis, e.g. <code>String...</code></li>
+    <li>You are NOT allowed to perform string processing using methods from <code>String</code>, <code>StringBuffer</code>, <code>StringBuilder</code>, etc.</li>
+    <li>You are NOT allowed to use exception handling</li>
+    <li>You are NOT allowed to use Java reflection, i.e. <code>Object::getClasses</code> and other methods from <code>java.lang.Class</code></li>
+</ul>
+<p>In the following level specifications, you will be guided on the classes and non-private methods to define.</p>
+<ul>
+    <li>DO NOT create any other classes;</li>
+    <li>any other method you create MUST be declared <code>private</code>.</li>
+    <li>all constructors MUST be declared <code>private</code>.</li>
+</ul>
+<p>The <code><tt><a href="Maybe.java">Maybe</a></tt></code> class has been provided for you. DO NOT replace it with your own version.</p>
+
+<h2>Level 1</h2>
+<p>An immutable stack is naturally represented as a recursive linked structure. A stack is either</p>
+<ul>
+    <li>empty containing no elements, or</li>
+    <li>a head (e.g. one element) paired with a tail (e.g. another <code>IStack</code>).</li>
+</ul>
+<p>Implement a generic class <code>IStack&lt;T&gt;</code> with the following two properties; DO NOT include any other properties.</p>
 <pre>
 private final Maybe&lt;T&gt; top;
 private final IStack&lt;T&gt; rest;
@@ -335,6 +329,3 @@ Line B
 Line A
 </pre>
     <p><code>flatMap(f)</code> should snapshot the current document onto history then apply <code>f</code>, keeping in mind that the intermediate steps inside <code>f</code> do not pollute the undo stack. The returned editor should have the original (pre-chain) history with one entry prepended.</p>
-
-</body>
-</html>
