@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CS2030 (AY26/27) Practical Assessment #1</title>
+</head>
+<body>
+<h1 id="cs2030-practical-assessment-1">CS2030 (AY26/27) Practical Assessment #1</h1>
+
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+<h2>Calculator</h2>
+
+<p><i>While tidying up his house during the recent recess week, your
+lecturer found an old fx-series CASIO calculator which he has not
+been using since his school days.
+Fiddling with the calculator inspired him to define the problem
+statement for this practical assessment...</i>
+
+<h2>Task</h2>
+
+<p>Your task is to design a software using OOP modeling to simulate
+the use of a calculator.  For example, to caculate 
+<tt>1 &plus; (2 &times; 3)</tt>, we need to press a series of
+buttons, with corresponding changes to the LCD screen display.
+
+<p>
+<table border=1>
+<tr align="center">
+<td align="left">Button being pressed:</td>
+<td><tt>[AC]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[&plus;]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[&times;]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[=]</tt></td>
+</tr>
+<tr align="center">
+<td align="left">Display after pressing button:</td>
+<td><tt>[0]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[7]</tt></td>
+</tr>
+</table>
+Note that <tt>[AC]</tt> stands for All Clear.
+
+<p>We can design a calculation pipeline to represent the changes:
+
+<pre>
+jshell&gt; new Calc() // represents pressing [AC]
+$.. ==&gt; [0]
+
+jshell&gt; new Calc().val(1)
+$.. ==&gt; [1]
+
+jshell&gt; new Calc().val(1).operate(new Add())
+$.. ==&gt; [1]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2)
+$.. ==&gt; [2]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul())
+$.. ==&gt; [2]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3)
+$.. ==&gt; [3]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).equal()
+$.. ==&gt; [7]
+</pre>
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> <!--,
+unless otherwise specified.</li>-->
+<li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>java.util.Optional</tt>
+<!--    
+<li><tt>java.util.List</tt>
+<li><tt>java.util.stream.Stream</tt>
+<li>functional interfaces from <tt>java.util.function</tt>
+-->
+</ul>
+<li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+<li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>,
+    <tt>get</tt>,
+<!--
+and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), 
+as well as 
+-->
+<tt>equals</tt>
+    and <tt>hashCode</tt>
+<!-- <li><tt>if..else</tt>, <tt>switch..case</tt>, <tt>?:</tt> conditional expression
+<li><tt>for</tt>, <tt>while</tt>
+-->    
+<!-- <li>methods of the <tt>String</tt> class -->
+</ul>
+<li>You are NOT allowed to declare type parameters or bounded wildcards.
+<li>You are NOT allowed to define anonymous inner classes or method
+    references <tt>::</tt><br>Define lambdas if necessary.
+<li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+<li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<!--    
+<li>You are NOT allowed to use method references <tt>::</tt>
+-->
+<li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+<li>You are NOT allowed to perform string processing using methods
+from <tt>String</tt>, <tt>StringBuffer</tt>,
+<tt>StringBuilder</tt>, etc.
+<li>You are NOT allowed to use exception handling
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</ul>
+</ul>
+
+<p>In the following level specifications, you will be guided on the classes and non-private methods to define.
+
+<ul>
+<li>DO NOT create any other classes;
+<li>any other method you create MUST be declared <tt>private</tt>.
+<li>however, you can create other non-private constructors.
+</ul>
+
+<!--
+<p>The following classes has been provided for you.
+DO NOT replace them with your own versions.
+<ul>
+<li><tt><a href="Pair.java">Pair</a></tt> class (not a record, but
+behaves similarly)
+<li><tt><a href="Maybe.java">Maybe</a></tt> class
+<li><tt><a href="InfList.java">InfList</a></tt> class
+</ul>
+
+The Java API for these classes can be found at:
+<p><tt>https://data.comp.nus.edu.sg/cs2030/doc_2b1ec150ab0df2321c3248e1a2e8bdea/</tt>
+
+<blockquote>
+<table border=1 cellpadding=3>
+<tr><td>
+To automatically generate HTML documentation from the comments, issue the command:
+
+<pre>
+$ javadoc -d doc InfList.java Maybe.java Pair.java
+</pre>
+
+<p>You may then navigate through the documentation from <tt>allclasses-index.html</tt> found in the <tt>doc</tt> directory.
+</td></tr></table>
+</blockquote>
+
+<p>The API for these custom classes can be found at the back of this
+document.
+-->
+
+<h2>Level 1</h2>
+
+<p>We first need to represent values in a calculator.
+Define the <tt>Value</tt> class to represent a value.  In this
+task, we shall only be using integers as values.
+
+<ul>
+<li>Write a constructor <tt>Value(int val)</tt> that takes in an integer to be encapsulated within <tt>Value</tt>.
+<li>Write a method <tt>val(int digit)</tt> that takes in an integer
+between <tt>1</tt> and <tt>9</tt> (both inclusive), and returns the <tt>Value</tt> appended with the integer.
+<li>Write a <tt>toString</tt> method to return the string representation of the value (enclosed in square brackets).
+</ul>
+
+<p>The following is a sample run:
+
+<pre>
+$ javac your_java_files
+$ jshell Value.java
+
+jshell&gt; new Value(0)
+$.. ==&gt; [0]
+
+jshell&gt; new Value(0).val(1)
+$.. ==&gt; [1]
+
+jshell&gt; new Value(12)
+$.. ==&gt; [12]
+
+jshell&gt; new Value(0).val(1).val(2)
+$.. ==&gt; [12]
+
+jshell&gt; new Value(12).val(1)
+$.. ==&gt; [121]
+
+jshell&gt; new Value(12).val(1).val(2)
+$.. ==&gt; [1212]
+
+jshell&gt; new Value(12).val(1).val(2).val(0)
+$.. ==&gt; [12120]
+
+jshell&gt; new Value(-12).val(1).val(2).val(0)
+$.. ==&gt; [-12120]
+</pre>
+
+<p>You may assume that the method <tt>val</tt> only takes in integer
+between <tt>1</tt> and <tt>9</tt> (both inclusive), while the constructor takes in any integer.
+
+<h2>Level 2</h2>
+
+<p>You are given the following <tt>Operator</tt> abstract class to
+support operations that you will define in the <tt>Add</tt>, <tt>Sub</tt> and
+<tt>Mul</tt> classes later.  In this assessment, we will not perform
+division due to the possibility of a divide-by-zero error.
+
+<pre>
+abstract class Operator {
+    abstract int operate(int x, int y);
+}
+</pre>
+
+<p>Include the method <tt>operate</tt> in the <tt>Value</tt> class
+that takes in an <tt>Operator</tt> followed by another <tt>Value</tt>.
+The following example demonstrates the use of addition <tt>Add</tt> and
+subtraction <tt>Sub</tt> operators.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new Value(1).val(2).operate(new Add(), new Value(2).val(3))
+$.. ==&gt; [35]
+
+jshell&gt; new Value(1).val(2).operate(new Sub(), new Value(2).val(3))
+$.. ==&gt; [-11]
+
+jshell&gt; new Value(1).val(2).operate(new Sub(), new Value(2).val(3)).
+   ...&gt; operate(new Add(), new Value(3).val(4))
+$.. ==&gt; [23]
+</pre>
+
+<p>Now implement the <tt>Mul</tt> operator to multiply two values.
+Ensure that you test the correctness of this operator.
+
+<h2>Level 3</h2>
+
+<p>We are now ready to implement the calculator.
+To make it manageable, we shall implement the calculator in stages, starting with only one operation.
+
+<pre>
+$ javac your_java_files
+$ jshell your_java_files_in_bottom-up_dependency_order
+
+jshell&gt; new Calc() // represents pressing [AC]
+$.. ==&gt; [0]
+
+jshell&gt; new Calc().val(1) // pressing [1]
+$.. ==&gt; [1]
+
+jshell&gt; new Calc().val(1).val(2) // pressing [2]
+$.. ==&gt; [12]
+
+jshell&gt; new Calc().val(1).val(2).operate(new Add()) // pressing [&plus;]
+$.. ==&gt; [12]
+
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3) // pressing [3]
+$.. ==&gt; [3]
+
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3).val(4) // pressing [4]
+$.. ==&gt; [34]
+
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3).val(4).equal() // pressing [=]
+$.. ==&gt; [46]
+</pre>
+
+<p>The above represents:
+
+<p>
+<table border=1>
+<tr align="center">
+<td align="left">Button being pressed:</td>
+<td><tt>[AC]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[&plus;]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[4]</tt></td>
+<td><tt>[=]</tt></td>
+</tr>
+<tr align="center">
+<td align="left">Display after pressing button:</td>
+<td><tt>[0]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[12]</tt></td>
+<td><tt>[12]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[34]</tt></td>
+<td><tt>[46]</tt></td>
+</tr>
+</table>
+
+<p>Here are some implementation details to take note:
+
+<ul>
+<li>Starting with <tt>Calc()</tt> (representing <tt>[AC]</tt>), every
+subsequent invocation of <tt>val</tt> (with an input digit from
+<tt>0</tt> to <tt>9</tt>) results in another <tt>Calc</tt> object.
+This allows the digits of the left operand to be accumulated.
+
+<pre>
+jshell&gt; new Calc().val(1).val(2) instanceof Calc
+$.. ==&gt; true
+</pre>
+
+<li>After <tt>operate</tt>, the pipeline transitions to a <tt>CalcOp</tt> object.
+
+<pre>
+jshell&gt; new Calc().val(1).val(2).operate(new Add()) instanceof CalcOp
+$.. ==&gt; true
+</pre>
+
+<p>This is to get ready for the <tt>val</tt> method to accumulate digits for the right operand.
+
+<li>Subsequent invocations of <tt>val</tt> will continue to accumulate values for the right operand.  Note that a <tt>CalcEval</tt> object is returned.
+
+<pre>
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3) instanceof CalcEval
+$.. ==&gt; true
+
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3).val(4) instanceof CalcEval
+$.. ==&gt; true
+</pre>
+
+<li>Lastly, the invocation of <tt>equal</tt> will terminate the calculation pipeline with a <tt>Result</tt> object.
+
+<pre>
+jshell&gt; new Calc().val(1).val(2).operate(new Add()).val(3).val(4).equal() instanceof Result
+$.. ==&gt; true
+</pre>
+
+This ensures that no further methods can be called, hence terminating the pipeline.
+
+</ul>
+
+<p>Note that the classes <tt>Calc</tt>, <tt>CalcOp</tt>,
+<tt>CalcEval</tt> and <tt>Result</tt> are only meant to guide you to the
+eventual calculator implementation.  As such, they can be standalone
+classes with the only dependencies.
+
+<pre>
+Calc --&gt; CalcOp --&gt; CalcEval --&gt; Result
+</pre>
+
+<p>Most importantly, you need to ensure that there should not be any cyclic dependencies among all classes.
+
+<p>Moreover, you should also test your implementation with single multiply and subtract operations as shown below:
+
+<pre>
+jshell&gt; new Calc().operate(new Sub()).val(1).equal()
+$.. ==&gt; [-1]
+
+jshell&gt; new Calc().val(2).operate(new Mul()).val(3).equal()
+$.. ==&gt; [6]
+</pre>
+
+<h2>Level 4</h2>
+
+<p>Now that we have a working calculation pipeline involving one operator, it is time to include more operations.  
+
+<p>Within the <tt>CalcEval</tt> class, include the <tt>operate</tt> method that returns a <tt>Calc2</tt> object.
+Any subsequent invocations of <tt>val</tt>, <tt>operate</tt> or <tt>equal</tt> methods will only result in other <tt>Calc2</tt> objects.
+
+<p>Note that <tt>Calc2</tt> should only have properties that are
+typed <tt>Value</tt>, <tt>Operator</tt>,
+<tt>Optional&lt;Value&gt;</tt> or
+<tt>Optional&lt;Operator&gt;</tt>.
+You are also not allowed to create any other utility classes (like <tt>Pair</tt>, <tt>Triple</tt>, etc.) other than those specified.
+
+<p>In order to operate on mixed operators in the correct order,
+include a <tt>precedence()</tt> method in the <tt>Operator</tt> that
+returns an integer representing the precedence value of the operator
+(lower number with higher precedence).
+
+<pre>
+jshell&gt; new Mul().precedence()
+$.. ==&gt; 1
+
+jshell&gt; new Add().precedence()
+$.. ==&gt; 2
+
+jshell&gt; new Sub().precedence()
+$.. ==&gt; 2
+</pre>
+
+<p>Now ensure that your operators are comparable.
+In the sample run below, since <tt>Mul</tt> is higher in precedence, <tt>compareTo</tt> should return a positive integer.
+
+<pre>
+jshell&gt; new Add().compareTo(new Mul()) &gt; 0
+$.. ==&gt; true
+</pre>
+
+<p>Henceforth, when writing all other classes, you should only rely on <tt>compareTo</tt> to ascertain the
+precedence of operators and not access <tt>precedence()</tt>
+directly.
+
+<p>Let us now focus on the calculation pipeline.
+Suppose the following buttons are pressed:
+
+<pre>
+[AC][1][&plus;][2][&times;][3][=]
+</pre>
+
+<p>The following sample run depicts the above calculation pipeline at
+every stage.
+
+<pre>
+jshell&gt; new Calc()
+$.. ==&gt; [0]
+
+jshell&gt; new Calc().val(1)
+$.. ==&gt; [1]
+
+jshell&gt; new Calc().val(1).operate(new Add())
+$.. ==&gt; [1]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2)
+$.. ==&gt; [2]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul())
+$.. ==&gt; [2]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3)
+$.. ==&gt; [3]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).equal()
+$.. ==&gt; [7]
+</pre>
+
+<p>Notice that multiply is performed first due to the higher precedence.
+
+<p>Now what happens if instead of pressing <tt>[=]</tt> above, we press <tt>[&plus;]</tt> or <tt>[&times;]</tt> instead?
+
+<pre>
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Add())
+$.. ==&gt; [7]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Mul())
+$.. ==&gt; [6]
+</pre>
+
+<p>Here is an explanation:
+
+<ul>
+<li>If the last operation is an addition, then <tt>1 + 2 &times; 3 +..</tt> can be
+pre-computed as <tt>7 + ..</tt>
+
+<p>
+<table border=1>
+<tr align="center">
+<td align="left">Button being pressed:</td>
+<td><tt>[AC]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[&plus;]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[&times;]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[&plus;]</tt></td>
+</tr>
+<tr align="center">
+<td align="left">Display after pressing button:</td>
+<td><tt>[0]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[7]</tt></td>
+</tr>
+</table>
+
+<li>If the last operation is a multiplication, then <tt>1 + 2 &times; 3 &times; ..</tt> can be pre-computed as <tt>1 + 6 &times; ..</tt>
+<p>
+<table border=1>
+<tr align="center">
+<td align="left">Button being pressed:</td>
+<td><tt>[AC]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[&plus;]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[&times;]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[&times;]</tt></td>
+</tr>
+<tr align="center">
+<td align="left">Display after pressing button:</td>
+<td><tt>[0]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[1]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[2]</tt></td>
+<td><tt>[3]</tt></td>
+<td><tt>[6]</tt></td>
+</tr>
+</table>
+</ul>
+
+<p>Below are some more concrete examples:
+
+<pre>
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Add()).val(4).equal() // 1 + 2 * 3 + 4
+$.. ==&gt; [11]
+
+jshell&gt; new Calc().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Mul()).val(4).equal() // 1 + 2 * 3 * 4
+$.. ==&gt; [25]
+</pre>
+</pre>
+
+<p>You are reminded to ensure that the calculation pipeline works with the subtraction operator.
+
+
+<h2>Level 5</h2>
+
+<p>Having been guided on defining the <tt>Calc</tt> class right up to the <tt>Calc2</tt>, you may soon realize that the <tt>Calc2</tt> class is sufficient for us to perform any calculation.
+All you need to do for this level is to create a <tt>Calc2</tt> constructor to start the pipeline.
+In essence, whatever works for a calculation pipeline starting with
+<tt>new Calc()</tt>, should also work if the pipeline starts with
+<tt>new Calc2()</tt>.
+
+<p>Here are some examples:
+
+<pre>
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Add()).val(4).equal()
+$.. ==&gt; [11]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; operate(new Mul()).val(4).equal()
+$.. ==&gt; [25]
+</pre>
+
+<p>Every stage of the pipeline is now a <tt>Calc2</tt> object.
+Consequently, it is now possible to invoke <tt>val</tt>,
+<tt>operate</tt> and <tt>equal</tt> at any stage of the pipeline.
+The following are some sample pipelines:
+
+<pre>
+jshell&gt; new Calc2().equal()
+$.. ==&gt; [0]
+
+jshell&gt; new Calc2().operate(new Add()).equal()
+$.. ==&gt; [0]
+
+jshell&gt; new Calc2().operate(new Add()).equal().equal()
+$.. ==&gt; [0]
+
+jshell&gt; new Calc2().operate(new Add()).equal().equal().val(1)
+$.. ==&gt; [1]
+
+jshell&gt; new Calc2().val(2).operate(new Add()).operate(new Mul()).val(3).equal()
+$.. ==&gt; [6]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; equal(). // note the [=] that calculates 1+(2*3) = 7
+   ...&gt; operate(new Mul()).val(4).equal()
+$.. ==&gt; [28]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2).
+   ...&gt; operate(new Add()).operate(new Add()). // replacing with same operator
+   ...&gt; val(3).equal()
+$.. ==&gt; [6]
+</pre>
+
+<p>The following are some interesting examples involving switching operations:
+
+<pre>
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2).operate(new Mul()).val(3).
+   ...&gt; equal() // expected behaviour 1+(2*3)
+$.. ==&gt; [7]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2). // 1 + 2
+   ...&gt; operate(new Add()). // 3 +
+   ...&gt; operate(new Mul()). // changed to 3 * 
+   ...&gt; val(3).equal() // 3 * 3
+$.. ==&gt; [9]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2). // 1 + 2
+   ...&gt; operate(new Mul()). // 1 + 2 *
+   ...&gt; operate(new Add()). // changed to 3 + 
+   ...&gt; val(3).equal() // 3 + 3
+$.. ==&gt; [6]
+
+jshell&gt; new Calc2().val(1).operate(new Add()).val(2). // 1 + 2
+   ...&gt; operate(new Mul()). // 1 + 2 *
+   ...&gt; operate(new Add()). // changed to 3 + 
+   ...&gt; operate(new Mul()). // changed to 3 *
+   ...&gt; val(3).equal() // 3 * 3
+$.. ==&gt; [9]
+</pre>
+
+</body>
+</html>
