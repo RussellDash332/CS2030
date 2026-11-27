@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS2030 (AY26/27) Practical Assessment #2</title>
+</head>
+<body>
+<main>
+<h1>CS2030 (AY26/27) Practical Assessment #2</h1>
+<p><a href="https://russelldash332.github.io/CS2030/">Back to homepage</a></p>
+
+
+<h2>Debugger</h2>
+
+<p>A debugger is a tool that can be used to execute and inspect a program by controlling the parts of the program to be executed.  In this task, we shall write a debugger for a declarative pipeline.
+
+<h2>Task</h2>
+
+<p>Your task is to first write a computation context for a <tt>Program</tt>, e.g.
+
+<pre>
+jshell&gt; String foo() {
+   ...&gt;     return Stream.of("cs", "20", "30")
+   ...&gt;         .peek(x -&gt; System.out.println(x))
+   ...&gt;         .reduce("", (x, y) -&gt; x + y);
+   ...&gt; }
+
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+</pre>
+
+and then write a <tt>Debugger</tt> to debug the program.
+
+<pre>
+jshell&gt; Debug&lt;String&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo()).inspect("debugging: ")
+debug ==&gt; Debug 1
+
+jshell&gt; debug.run()
+cs
+20
+30
+debugging: cs2030
+cs2030
+</pre>
+
+<h2>Take Note!</h2>
+
+<p>This task comprises a number of levels.
+You are required to complete ALL levels.</p>
+
+<p>The following are the constraints imposed on this task.
+In general, you should keep to the constructs and programming discipline 
+instilled throughout the module.</p>
+
+<ul>
+<li>Write each class or interface in its own file.
+Do not use single letter names for classes or interfaces.
+</li>
+<li>Ensure that ALL object properties and class constants are declared <tt>private final</tt> 
+<li>Ensure that ALL classes/interfaces are NOT cyclic dependent.</li>
+<li>ONLY the following java libraries ARE allowed:
+<ul>
+<li><tt>java.util.Optional</tt>
+<li>functional interfaces from <tt>java.util.function</tt>
+
+</ul>
+<li>The following are NOT allowed:
+<ul>
+<li><tt>var</tt>, <tt>null</tt>, <tt>default</tt>, <tt>enum</tt>
+<li><tt>instanceof</tt>
+(except checking for an instance of its own class)
+<li><tt>Optional</tt> methods: <tt>isPresent</tt>, <tt>isEmpty</tt>,
+    <tt>get</tt>,
+and its
+    variants (<tt>orElse</tt>, <tt>orElseGet</tt>, <tt>orElseThrow</tt>), 
+as well as 
+<tt>equals</tt>
+    and <tt>hashCode</tt>
+    
+
+</ul>
+<li>For ease of implementation, DO NOT declare bounded/unbounded type
+    parameters or bounded/unbounded wildcards.
+<li>You are NOT allowed to define anonymous inner classes or method
+    references <tt>::</tt><br>Define lambdas if necessary.
+<li>Other usual restrictions:
+<ul>
+<li>Use only <tt>&&</tt>, <tt>||</tt> and <tt>!</tt> in logical expressions.
+DO NOT use bitwise operators.
+<li>You are NOT allowed to use <tt>*</tt> wildcard imports.
+<li>You are NOT allowed to use method references <tt>::</tt>
+<li>You are NOT allowed to define array constructs, e.g.
+<tt>String[]</tt> or using ellipsis, e.g.<tt>String...</tt>
+<li>You are NOT allowed to perform string processing using methods
+from <tt>String</tt>, <tt>StringBuffer</tt>,
+<tt>StringBuilder</tt>, etc.
+<li>You are NOT allowed to use exception handling
+<li>You are NOT allowed to use Java reflection, i.e. <tt>Object::getClasses</tt> and other methods from <tt>java.lang.Class</tt>
+</ul>
+</ul>
+
+<p>In the following level specifications, you will be guided on the classes and non-private methods to define.
+
+<ul>
+<li>DO NOT create any other classes;
+<li>any other method you create MUST be declared <tt>private</tt>.
+
+</ul>
+
+
+
+<h2>Level 1</h2>
+
+<p>Create a generic class <tt>Program&lt;T&gt;</tt> to represent a program
+that results in a value of type <tt>T</tt>.
+
+<ul>
+<li>Write a factory method <tt>of(T t)</tt> that creates a program
+that encapsulates the result of type <tt>T</tt>.
+<li>Write another factory method <tt>empty()</tt> that creates an
+"empty" program.
+<li>Write a method <tt>get</tt> that returns the result of executing the program within an <tt>Optional</tt>.  If the program is empty, the method should return <tt>Optional.empty</tt>.
+<li>Write a <tt>toString</tt> method that simply outputs <tt>Program</tt>.
+</ul>
+
+<p>The following is a sample run:
+
+<pre>
+$ javac Program.java
+$ jshell Program.java
+
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of("cs2030")
+prog ==&gt; Program
+
+jshell&gt; prog.get()
+$.. ==&gt; Optional[cs2030]
+
+jshell&gt; prog.get() instanceof Optional
+$.. ==&gt; true
+
+jshell&gt; Program&lt;String&gt; noop = Program.&lt;String&gt;empty()
+noop ==&gt; Program
+
+jshell&gt; noop.get()
+$.. ==&gt; Optional.empty
+</pre>
+
+<h2>Level 2</h2>
+
+<p>Consider the following program:
+
+<pre>
+jshell&gt; String foo() {
+   ...&gt;     return Stream.of("cs", "20", "30")
+   ...&gt;         .peek(x -&gt; System.out.println(x))
+   ...&gt;         .reduce("", (x, y) -&gt; x + y);
+   ...&gt; }
+|  created method foo()
+</pre>
+
+<p>We would like to "wrap" this program around a <tt>Program</tt> context with the following behaviour:
+
+<pre>
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+
+jshell&gt; prog.get()
+cs
+20
+30
+$.. ==&gt; Optional[cs2030]
+
+jshell&gt; prog.get()
+$.. ==&gt; Optional[cs2030]
+</pre>
+
+<p>Notice that <tt>foo</tt> is not evaluated until <tt>get</tt> is invoked.
+Moreover, subsequent invocations of <tt>get</tt> need not evaluated the program further as our programs are assumed "pure" with the same result.
+
+<p>Modify the generic class <tt>Program</tt> to support lazy
+evaluation with the provided <tt><a href="Lazy.java" download>Lazy</a></tt> class.  
+In particular,  write another overloaded factory method <tt>of</tt> that takes in a <tt>Supplier&lt;T&gt;</tt> and creates a program from the given supplier.
+Also include a method <tt>run</tt> that takes in a <tt>Consumer&lt;T&gt;</tt> and "runs" the program, provided that it is not an empty program.
+
+<blockquote>
+<p>Note that you DO NOT need to consider using any bounded wildcards in this task.
+
+</blockquote>
+
+<pre>
+$ javac Lazy.java Program.java
+$ jshell Lazy.java Program.java
+
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+
+jshell&gt; prog.run(x -&gt; System.out.println(x))
+cs
+20
+30
+cs2030
+
+jshell&gt; prog.run(x -&gt; System.out.println(x))
+cs2030
+
+jshell&gt; Program&lt;String&gt; prog0 = Program.&lt;String&gt;empty()
+prog0 ==&gt; Program
+
+jshell&gt; prog0.run(x -&gt; System.out.println(x))
+
+jshell&gt;
+</pre>
+
+
+<h2>Level 3</h2>
+
+<p>Thus far, we have only created programs at the start of execution.
+In general, a program can also take in input from other programs and provide output to other programs.  We can do this in two ways: using <tt>map</tt> and <tt>flatMap</tt>.
+
+<p>Include the following <tt>map</tt> method:
+
+<pre>
+&lt;R&gt; Program&lt;R&gt; map(Function&lt;T, R&gt; mapper)
+</pre>
+
+<p> that takes in a function that maps <tt>Program&lt;T&gt;</tt> to <tt>Program&lt;R&gt;</tt>.  The following is an example:
+
+<pre>
+$ javac Lazy.java Program.java
+$ jshell Lazy.java Program.java
+
+jshell&gt; String foo() {
+   ...&gt;     return Stream.of("cs", "20", "30")
+   ...&gt;         .peek(x -&gt; System.out.println(x))
+   ...&gt;         .reduce("", (x, y) -&gt; x + y);
+   ...&gt; }
+|  created method foo()
+
+jshell&gt; int len(String s) {
+   ...&gt;     System.out.println("Finding length");
+   ...&gt;     return s.length();
+   ...&gt; }
+|  created method len(String)
+
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+
+jshell&gt; Program&lt;Integer&gt; progi = prog.map(x -&gt; len(x))
+progi ==&gt; Program
+
+jshell&gt; progi.get()
+cs
+20
+30
+Finding length
+$.. ==&gt; Optional[6]
+
+jshell&gt; progi.run(x -&gt; System.out.println(x))
+6
+</pre>
+
+<p>Notice from the above that <tt>len</tt> is passed directly to <tt>map</tt>.  However, <tt>len</tt> could also be wrapped within <tt>Program</tt>.  As such we need a <tt>flatMap</tt>:
+
+<pre>
+&lt;R&gt; Program&lt;R&gt; flatMap(Function&lt;T, Program&lt;R&gt;&gt; mapper)
+</pre>
+
+<p>Here is a sample run:
+
+<pre>
+$ javac Lazy.java Program.java
+$ jshell Lazy.java Program.java
+
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+
+jshell&gt; Program&lt;Integer&gt; progi = prog.flatMap(x -&gt; Program.of(() -&gt; len(x)))
+progi ==&gt; Program
+
+jshell&gt; progi.get()
+cs
+20
+30
+Finding length
+$.. ==&gt; Optional[6]
+
+jshell&gt; progi.run(x -&gt; System.out.println(x))
+6
+</pre>
+
+<p>Here are further examples with empty programs.
+
+<pre>
+jshell&gt; Program&lt;String&gt; noop = Program.&lt;String&gt;empty()
+noop ==&gt; Program
+
+jshell&gt; Optional&lt;Integer&gt; opti = noop.map(x -&gt; len(x)).get()
+opti ==&gt; Optional.empty
+</pre>
+
+<p>In the above, since the program starts with an empty program <tt>noop</tt>, further mapping does not result in a valid value.  However, note that the final outcome from <tt>get</tt> is still typed <tt>Optional&lt;Integer&gt;</tt> at the end of the pipeline.
+
+<pre>
+jshell&gt; Program&lt;String&gt; prog = Program.&lt;String&gt;of(() -&gt; foo())
+prog ==&gt; Program
+
+jshell&gt; Optional&lt;Integer&gt; opti = prog.flatMap(x -&gt; Program.&lt;Integer&gt;empty()).get()
+cs
+20
+30
+opti ==&gt; Optional.empty
+</pre>
+
+<p>In the above, the pipeline starts with a non-empty program, but flat-mapped with an empty program.  The <tt>get</tt> method will still evaluate the start (notice the three lines of output), but no value can be evaluated at the end of the pipeline, resulting in an empty optional that is typed <tt>Optional&lt;Integer&gt;</tt>.
+
+<h2>Level 4</h2>
+
+<p>Having created the <tt>Program</tt> context, we now focus on creating the <tt>Debug</tt> debugger.
+
+<pre>
+jshell&gt; String foo() {
+   ...&gt;     return Stream.of("cs", "20", "30")
+   ...&gt;         .peek(x -&gt; System.out.println(x))
+   ...&gt;         .reduce("", (x, y) -&gt; x + y);
+   ...&gt; }
+|  modified method foo()
+
+jshell&gt; Debug&lt;String&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo())
+debug ==&gt; Debug 1
+</pre>
+
+<p>A <tt>Debug</tt> context is created by passing a <tt>Supplier</tt> to the <tt>of</tt> factory method.
+To support lazy evaluation, <tt>Debug</tt> should encapsulate a <tt>Program</tt>; it should have no knowledge of <tt>Lazy</tt> or <tt>Optional</tt>.
+
+<p>Include the <tt>toString</tt> method that returns the string <tt>Debug</tt> followed by a integer value that represents the "stage" of the debugger, starting with <tt>1</tt>.
+
+<p>Also include a <tt>run()</tt> method that "runs" the program within the debugger.  Note that lazy evaluation is maintained when running the debugger.
+
+<pre>
+jshell&gt; debug.run()
+cs
+20
+30
+cs2030
+
+jshell&gt; debug.run()
+cs2030
+</pre>
+
+<p>A <tt>Debug</tt> pipeline can also be extended using <tt>extend</tt>.
+
+<pre>
+jshell&gt; int len(String s) {
+   ...&gt;     System.out.println("Finding length");
+   ...&gt;     return s.length();
+   ...&gt; }
+|  created method len(String)
+
+jshell&gt; Debug&lt;Integer&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo()).extend(x -&gt; len(x))
+debug ==&gt; Debug 2
+
+jshell&gt; debug.run()
+cs
+20
+30
+Finding length
+6
+
+jshell&gt; debug.run()
+6
+</pre>
+
+<p>In addition, we can "inspect" a specific stage of the pipeline.
+The <tt>inspect</tt> method takes in a <tt>String</tt> prompt.
+
+<pre>
+jshell&gt; Debug&lt;Integer&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo()).inspect("debugging: ").extend(x -&gt; len(x))
+debug ==&gt; Debug 2
+
+jshell&gt; debug.run()
+cs
+20
+30
+debugging: cs2030
+Finding length
+6
+
+jshell&gt; debug.run()
+6
+</pre>
+
+<p>Include the method <tt>extend</tt> and <tt>inspect</tt> in the <tt>Debug</tt> context.
+You may assume that each stage of the pipeline can have at most one
+inspect.
+
+<h2>Level 5</h2>
+
+So far the <tt>run()</tt> method with no arguments runs the entire pipeline from start to finish.
+Include another overloaded <tt>run</tt> method that takes in an integer <tt>n</tt> so that it runs up to <tt>n</tt> stages of the pipeline.
+
+<p>The following is a sample run for a two-stage debugging pipeline.
+
+<pre>
+jshell&gt; Debug&lt;Integer&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo()).inspect("debugging: ").extend(x -&gt; len(x))
+debug ==&gt; Debug 2
+
+jshell&gt; debug.run(0)
+
+jshell&gt; debug.run(1)
+cs
+20
+30
+debugging: cs2030
+
+jshell&gt; debug.run(1)
+
+jshell&gt; debug.run(2)
+Finding length
+6
+
+jshell&gt; debug.run(2)
+6
+</pre> 
+
+<p>Take note of the following:
+
+<ul>
+<li><tt>debug.run(0)</tt> does not run the pipeline;
+<li>a stage of the pipeline that was run previously will not be re-run (or re-evaluated);
+<li>output only occurs upon running the entire pipeline.
+</ul>
+
+<p>Here is another example.
+
+<pre>
+jshell&gt; Debug&lt;Integer&gt; debug = Debug.&lt;String&gt;of(() -&gt; foo()).inspect("debugging: ").extend(x -&gt; len(x))
+debug ==&gt; Debug 2
+
+jshell&gt; debug.run(2) // runs the two stages of the pipeline
+cs
+20
+30
+debugging: cs2030
+Finding length
+6
+
+jshell&gt; debug.run(1)
+</pre>
+
+<p><tt>debug.run(1)</tt> above does not evaluate the first stage of the pipeline, since it was run previously.  Also note that running one stage does not complete the pipeline, hence there is no output.
+Contrast this to the following:
+
+<pre>
+jshell&gt; debug.run(2)
+6
+
+jshell&gt; debug.run(3)
+6
+</pre>
+
+<p>Although the two stages were evaluated previously, both <tt>run(2)</tt> and <tt>run(3)</tt> will complete running the pipeline with the value of <tt>6</tt>.
+
+<p>Once again, you are reminded that <tt>Debug</tt> should only make use of <tt>Program</tt>; it should have no knowledge of <tt>Lazy</tt> or <tt>Optional</tt> which is encapsulated within <tt>Program</tt>.
+</main>
+</body>
+</html>
